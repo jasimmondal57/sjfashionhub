@@ -285,6 +285,78 @@ class BlogAiController extends Controller
         ]);
     }
 
+    /**
+     * Auto-generate blog content via GET request (no CSRF needed)
+     */
+    public function autoGenerate($productId)
+    {
+        try {
+            $product = Product::with(['category'])->findOrFail($productId);
+
+            // Auto-generate settings
+            $autoSettings = $this->getAutoGenerationSettings($product);
+
+            // Prepare options for AI generation
+            $options = [
+                'blog_type' => $autoSettings['blog_type'],
+                'tone' => $autoSettings['tone'],
+                'word_count' => $autoSettings['word_count'],
+            ];
+
+            if (!empty($autoSettings['target_keywords'])) {
+                $options['target_keywords'] = array_map('trim', explode(',', $autoSettings['target_keywords']));
+            }
+
+            // Generate content using Gemini AI
+            $generatedContent = $this->geminiService->generateBlogPost($product, $options);
+
+            // Create suggested tags
+            $suggestedTags = [];
+            if (!empty($generatedContent['suggested_tags'])) {
+                foreach ($generatedContent['suggested_tags'] as $tagName) {
+                    $tag = BlogTag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName, 'is_active' => true]
+                    );
+                    $suggestedTags[] = $tag->id;
+                }
+            }
+
+            // Prepare blog post data
+            $blogData = [
+                'title' => $generatedContent['title'],
+                'slug' => Str::slug($generatedContent['title']),
+                'excerpt' => $generatedContent['excerpt'] ?? '',
+                'content' => $generatedContent['content'],
+                'seo_title' => $generatedContent['seo_title'],
+                'seo_description' => $generatedContent['seo_description'],
+                'seo_keywords' => implode(', ', $generatedContent['seo_keywords'] ?? []),
+                'product_id' => $product->id,
+                'blog_category_id' => null, // Will be set by auto-generation
+                'author_id' => Auth::id(),
+                'ai_generated' => true,
+                'ai_prompt' => json_encode($options),
+                'ai_metadata' => $generatedContent['ai_metadata'],
+                'status' => 'draft',
+                'reading_time' => $generatedContent['reading_time'] ?? null,
+                'featured_image' => $product->images[0]['image_path'] ?? null,
+            ];
+
+            return response()->json([
+                'success' => true,
+                'blog_data' => $blogData,
+                'suggested_tags' => $suggestedTags,
+                'product' => $product,
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate blog content: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 
     /**

@@ -294,6 +294,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\BlogAiController::class, 'index'])->name('index');
             Route::get('/create', [App\Http\Controllers\Admin\BlogAiController::class, 'create'])->name('create');
             Route::post('/generate', [App\Http\Controllers\Admin\BlogAiController::class, 'generate'])->name('generate');
+            Route::get('/auto-generate/{product}', [App\Http\Controllers\Admin\BlogAiController::class, 'autoGenerate'])->name('auto-generate');
             Route::post('/store', [App\Http\Controllers\Admin\BlogAiController::class, 'store'])->name('store');
             Route::post('/generate-titles', [App\Http\Controllers\Admin\BlogAiController::class, 'generateTitles'])->name('generate-titles');
             Route::get('/status', [App\Http\Controllers\Admin\BlogAiController::class, 'status'])->name('status');
