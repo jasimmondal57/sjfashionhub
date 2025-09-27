@@ -57,32 +57,33 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Host *</label>
-                        <input type="text" name="host" 
-                               value="{{ old('host', $settings['smtp'][0]->value ?? '') }}"
+                        <input type="text" name="host"
+                               value="{{ old('host', $settings['smtp']['host']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="smtp.gmail.com" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Port *</label>
-                        <input type="number" name="port" 
-                               value="{{ old('port', $settings['smtp'][1]->value ?? '587') }}"
+                        <input type="number" name="port"
+                               value="{{ old('port', $settings['smtp']['port']->value ?? '587') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="587" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Username *</label>
-                        <input type="text" name="username" 
-                               value="{{ old('username', $settings['smtp'][2]->value ?? '') }}"
+                        <input type="text" name="username"
+                               value="{{ old('username', $settings['smtp']['username']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="your-email@gmail.com" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
-                        <input type="password" name="password" 
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="password" name="password"
+                               value="{{ old('password', $settings['smtp']['password']->decrypted_value ?? '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="Enter password" required>
                     </div>
                     
@@ -90,23 +91,23 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Encryption</label>
                         <select name="encryption" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                             <option value="">None</option>
-                            <option value="tls" {{ old('encryption') === 'tls' ? 'selected' : '' }}>TLS</option>
-                            <option value="ssl" {{ old('encryption') === 'ssl' ? 'selected' : '' }}>SSL</option>
+                            <option value="tls" {{ old('encryption', $settings['smtp']['encryption']->value ?? '') == 'tls' ? 'selected' : '' }}>TLS</option>
+                            <option value="ssl" {{ old('encryption', $settings['smtp']['encryption']->value ?? '') == 'ssl' ? 'selected' : '' }}>SSL</option>
                         </select>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Email *</label>
-                        <input type="email" name="from_address" 
-                               value="{{ old('from_address', $settings['smtp'][5]->value ?? '') }}"
+                        <input type="email" name="from_address"
+                               value="{{ old('from_address', $settings['smtp']['from_address']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="noreply@yoursite.com" required>
                     </div>
                     
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Name *</label>
-                        <input type="text" name="from_name" 
-                               value="{{ old('from_name', $settings['smtp'][6]->value ?? 'SJ Fashion Hub') }}"
+                        <input type="text" name="from_name"
+                               value="{{ old('from_name', $settings['smtp']['from_name']->value ?? 'SJ Fashion Hub') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="SJ Fashion Hub" required>
                     </div>
@@ -134,31 +135,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">API Key *</label>
-                        <input type="password" name="api_key" 
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="password" name="api_key"
+                               value="{{ old('api_key', $settings['mailgun']['api_key']->decrypted_value ?? '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Domain *</label>
-                        <input type="text" name="domain" 
-                               value="{{ old('domain', $settings['mailgun'][1]->value ?? '') }}"
+                        <input type="text" name="domain"
+                               value="{{ old('domain', $settings['mailgun']['domain']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="mg.yoursite.com" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Email *</label>
-                        <input type="email" name="from_address" 
-                               value="{{ old('from_address', $settings['mailgun'][2]->value ?? '') }}"
+                        <input type="email" name="from_address"
+                               value="{{ old('from_address', $settings['mailgun']['from_address']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="noreply@yoursite.com" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Name *</label>
-                        <input type="text" name="from_name" 
-                               value="{{ old('from_name', $settings['mailgun'][3]->value ?? 'SJ Fashion Hub') }}"
+                        <input type="text" name="from_name"
+                               value="{{ old('from_name', $settings['mailgun']['from_name']->value ?? 'SJ Fashion Hub') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="SJ Fashion Hub" required>
                     </div>
@@ -186,15 +188,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">AWS Access Key *</label>
-                        <input type="password" name="api_key" 
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="password" name="api_key"
+                               value="{{ old('api_key', $settings['ses']['api_key']->decrypted_value ?? '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="AKIAIOSFODNN7EXAMPLE" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">AWS Secret Key *</label>
-                        <input type="password" name="secret_key" 
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="password" name="secret_key"
+                               value="{{ old('secret_key', $settings['ses']['secret_key']->decrypted_value ?? '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" required>
                     </div>
                     
@@ -202,17 +206,17 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">AWS Region *</label>
                         <select name="region" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                             <option value="">Select Region</option>
-                            <option value="us-east-1">US East (N. Virginia)</option>
-                            <option value="us-west-2">US West (Oregon)</option>
-                            <option value="eu-west-1">Europe (Ireland)</option>
-                            <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                            <option value="us-east-1" {{ old('region', $settings['ses']['region']->value ?? '') == 'us-east-1' ? 'selected' : '' }}>US East (N. Virginia)</option>
+                            <option value="us-west-2" {{ old('region', $settings['ses']['region']->value ?? '') == 'us-west-2' ? 'selected' : '' }}>US West (Oregon)</option>
+                            <option value="eu-west-1" {{ old('region', $settings['ses']['region']->value ?? '') == 'eu-west-1' ? 'selected' : '' }}>Europe (Ireland)</option>
+                            <option value="ap-southeast-1" {{ old('region', $settings['ses']['region']->value ?? '') == 'ap-southeast-1' ? 'selected' : '' }}>Asia Pacific (Singapore)</option>
                         </select>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Email *</label>
                         <input type="email" name="from_address" 
-                               value="{{ old('from_address', $settings['ses'][3]->value ?? '') }}"
+                               value="{{ old('from_address', $settings['ses']['from_address']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="noreply@yoursite.com" required>
                     </div>
@@ -220,7 +224,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Name *</label>
                         <input type="text" name="from_name" 
-                               value="{{ old('from_name', $settings['ses'][4]->value ?? 'SJ Fashion Hub') }}"
+                               value="{{ old('from_name', $settings['ses']['from_name']->value ?? 'SJ Fashion Hub') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="SJ Fashion Hub" required>
                     </div>
@@ -248,15 +252,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Server API Token *</label>
-                        <input type="password" name="api_key" 
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="password" name="api_key"
+                               value="{{ old('api_key', $settings['postmark']['api_key']->decrypted_value ?? '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Email *</label>
                         <input type="email" name="from_address" 
-                               value="{{ old('from_address', $settings['postmark'][1]->value ?? '') }}"
+                               value="{{ old('from_address', $settings['postmark']['from_address']->value ?? '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="noreply@yoursite.com" required>
                     </div>
@@ -264,7 +269,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">From Name *</label>
                         <input type="text" name="from_name" 
-                               value="{{ old('from_name', $settings['postmark'][2]->value ?? 'SJ Fashion Hub') }}"
+                               value="{{ old('from_name', $settings['postmark']['from_name']->value ?? 'SJ Fashion Hub') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="SJ Fashion Hub" required>
                     </div>

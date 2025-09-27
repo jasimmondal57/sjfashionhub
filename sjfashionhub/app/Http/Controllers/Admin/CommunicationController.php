@@ -37,7 +37,17 @@ class CommunicationController extends Controller
      */
     public function emailSettings()
     {
-        $settings = CommunicationSetting::provider('email')->get()->groupBy('service');
+        // Get all email settings grouped by service
+        $allSettings = CommunicationSetting::provider('email')->get()->groupBy('service');
+
+        // Create a more accessible format for the view
+        $settings = [];
+        foreach ($allSettings as $service => $serviceSettings) {
+            $settings[$service] = [];
+            foreach ($serviceSettings as $setting) {
+                $settings[$service][$setting->key] = $setting;
+            }
+        }
 
         return view('admin.communication.email-settings', compact('settings'));
     }
