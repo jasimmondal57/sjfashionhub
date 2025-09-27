@@ -55,8 +55,8 @@
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="is_active" value="{{ $config && $config->is_active ? '0' : '1' }}">
-                            <button type="submit" 
-                                    class="px-4 py-2 rounded-lg text-sm font-medium {{ $config && $config->is_active ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }}">
+                            <button type="submit"
+                                    class="px-4 py-2 rounded-lg text-sm font-medium shadow-lg border {{ $config && $config->is_active ? 'bg-red-600 text-white hover:bg-red-700 border-red-500' : 'bg-green-600 text-white hover:bg-green-700 border-green-500' }}">
                                 {{ $config && $config->is_active ? 'Deactivate' : 'Activate' }}
                             </button>
                         </form>
@@ -272,7 +272,7 @@
 
                         <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
                             <button type="button" onclick="testConnection('{{ $platformKey }}')"
-                                    class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                    class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg border border-gray-600">
                                 🔍 Test Connection
                             </button>
 
