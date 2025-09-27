@@ -23,7 +23,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center">
-                            <img src="{{ Storage::url('logo/logo.png') }}" alt="SJ Fashion Hub" class="h-8 w-auto">
+                            <x-application-logo class="h-8 w-auto" />
                             <span class="ml-2 text-xl font-bold text-gray-900">SJ Fashion Hub</span>
                         </a>
                     </div>
@@ -69,55 +69,55 @@
 
         <div class="flex">
             <!-- Sidebar -->
-            <div class="w-64 bg-white shadow-sm min-h-screen">
+            <div class="w-64 bg-gray-900 shadow-sm min-h-screen">
                 <div class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-6">My Account</h2>
+                    <h2 class="text-lg font-semibold text-white mb-6">My Account</h2>
                     
                     <nav class="space-y-2">
-                        <a href="{{ route('user.dashboard') }}" 
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.dashboard') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}">
+                        <a href="{{ route('user.dashboard') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                             </svg>
                             Dashboard
                         </a>
 
-                        <a href="{{ route('user.profile') }}" 
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.profile') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}">
+                        <a href="{{ route('user.profile') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.profile') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                             My Profile
                         </a>
 
-                        <a href="{{ route('user.orders') }}" 
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}">
+                        <a href="{{ route('user.orders') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                             </svg>
                             My Orders
                         </a>
 
-                        <a href="{{ route('user.cart') }}" 
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.cart') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}">
+                        <a href="{{ route('user.cart') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.cart') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
                             </svg>
                             My Cart
                         </a>
 
-                        <a href="{{ route('user.wishlist') }}" 
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.wishlist') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}">
+                        <a href="{{ route('user.wishlist') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.wishlist') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                             </svg>
                             Wishlist
                         </a>
 
-                        <div class="border-t border-gray-200 pt-4 mt-4">
+                        <div class="border-t border-gray-700 pt-4 mt-4">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="flex items-center w-full px-3 py-2 text-sm font-medium text-red-600 rounded-md hover:text-red-900 hover:bg-red-50">
+                                <button type="submit" class="flex items-center w-full px-3 py-2 text-sm font-medium text-red-400 rounded-md hover:text-red-300 hover:bg-gray-800">
                                     <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                     </svg>
