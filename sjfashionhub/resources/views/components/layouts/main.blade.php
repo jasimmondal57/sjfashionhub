@@ -627,7 +627,7 @@
 
         // Buy Now function
         function buyNow(productId) {
-            // Add to cart first, then redirect to cart
+            // Add to cart first, then redirect to checkout
             fetch('/cart/add', {
                 method: 'POST',
                 headers: {
@@ -642,8 +642,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Redirect to cart page
-                    window.location.href = '{{ route("cart.index") }}';
+                    // Redirect to checkout page
+                    window.location.href = '/checkout';
                 } else {
                     showNotification('Failed to add product to cart', 'error');
                 }
