@@ -40,7 +40,7 @@ class GoogleDriveBackupService
                 $this->client->setAuthConfig($credentials);
                 
                 // Set refresh token if available
-                $refreshToken = setting('google_drive_refresh_token');
+                $refreshToken = config('backup.google_drive_refresh_token');
                 if ($refreshToken) {
                     $this->client->refreshToken($refreshToken);
                 }
@@ -59,9 +59,9 @@ class GoogleDriveBackupService
      */
     private function getGoogleDriveCredentials()
     {
-        $clientId = setting('google_drive_client_id');
-        $clientSecret = setting('google_drive_client_secret');
-        $redirectUri = setting('google_drive_redirect_uri');
+        $clientId = config('backup.google_drive_client_id');
+        $clientSecret = config('backup.google_drive_client_secret');
+        $redirectUri = config('backup.google_drive_redirect_uri', route('admin.backup.callback'));
 
         if (!$clientId || !$clientSecret || !$redirectUri) {
             return null;
@@ -83,7 +83,7 @@ class GoogleDriveBackupService
      */
     private function getOrCreateBackupFolder()
     {
-        $folderName = setting('google_drive_backup_folder', 'SJ Fashion Hub Backups');
+        $folderName = config('backup.google_drive_backup_folder', 'SJ Fashion Hub Backups');
         
         // Search for existing folder
         $response = $this->driveService->files->listFiles([
@@ -475,8 +475,9 @@ class GoogleDriveBackupService
         $token = $this->client->fetchAccessTokenWithAuthCode($code);
 
         if (isset($token['refresh_token'])) {
-            setting(['google_drive_refresh_token' => $token['refresh_token']]);
-            setting(['google_drive_access_token' => $token['access_token']]);
+            // Store tokens in config or database
+            config(['backup.google_drive_refresh_token' => $token['refresh_token']]);
+            config(['backup.google_drive_access_token' => $token['access_token']]);
             return true;
         }
 
@@ -489,8 +490,8 @@ class GoogleDriveBackupService
     public function isConfigured()
     {
         return $this->client &&
-               setting('google_drive_client_id') &&
-               setting('google_drive_client_secret') &&
-               setting('google_drive_refresh_token');
+               config('backup.google_drive_client_id') &&
+               config('backup.google_drive_client_secret') &&
+               config('backup.google_drive_refresh_token');
     }
 }
