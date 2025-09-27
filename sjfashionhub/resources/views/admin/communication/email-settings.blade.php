@@ -115,7 +115,8 @@
                 
                 <div class="flex justify-between items-center mt-6">
                     <button type="button" onclick="testConnection('smtp')"
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -168,7 +169,8 @@
                 
                 <div class="flex justify-between items-center mt-6">
                     <button type="button" onclick="testConnection('mailgun')"
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -232,7 +234,8 @@
                 
                 <div class="flex justify-between items-center mt-6">
                     <button type="button" onclick="testConnection('ses')"
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -277,7 +280,8 @@
                 
                 <div class="flex justify-between items-center mt-6">
                     <button type="button" onclick="testConnection('postmark')"
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -315,8 +319,10 @@ function showTab(tabName) {
 function testConnection(service) {
     const button = event.target;
     const originalText = button.innerHTML;
+    const originalStyle = button.style.backgroundColor;
     button.innerHTML = '⏳ Testing...';
     button.disabled = true;
+    button.style.backgroundColor = '#6B7280'; // Gray while testing
     
     fetch('{{ route("admin.communication.test-connection") }}', {
         method: 'POST',
@@ -344,6 +350,7 @@ function testConnection(service) {
     .finally(() => {
         button.innerHTML = originalText;
         button.disabled = false;
+        button.style.backgroundColor = originalStyle; // Restore original color
     });
 }
 </script>
