@@ -65,9 +65,32 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Verification Method -->
+        <div class="mt-4">
+            <x-input-label for="verification_method" :value="__('Verify Account Via *')" />
+            <div class="mt-2 space-y-2">
+                <label class="flex items-center">
+                    <input type="radio" name="verification_method" value="phone"
+                           class="text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
+                           {{ old('verification_method', 'phone') == 'phone' ? 'checked' : '' }} required>
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">📱 Phone Number (SMS/WhatsApp)</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="verification_method" value="email"
+                           class="text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
+                           {{ old('verification_method') == 'email' ? 'checked' : '' }}>
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">📧 Email Address</span>
+                </label>
+            </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Choose how you'd like to receive your verification code
+            </p>
+            <x-input-error :messages="$errors->get('verification_method')" class="mt-2" />
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Register') }}
+                {{ __('Register & Verify') }}
             </x-primary-button>
         </div>
     </form>

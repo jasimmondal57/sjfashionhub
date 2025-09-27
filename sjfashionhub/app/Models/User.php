@@ -136,6 +136,29 @@ class User extends Authenticatable
         return $this->role === 'super_admin';
     }
 
+    public function isProfileComplete()
+    {
+        $requiredFields = ['name', 'email'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($this->$field)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isPhoneVerified()
+    {
+        return !is_null($this->phone_verified_at);
+    }
+
+    public function isEmailVerified()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
     public function isManager()
     {
         return $this->role === 'manager';

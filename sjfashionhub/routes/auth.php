@@ -17,10 +17,25 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    Route::get('register/success', [RegisteredUserController::class, 'success'])
+        ->name('register.success');
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    // OTP Verification Routes
+    Route::get('verify-otp', [\App\Http\Controllers\Auth\OtpVerificationController::class, 'show'])
+        ->name('otp.verify');
+    Route::post('verify-otp', [\App\Http\Controllers\Auth\OtpVerificationController::class, 'verify']);
+    Route::post('resend-otp', [\App\Http\Controllers\Auth\OtpVerificationController::class, 'resend'])
+        ->name('otp.resend');
+
+    // Profile Completion Routes
+    Route::get('complete-profile', [\App\Http\Controllers\Auth\ProfileCompletionController::class, 'show'])
+        ->name('profile.complete');
+    Route::post('complete-profile', [\App\Http\Controllers\Auth\ProfileCompletionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

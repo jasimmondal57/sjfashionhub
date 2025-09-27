@@ -78,7 +78,7 @@ class SocialLoginController extends Controller
 
             // Check if user exists with same email
             $existingUser = User::where('email', $socialUser->getEmail())->first();
-            
+
             if ($existingUser) {
                 // Link social account to existing user
                 $existingUser->update([
@@ -87,13 +87,13 @@ class SocialLoginController extends Controller
                     'avatar' => $socialUser->getAvatar(),
                     'login_type' => $provider
                 ]);
-                
+
                 Auth::login($existingUser);
                 return redirect()->intended('/');
             }
 
-            // Create new user
-            $user = User::create([
+            // Prepare social user data
+            $socialData = [
                 'name' => $socialUser->getName(),
                 'email' => $socialUser->getEmail(),
                 'provider' => $provider,
@@ -101,8 +101,25 @@ class SocialLoginController extends Controller
                 'avatar' => $socialUser->getAvatar(),
                 'login_type' => $provider,
                 'email_verified_at' => now(),
+            ];
+
+            // Check if profile is complete
+            $needsCompletion = $this->needsProfileCompletion($socialData);
+
+            if ($needsCompletion) {
+                // Store social data in session for profile completion
+                session([
+                    'social_user_data' => $socialData,
+                    'social_provider' => $provider,
+                ]);
+
+                return redirect()->route('profile.complete')->with('info', 'Please complete your profile to continue.');
+            }
+
+            // Create user with complete data
+            $user = User::create(array_merge($socialData, [
                 'password' => Hash::make(Str::random(24)), // Random password
-            ]);
+            ]));
 
             Auth::login($user);
             return redirect()->intended('/');
@@ -110,5 +127,23 @@ class SocialLoginController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Unable to login with ' . ucfirst($provider) . '. Please try again.');
         }
+    }
+
+    /**
+     * Check if social user needs profile completion
+     */
+    private function needsProfileCompletion($socialData)
+    {
+        // Check if essential fields are missing
+        $requiredFields = ['name', 'email'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($socialData[$field])) {
+                return true;
+            }
+        }
+
+        // Always require phone number for new social users
+        return true; // Force profile completion to get phone number
     }
 }
