@@ -405,6 +405,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // User Dashboard Routes
+    Route::prefix('account')->name('user.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [\App\Http\Controllers\User\DashboardController::class, 'profile'])->name('profile');
+        Route::put('/profile', [\App\Http\Controllers\User\DashboardController::class, 'updateProfile'])->name('profile.update');
+        Route::put('/password', [\App\Http\Controllers\User\DashboardController::class, 'updatePassword'])->name('password.update');
+        Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('orders');
+        Route::get('/cart', [\App\Http\Controllers\User\DashboardController::class, 'cart'])->name('cart');
+        Route::get('/wishlist', [\App\Http\Controllers\User\DashboardController::class, 'wishlist'])->name('wishlist');
+    });
 });
 
 // Registration success route (must be before auth.php)
