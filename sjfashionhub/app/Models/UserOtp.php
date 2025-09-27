@@ -209,7 +209,7 @@ class UserOtp extends Model
                 public function __construct($email) {
                     $this->email = $email;
                 }
-                public function routeNotificationForMail() {
+                public function routeNotificationFor($driver) {
                     return $this->email;
                 }
             };
