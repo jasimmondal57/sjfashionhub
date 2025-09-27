@@ -439,11 +439,49 @@
 
                 setTimeout(() => {
                     if (data.success) {
-                        populateGeneratedContent(data.blog_data, data.suggested_tags);
-                        document.getElementById('generated-content-form').classList.remove('hidden');
+                        // Show success message with links
+                        const successMessage = `
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                <div class="flex items-center mb-4">
+                                    <svg class="w-8 h-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <h3 class="text-lg font-semibold text-green-800">Blog Post Generated Successfully! 🎉</h3>
+                                </div>
+                                <p class="text-green-700 mb-4">Your SEO-optimized blog post has been automatically generated and published!</p>
+                                <div class="flex space-x-4">
+                                    <a href="${data.blog_url || '#'}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        Edit Blog Post
+                                    </a>
+                                    <a href="${data.view_url || '#'}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        View Live Post
+                                    </a>
+                                    <a href="{{ route('admin.blog.ai.index') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        Generate Another
+                                    </a>
+                                </div>
+                            </div>
+                        `;
 
-                        // Show success message
-                        showSuccessMessage('✨ Your SEO-optimized blog post has been generated automatically!');
+                        // Insert success message at the top of the page
+                        const container = document.querySelector('.container');
+                        const firstChild = container.firstElementChild;
+                        const successDiv = document.createElement('div');
+                        successDiv.innerHTML = successMessage;
+                        container.insertBefore(successDiv, firstChild);
+
+                        // Scroll to top to show the success message
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else {
                         alert('Error: ' + (data.message || 'Unknown error occurred'));
                         console.error('Generation error:', data);

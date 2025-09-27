@@ -322,8 +322,8 @@ class BlogAiController extends Controller
                 }
             }
 
-            // Prepare blog post data
-            $blogData = [
+            // Create the blog post
+            $blogPost = BlogPost::create([
                 'title' => $generatedContent['title'],
                 'slug' => Str::slug($generatedContent['title']),
                 'excerpt' => $generatedContent['excerpt'] ?? '',
@@ -333,18 +333,27 @@ class BlogAiController extends Controller
                 'seo_keywords' => implode(', ', $generatedContent['seo_keywords'] ?? []),
                 'product_id' => $product->id,
                 'blog_category_id' => null, // Will be set by auto-generation
-                'author_id' => Auth::id(),
+                'author_id' => Auth::id() ?? 1, // Default to admin user if not authenticated
                 'ai_generated' => true,
                 'ai_prompt' => json_encode($options),
-                'ai_metadata' => $generatedContent['ai_metadata'],
-                'status' => 'draft',
+                'ai_metadata' => json_encode($generatedContent['ai_metadata']),
+                'status' => 'published', // Auto-publish the generated post
                 'reading_time' => $generatedContent['reading_time'] ?? null,
                 'featured_image' => $product->images[0]['image_path'] ?? null,
-            ];
+                'published_at' => now(),
+            ]);
+
+            // Attach suggested tags
+            if (!empty($suggestedTags)) {
+                $blogPost->tags()->attach($suggestedTags);
+            }
 
             return response()->json([
                 'success' => true,
-                'blog_data' => $blogData,
+                'message' => 'Blog post generated and published successfully!',
+                'blog_post' => $blogPost,
+                'blog_url' => route('admin.blog.show', $blogPost->id),
+                'view_url' => route('blog.show', $blogPost->slug),
                 'suggested_tags' => $suggestedTags,
                 'product' => $product,
             ]);
