@@ -1,14 +1,9 @@
-@extends('layouts.admin')
-
-@section('title', 'Authentication Settings')
-
-@section('content')
+<x-layouts.admin>
+    <x-slot name="title">Authentication Settings - SJ Fashion Hub Admin</x-slot>
+    <x-slot name="description">Manage social login providers and authentication methods</x-slot>
+    <x-slot name="pageTitle">🔐 Authentication Settings</x-slot>
 <div class="container mx-auto px-4 py-6">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🔐 Authentication Settings</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-2">Manage social login providers and authentication methods</p>
-    </div>
+
 
     @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -252,4 +247,4 @@ async function testMethod(method) {
     }
 }
 </script>
-@endsection
+</x-layouts.admin>
