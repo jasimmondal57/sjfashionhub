@@ -20,6 +20,28 @@ class SocialMediaConfig extends Model
         'rate_limits',
     ];
 
+    // Auto-generate name if not provided
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($config) {
+            if (empty($config->name)) {
+                $platformNames = [
+                    'instagram' => 'Instagram',
+                    'facebook' => 'Facebook',
+                    'twitter' => 'Twitter/X',
+                    'linkedin' => 'LinkedIn',
+                    'pinterest' => 'Pinterest',
+                    'tiktok' => 'TikTok',
+                    'threads' => 'Threads',
+                ];
+
+                $config->name = $platformNames[$config->platform] ?? ucfirst($config->platform);
+            }
+        });
+    }
+
     protected $casts = [
         'is_active' => 'boolean',
         'credentials' => 'array',

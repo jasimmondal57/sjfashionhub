@@ -74,7 +74,26 @@ class SocialMediaController extends Controller
             'settings' => 'array',
         ]);
 
-        $config = SocialMediaConfig::firstOrCreate(['platform' => $platform]);
+        // Get platform display name
+        $platformNames = [
+            'instagram' => 'Instagram',
+            'facebook' => 'Facebook',
+            'twitter' => 'Twitter/X',
+            'linkedin' => 'LinkedIn',
+            'pinterest' => 'Pinterest',
+            'tiktok' => 'TikTok',
+            'threads' => 'Threads',
+        ];
+
+        $platformName = $platformNames[$platform] ?? ucfirst($platform);
+
+        $config = SocialMediaConfig::firstOrCreate(
+            ['platform' => $platform],
+            [
+                'name' => $platformName,
+                'description' => "Configuration for {$platformName} social media platform"
+            ]
+        );
 
         $config->update([
             'is_active' => $request->boolean('is_active'),
