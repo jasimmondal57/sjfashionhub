@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     // Dashboard
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard.index');
@@ -323,6 +323,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/delete/{fileId}', [App\Http\Controllers\Admin\BackupController::class, 'delete'])->name('delete');
         Route::post('/test-connection', [App\Http\Controllers\Admin\BackupController::class, 'testConnection'])->name('test-connection');
         Route::get('/status', [App\Http\Controllers\Admin\BackupController::class, 'status'])->name('status');
+    });
+
+    // Admin Profile Management
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('index');
+        Route::put('/update', [App\Http\Controllers\Admin\ProfileController::class, 'updateProfile'])->name('update');
+        Route::put('/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password');
+        Route::put('/avatar', [App\Http\Controllers\Admin\ProfileController::class, 'updateAvatar'])->name('avatar');
+        Route::delete('/avatar', [App\Http\Controllers\Admin\ProfileController::class, 'removeAvatar'])->name('avatar.remove');
+    });
+
+    // Super Admin Routes (Role-based access)
+    Route::prefix('super-admin')->name('super-admin.')->middleware('super_admin')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\SuperAdminController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\SuperAdminController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\SuperAdminController::class, 'store'])->name('store');
+        Route::get('/{admin}', [App\Http\Controllers\Admin\SuperAdminController::class, 'show'])->name('show');
+        Route::get('/{admin}/edit', [App\Http\Controllers\Admin\SuperAdminController::class, 'edit'])->name('edit');
+        Route::put('/{admin}', [App\Http\Controllers\Admin\SuperAdminController::class, 'update'])->name('update');
+        Route::delete('/{admin}', [App\Http\Controllers\Admin\SuperAdminController::class, 'destroy'])->name('destroy');
+        Route::patch('/{admin}/toggle-status', [App\Http\Controllers\Admin\SuperAdminController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{admin}/reset-password', [App\Http\Controllers\Admin\SuperAdminController::class, 'resetPassword'])->name('reset-password');
     });
 
     // Settings

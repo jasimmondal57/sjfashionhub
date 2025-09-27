@@ -78,7 +78,12 @@ class User extends Authenticatable
 
     public function scopeAdmins($query)
     {
-        return $query->whereIn('role', ['admin', 'manager']);
+        return $query->whereIn('role', ['admin', 'manager', 'super_admin']);
+    }
+
+    public function scopeSuperAdmins($query)
+    {
+        return $query->where('role', 'super_admin');
     }
 
     // Accessors
@@ -118,12 +123,37 @@ class User extends Authenticatable
     // Helper methods
     public function isAdmin()
     {
-        return in_array($this->role, ['admin', 'manager']);
+        return in_array($this->role, ['admin', 'manager', 'super_admin']);
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isManager()
+    {
+        return $this->role === 'manager';
+    }
+
+    public function isRegularAdmin()
+    {
+        return $this->role === 'admin';
     }
 
     public function isCustomer()
     {
         return $this->role === 'customer';
+    }
+
+    public function canManageUsers()
+    {
+        return in_array($this->role, ['super_admin']);
+    }
+
+    public function canManageAdmins()
+    {
+        return $this->role === 'super_admin';
     }
 
     public function isActive()
