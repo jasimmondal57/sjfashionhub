@@ -98,13 +98,7 @@
                             My Orders
                         </a>
 
-                        <a href="{{ route('user.cart') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.cart') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
-                            <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
-                            </svg>
-                            My Cart
-                        </a>
+
 
                         <a href="{{ route('user.wishlist') }}"
                            class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.wishlist') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">

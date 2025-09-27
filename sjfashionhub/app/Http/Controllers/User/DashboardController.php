@@ -102,17 +102,7 @@ class DashboardController extends Controller
         return view('user.dashboard.orders', compact('orders'));
     }
 
-    /**
-     * Show user cart
-     */
-    public function cart()
-    {
-        $user = Auth::user();
-        // For now, return empty cart - you can implement cart model later
-        $cartItems = collect(); // Replace with: $user->cartItems()->with('product')->get();
-        
-        return view('user.dashboard.cart', compact('cartItems'));
-    }
+
 
     /**
      * Show user wishlist

@@ -28,6 +28,14 @@ Route::get('/search', function () {
     return redirect()->route('products.index', ['search' => $query]);
 })->name('search');
 
+// Cart Routes (Public - accessible to all users)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update/{itemId}', [CartController::class, 'updateQuantity'])->name('cart.update');
+Route::delete('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::post('/newsletter/unsubscribe', [App\Http\Controllers\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
@@ -421,7 +429,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [\App\Http\Controllers\User\DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::put('/password', [\App\Http\Controllers\User\DashboardController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('orders');
-        Route::get('/cart', [\App\Http\Controllers\User\DashboardController::class, 'cart'])->name('cart');
         Route::get('/wishlist', [\App\Http\Controllers\User\DashboardController::class, 'wishlist'])->name('wishlist');
     });
 });
