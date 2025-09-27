@@ -140,13 +140,13 @@
                 <div class="flex items-center space-x-4">
                     <!-- Search -->
                     @if($headerSettings->show_search)
-                        <div class="hidden md:flex items-center space-x-2">
+                        <div class="flex items-center space-x-2">
                             <form id="search-form" action="{{ route('search') }}" method="GET" class="relative">
                                 <input type="text"
                                        name="q"
                                        value="{{ request('q') }}"
                                        placeholder="{{ $headerSettings->search_placeholder }}"
-                                       class="w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                       class="w-48 md:w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                                        onkeypress="if(event.key==='Enter') submitSearch()">
                             </form>
                             <button type="button" onclick="submitSearch()" class="p-2 hover:bg-gray-100 rounded-full">
@@ -155,12 +155,6 @@
                                 </svg>
                             </button>
                         </div>
-                        <!-- Mobile Search Button -->
-                        <button class="md:hidden p-2 hover:bg-gray-100 rounded-full" onclick="toggleSearch()">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
                     @endif
 
                     <!-- User Account -->
@@ -500,36 +494,7 @@
         <!-- Cart content would go here -->
     </div>
 
-    <!-- Search Modal -->
-    <div id="search-overlay" class="search-overlay hidden fixed inset-0 bg-black bg-opacity-50 z-50">
-        <div class="search-modal mt-20 mx-4 max-w-2xl mx-auto">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Search Products</h3>
-                    <button onclick="toggleSearch()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <form action="{{ route('search') }}" method="GET">
-                    <div class="relative">
-                        <input type="text"
-                               name="q"
-                               value="{{ request('q') }}"
-                               placeholder="{{ $headerSettings->search_placeholder ?? 'Search products...' }}"
-                               class="w-full px-4 py-3 pl-12 pr-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                               autofocus>
-                        <button type="submit" class="absolute inset-y-0 left-0 pl-4 flex items-center">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Scripts -->
     <script>
@@ -558,38 +523,11 @@
             }
         }
 
-        function toggleSearch() {
-            const overlay = document.getElementById('search-overlay');
-            overlay.classList.toggle('hidden');
-        }
-
         function showLoginPrompt() {
             if (confirm('Please login to access your cart. Would you like to login now?')) {
                 window.location.href = '{{ route("login") }}';
             }
         }
-
-        // Close search modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const searchOverlay = document.getElementById('search-overlay');
-            const searchModal = document.querySelector('.search-modal');
-
-            if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
-                if (!searchModal.contains(event.target)) {
-                    toggleSearch();
-                }
-            }
-        });
-
-        // Close search modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const searchOverlay = document.getElementById('search-overlay');
-                if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
-                    toggleSearch();
-                }
-            }
-        });
     </script>
 
     <!-- GSAP Library for Animated Order Button -->
