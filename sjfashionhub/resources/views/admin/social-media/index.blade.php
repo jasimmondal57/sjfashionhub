@@ -152,6 +152,11 @@
                                                 </a>
                                             </p>
                                         @endif
+                                        @if($post->metadata && isset($post->metadata['ai_model']))
+                                            <p class="text-xs text-purple-600 mt-1">
+                                                🤖 {{ ucfirst(str_replace('-', ' ', $post->metadata['ai_model'])) }}
+                                            </p>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

@@ -223,34 +223,94 @@
             @endforeach
         </div>
 
-        <!-- OpenAI Configuration -->
+        <!-- AI Content Generation Configuration -->
         <div class="mt-8 bg-white rounded-lg border border-gray-200 p-6">
             <div class="flex items-center mb-6">
                 <span class="text-3xl mr-3">🤖</span>
                 <div>
                     <h3 class="text-lg font-medium text-gray-900">AI Content Generation</h3>
-                    <p class="text-sm text-gray-500">Configure OpenAI for automatic content generation</p>
+                    <p class="text-sm text-gray-500">Configure AI models for automatic social media content generation</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">OpenAI API Key</label>
-                    <input type="password" 
-                           value="{{ config('services.openai.api_key') ? '••••••••••••••••' : '' }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                           placeholder="sk-..." readonly>
-                    <p class="text-sm text-gray-500 mt-1">Configure in your .env file: OPENAI_API_KEY=your_key_here</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Gemini AI (Primary) -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🧠</span>
+                        <div>
+                            <h4 class="text-md font-medium text-gray-900">Google Gemini Pro</h4>
+                            <p class="text-sm text-gray-500">Primary AI Model</p>
+                        </div>
+                        <div class="ml-auto">
+                            @if(config('services.gemini.api_key'))
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">✅ Active</span>
+                            @else
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">❌ Not Configured</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Gemini API Key</label>
+                        <input type="password"
+                               value="{{ config('services.gemini.api_key') ? '••••••••••••••••' : '' }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="AIza..." readonly>
+                        <p class="text-sm text-gray-500 mt-1">Configure in your .env file: GEMINI_API_KEY=your_key_here</p>
+                    </div>
                 </div>
-                
-                <div class="text-sm text-gray-600">
-                    <p><strong>AI Features:</strong></p>
-                    <ul class="list-disc list-inside mt-2 space-y-1">
-                        <li>Automatic content generation for each platform</li>
-                        <li>Platform-specific hashtag suggestions</li>
-                        <li>Engaging product descriptions</li>
-                        <li>Call-to-action optimization</li>
-                    </ul>
+
+                <!-- OpenAI (Fallback) -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🔄</span>
+                        <div>
+                            <h4 class="text-md font-medium text-gray-900">OpenAI GPT</h4>
+                            <p class="text-sm text-gray-500">Fallback AI Model</p>
+                        </div>
+                        <div class="ml-auto">
+                            @if(config('services.openai.api_key'))
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">🔄 Fallback</span>
+                            @else
+                                <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">⚪ Optional</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">OpenAI API Key</label>
+                        <input type="password"
+                               value="{{ config('services.openai.api_key') ? '••••••••••••••••' : '' }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="sk-..." readonly>
+                        <p class="text-sm text-gray-500 mt-1">Configure in your .env file: OPENAI_API_KEY=your_key_here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="text-sm text-gray-700">
+                    <p class="font-medium text-blue-900 mb-2">🚀 Enhanced AI Features:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Automatic content generation for each platform</li>
+                            <li>Platform-specific hashtag suggestions (8-15 tags)</li>
+                            <li>SEO-optimized content with product keywords</li>
+                            <li>Engaging product descriptions with pricing</li>
+                        </ul>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Direct product link inclusion</li>
+                            <li>Discount and offer highlighting</li>
+                            <li>Stock urgency messaging</li>
+                            <li>Call-to-action optimization</li>
+                        </ul>
+                    </div>
+                    <div class="mt-3 p-3 bg-white rounded border border-blue-200">
+                        <p class="text-xs text-blue-800">
+                            <strong>AI Model Priority:</strong> Gemini Pro (Primary) → OpenAI GPT (Fallback) → Manual Content (Last Resort)
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
