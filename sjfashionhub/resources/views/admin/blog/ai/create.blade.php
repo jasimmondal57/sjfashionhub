@@ -83,25 +83,15 @@
                         </div>
 
                         <!-- Auto-Generate Button -->
-                        <button type="button" id="auto-generate-btn"
-                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-medium text-lg flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-                                style="min-height: 60px; display: flex !important; visibility: visible !important;">
-                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        <button type="button" id="auto-generate-btn" onclick="autoGenerateBlogContent()"
+                                style="width: 100%; background: linear-gradient(135deg, #1f2937 0%, #111827 100%); color: white; padding: 16px 32px; border-radius: 12px; font-weight: 600; font-size: 18px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; min-height: 64px;"
+                                onmouseover="this.style.background='linear-gradient(135deg, #374151 0%, #1f2937 100%)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.3)'"
+                                onmouseout="this.style.background='linear-gradient(135deg, #1f2937 0%, #111827 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.2)'">
+                            <svg style="width: 24px; height: 24px; margin-right: 12px; fill: none; stroke: currentColor; stroke-width: 2;" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
-                            <span id="generate-text">Generate Complete Blog Post</span>
+                            <span id="generate-text">🚀 Generate Complete Blog Post</span>
                         </button>
-
-                        <!-- Fallback Button (for debugging) -->
-                        <div class="mt-4">
-                            <button type="button" onclick="autoGenerateBlogContent()"
-                                    class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
-                                🚀 Generate Blog Post Now
-                            </button>
-                        </div>
 
                         <div id="generation-progress" class="hidden mt-6">
                             <div class="flex items-center justify-center space-x-2 text-purple-600 mb-3">
