@@ -87,33 +87,31 @@
                         <!-- Blog Generation Options -->
                         <div class="space-y-6">
                             <!-- Single Blog Type Generation -->
-                            <div class="bg-gray-50 p-6 rounded-lg">
-                                <h3 class="text-lg font-semibold mb-4 text-center">Generate Single Blog Post</h3>
+                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                <h3 class="text-lg font-semibold mb-4 text-center text-gray-800">Generate Single Blog Post</h3>
                                 <div class="grid grid-cols-2 gap-3 mb-4">
                                     <button type="button" onclick="generateSpecificBlogType('product_review')"
-                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm">
+                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm shadow-md">
                                         📝 Product Review
                                     </button>
                                     <button type="button" onclick="generateSpecificBlogType('buying_guide')"
-                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm">
+                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm shadow-md">
                                         🛒 Buying Guide
                                     </button>
                                     <button type="button" onclick="generateSpecificBlogType('style_guide')"
-                                            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm">
+                                            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm shadow-md">
                                         👗 Style Guide
                                     </button>
                                     <button type="button" onclick="generateSpecificBlogType('trend_analysis')"
-                                            class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm">
+                                            class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-lg font-medium transition-colors text-sm shadow-md">
                                         📈 Trend Analysis
                                     </button>
                                 </div>
                                 <div class="text-center">
                                     <button type="button" id="auto-generate-btn" onclick="autoGenerateBlogContent()"
-                                            style="width: 100%; background: linear-gradient(135deg, #1f2937 0%, #111827 100%); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: all 0.3s ease; min-height: 48px;"
-                                            onmouseover="this.style.background='linear-gradient(135deg, #374151 0%, #1f2937 100%)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.3)'"
-                                            onmouseout="this.style.background='linear-gradient(135deg, #1f2937 0%, #111827 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)'">
-                                        <svg style="width: 20px; height: 20px; margin-right: 8px; fill: none; stroke: currentColor; stroke-width: 2;" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            class="w-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-lg font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-600">
+                                        <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                         </svg>
                                         <span id="generate-text">🚀 Auto-Generate (Best Type)</span>
                                     </button>
@@ -121,24 +119,24 @@
                             </div>
 
                             <!-- Divider -->
-                            <div class="flex items-center">
-                                <div class="flex-1 border-t border-gray-300"></div>
-                                <span class="px-4 text-gray-500 font-medium">OR</span>
-                                <div class="flex-1 border-t border-gray-300"></div>
+                            <div class="flex items-center my-6">
+                                <div class="flex-1 border-t border-gray-400"></div>
+                                <span class="px-4 text-gray-700 font-medium bg-white">OR</span>
+                                <div class="flex-1 border-t border-gray-400"></div>
                             </div>
 
                             <!-- Generate All Types -->
-                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-lg border border-green-200">
-                                <h3 class="text-lg font-semibold mb-3 text-center text-green-800">Generate All Blog Types</h3>
-                                <p class="text-green-700 text-center mb-4 text-sm">Create comprehensive blog coverage with all 4 blog types for this product</p>
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-lg border-2 border-green-300 shadow-md">
+                                <h3 class="text-xl font-bold mb-3 text-center text-green-800">Generate All Blog Types</h3>
+                                <p class="text-green-700 text-center mb-4 text-sm font-medium">Create comprehensive blog coverage with all 4 blog types for this product</p>
                                 <button type="button" onclick="generateAllBlogTypes()"
-                                        class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-6 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                        class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-6 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-green-500">
                                     <svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                     🎯 Generate All 4 Blog Types
                                 </button>
-                                <p class="text-xs text-green-600 text-center mt-2">Creates: Product Review, Buying Guide, Style Guide, and Trend Analysis</p>
+                                <p class="text-sm text-green-800 text-center mt-3 font-medium">Creates: Product Review, Buying Guide, Style Guide, and Trend Analysis</p>
                             </div>
                         </div>
 
