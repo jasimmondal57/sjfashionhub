@@ -18,6 +18,18 @@ class AuthenticationSettingController extends Controller
         $socialProviders = SocialLoginSetting::all();
         $authMethods = AuthenticationSetting::all();
 
+        // Fix redirect URIs if they contain localhost
+        foreach ($socialProviders as $provider) {
+            if (str_contains($provider->redirect_uri, 'localhost')) {
+                $provider->redirect_uri = str_replace(
+                    ['http://localhost', 'https://localhost'],
+                    'https://sjfashionhub.in',
+                    $provider->redirect_uri
+                );
+                $provider->save();
+            }
+        }
+
         return view('admin.authentication-settings.index', compact('socialProviders', 'authMethods'));
     }
 

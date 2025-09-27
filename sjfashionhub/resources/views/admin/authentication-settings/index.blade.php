@@ -66,9 +66,11 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Redirect URI</label>
-                            <input type="url" name="redirect_uri" value="{{ $provider->redirect_uri }}" 
+                            <input type="url" name="redirect_uri"
+                                   value="{{ str_replace('localhost', 'sjfashionhub.in', str_replace('http://', 'https://', $provider->redirect_uri)) }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                   placeholder="https://yourdomain.com/auth/{{ $provider->provider }}/callback">
+                                   placeholder="https://sjfashionhub.in/auth/{{ $provider->provider }}/callback">
+                            <p class="mt-1 text-sm text-gray-500">Use this URL in your {{ ucfirst($provider->provider) }} OAuth app configuration</p>
                         </div>
 
                         <div class="flex space-x-3">
