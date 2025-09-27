@@ -21,14 +21,25 @@
                                         <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg" data-item-id="{{ $item->id }}">
                                             <!-- Product Image -->
                                             <div class="flex-shrink-0">
-                                                <img class="h-24 w-24 rounded-lg object-cover" src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}">
+                                                @if($item->product->featured_image)
+                                                    <img class="h-24 w-24 rounded-lg object-cover" src="{{ Storage::url($item->product->featured_image) }}" alt="{{ $item->product->name }}">
+                                                @else
+                                                    <div class="h-24 w-24 rounded-lg bg-gray-200 flex items-center justify-center">
+                                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    </div>
+                                                @endif
                                             </div>
-                                            
+
                                             <!-- Product Details -->
                                             <div class="flex-1 min-w-0">
                                                 <h3 class="text-lg font-medium text-gray-900">{{ $item->product->name }}</h3>
-                                                <p class="text-sm text-gray-600 mt-1">{{ $item->product->description }}</p>
-                                                <p class="text-lg font-semibold text-gray-900 mt-2">${{ number_format($item->product->price, 2) }}</p>
+                                                <p class="text-sm text-gray-600 mt-1">{{ $item->product->category->name ?? 'No Category' }}</p>
+                                                @php
+                                                    $price = $item->product->sale_price ?? $item->product->price;
+                                                @endphp
+                                                <p class="text-lg font-semibold text-gray-900 mt-2">₹{{ number_format($price, 2) }}</p>
                                             </div>
                                             
                                             <!-- Quantity Controls -->
@@ -57,8 +68,12 @@
                                             
                                             <!-- Item Total -->
                                             <div class="text-right">
+                                                @php
+                                                    $itemPrice = $item->product->sale_price ?? $item->product->price;
+                                                    $itemTotal = $itemPrice * $item->quantity;
+                                                @endphp
                                                 <p class="text-lg font-semibold text-gray-900 item-total">
-                                                    ${{ number_format($item->product->price * $item->quantity, 2) }}
+                                                    ₹{{ number_format($itemTotal, 2) }}
                                                 </p>
                                             </div>
                                         </div>
@@ -86,21 +101,21 @@
                             <div class="space-y-3">
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Subtotal</span>
-                                    <span class="text-gray-900 font-medium" id="subtotal">${{ number_format($cartTotal, 2) }}</span>
+                                    <span class="text-gray-900 font-medium" id="subtotal">₹{{ number_format($cartTotal, 2) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Shipping</span>
-                                    <span class="text-gray-900">$5.99</span>
+                                    <span class="text-gray-900">₹99</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600">Tax</span>
-                                    <span class="text-gray-900" id="tax">${{ number_format($cartTotal * 0.08, 2) }}</span>
+                                    <span class="text-gray-600">Tax (18% GST)</span>
+                                    <span class="text-gray-900" id="tax">₹{{ number_format($cartTotal * 0.18, 2) }}</span>
                                 </div>
                                 <div class="border-t border-gray-200 pt-3">
                                     <div class="flex justify-between">
                                         <span class="text-lg font-medium text-gray-900">Total</span>
                                         <span class="text-lg font-medium text-gray-900" id="total">
-                                            ${{ number_format($cartTotal * 1.08 + 5.99, 2) }}
+                                            ₹{{ number_format($cartTotal * 1.18 + 99, 2) }}
                                         </span>
                                     </div>
                                 </div>

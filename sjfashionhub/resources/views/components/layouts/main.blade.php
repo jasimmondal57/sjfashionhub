@@ -529,7 +529,73 @@
             }
         }
 
-        // Add to Cart function
+        // Add to Cart function with animation
+        function addToCartWithAnimation(productId, buttonElement) {
+            // Don't trigger if already animating or completed
+            if (buttonElement.classList.contains('adding') || buttonElement.classList.contains('added')) {
+                return;
+            }
+
+            // Start animation
+            buttonElement.classList.add('adding');
+            const buttonText = buttonElement.querySelector('.button-text');
+            const loadingText = buttonElement.querySelector('.loading-text');
+            const successText = buttonElement.querySelector('.success-text');
+
+            // Show loading state
+            buttonText.style.display = 'none';
+            loadingText.style.display = 'inline';
+
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    loadingText.style.display = 'none';
+                    successText.style.display = 'inline';
+                    buttonElement.classList.remove('adding');
+                    buttonElement.classList.add('added');
+
+                    // Show truck animation
+                    showTruckAnimation(buttonElement);
+
+                    // Update cart count
+                    updateCartCount();
+
+                    // Reset after 3 seconds
+                    setTimeout(() => {
+                        buttonElement.classList.remove('added');
+                        successText.style.display = 'none';
+                        buttonText.style.display = 'inline';
+                    }, 3000);
+                } else {
+                    // Show error state
+                    loadingText.style.display = 'none';
+                    buttonText.style.display = 'inline';
+                    buttonElement.classList.remove('adding');
+                    showNotification('Failed to add product to cart', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingText.style.display = 'none';
+                buttonText.style.display = 'inline';
+                buttonElement.classList.remove('adding');
+                showNotification('Failed to add product to cart', 'error');
+            });
+        }
+
+        // Legacy add to cart function (for compatibility)
         function addToCart(productId) {
             fetch('/cart/add', {
                 method: 'POST',
@@ -599,6 +665,40 @@
                     });
                 })
                 .catch(error => console.error('Error updating cart count:', error));
+        }
+
+        // Show truck animation
+        function showTruckAnimation(buttonElement) {
+            // Create truck element
+            const truck = document.createElement('div');
+            truck.innerHTML = '🚚';
+            truck.style.cssText = `
+                position: fixed;
+                font-size: 24px;
+                z-index: 1000;
+                pointer-events: none;
+                transition: all 1.5s ease-in-out;
+            `;
+
+            // Get button position
+            const buttonRect = buttonElement.getBoundingClientRect();
+            truck.style.left = buttonRect.left + 'px';
+            truck.style.top = buttonRect.top + 'px';
+
+            document.body.appendChild(truck);
+
+            // Animate to cart icon (top right)
+            setTimeout(() => {
+                truck.style.left = window.innerWidth - 100 + 'px';
+                truck.style.top = '20px';
+                truck.style.opacity = '0';
+                truck.style.transform = 'scale(0.5)';
+            }, 100);
+
+            // Remove truck after animation
+            setTimeout(() => {
+                document.body.removeChild(truck);
+            }, 1600);
         }
 
         // Show notification
