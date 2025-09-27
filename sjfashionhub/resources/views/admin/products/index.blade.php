@@ -257,6 +257,48 @@
                                 <div class="flex space-x-2">
                                     <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="text-blue-600 hover:text-blue-900">View</a>
                                     <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+
+                                    <!-- Social Media Posting -->
+                                    <div class="relative inline-block text-left">
+                                        <button onclick="toggleSocialDropdown({{ $product->id }})" class="text-green-600 hover:text-green-900 flex items-center">
+                                            📱 Share
+                                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </button>
+
+                                        <div id="social-dropdown-{{ $product->id }}" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                                            <div class="py-1">
+                                                <button onclick="postToAllPlatforms({{ $product->id }})"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    🚀 Post to All Platforms
+                                                </button>
+                                                <hr class="my-1">
+                                                <button onclick="postToSingle({{ $product->id }}, 'instagram')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    📷 Instagram
+                                                </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'facebook')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    📘 Facebook
+                                                </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'twitter')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    🐦 Twitter/X
+                                                </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'linkedin')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    💼 LinkedIn
+                                                </button>
+                                                <hr class="my-1">
+                                                <button onclick="viewProductPosts({{ $product->id }})"
+                                                        class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center">
+                                                    📊 View Posts History
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-900">Delete</button>
                                 </div>
                             </td>
@@ -304,6 +346,158 @@
                 document.body.appendChild(form);
                 form.submit();
             }
+        }
+
+        // Social Media Functions
+        function toggleSocialDropdown(productId) {
+            // Close all other dropdowns
+            document.querySelectorAll('[id^="social-dropdown-"]').forEach(dropdown => {
+                if (dropdown.id !== `social-dropdown-${productId}`) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+
+            // Toggle current dropdown
+            const dropdown = document.getElementById(`social-dropdown-${productId}`);
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('[onclick*="toggleSocialDropdown"]') &&
+                !event.target.closest('[id^="social-dropdown-"]')) {
+                document.querySelectorAll('[id^="social-dropdown-"]').forEach(dropdown => {
+                    dropdown.classList.add('hidden');
+                });
+            }
+        });
+
+        function postToAllPlatforms(productId) {
+            if (!confirm('Post this product to all active social media platforms?')) {
+                return;
+            }
+
+            showLoadingMessage('Posting to all platforms...');
+
+            fetch(`/admin/social-media/products/${productId}/post-all`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoadingMessage();
+
+                if (data.success) {
+                    showSuccessMessage(`Posted to ${data.stats.success} platforms successfully! ${data.stats.failed} failed.`);
+
+                    // Show detailed results
+                    let details = 'Results:\n';
+                    Object.entries(data.results).forEach(([platform, result]) => {
+                        details += `${platform}: ${result.success ? '✅ Success' : '❌ ' + result.message}\n`;
+                    });
+
+                    setTimeout(() => {
+                        alert(details);
+                    }, 1000);
+                } else {
+                    showErrorMessage(data.message);
+                }
+            })
+            .catch(error => {
+                hideLoadingMessage();
+                showErrorMessage('An error occurred while posting to social media.');
+                console.error('Error:', error);
+            });
+        }
+
+        function postToSingle(productId, platform) {
+            if (!confirm(`Post this product to ${platform}?`)) {
+                return;
+            }
+
+            showLoadingMessage(`Posting to ${platform}...`);
+
+            fetch(`/admin/social-media/products/${productId}/post/${platform}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoadingMessage();
+
+                if (data.success) {
+                    showSuccessMessage(data.message);
+                } else {
+                    showErrorMessage(data.message);
+                }
+            })
+            .catch(error => {
+                hideLoadingMessage();
+                showErrorMessage(`An error occurred while posting to ${platform}.`);
+                console.error('Error:', error);
+            });
+        }
+
+        function viewProductPosts(productId) {
+            // Open posts history in a modal or new page
+            window.open(`/admin/social-media/products/${productId}/posts`, '_blank');
+        }
+
+        function showLoadingMessage(message) {
+            // Create or update loading overlay
+            let overlay = document.getElementById('loading-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'loading-overlay';
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                            <span id="loading-message" class="text-gray-900">${message}</span>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            } else {
+                document.getElementById('loading-message').textContent = message;
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function hideLoadingMessage() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function showSuccessMessage(message) {
+            showToast(message, 'success');
+        }
+
+        function showErrorMessage(message) {
+            showToast(message, 'error');
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
         }
 
         // Bulk action functionality

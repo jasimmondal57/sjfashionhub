@@ -347,6 +347,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/{admin}/reset-password', [App\Http\Controllers\Admin\SuperAdminController::class, 'resetPassword'])->name('reset-password');
     });
 
+    // Social Media Management Routes
+    Route::prefix('social-media')->name('social-media.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\SocialMediaController::class, 'index'])->name('index');
+        Route::get('/config', [App\Http\Controllers\Admin\SocialMediaController::class, 'config'])->name('config');
+        Route::put('/config/{platform}', [App\Http\Controllers\Admin\SocialMediaController::class, 'updateConfig'])->name('config.update');
+
+        // Product posting routes
+        Route::post('/products/{product}/post-all', [App\Http\Controllers\Admin\SocialMediaController::class, 'postToAll'])->name('products.post-all');
+        Route::post('/products/{product}/post/{platform}', [App\Http\Controllers\Admin\SocialMediaController::class, 'postToSingle'])->name('products.post-single');
+        Route::get('/products/{product}/posts', [App\Http\Controllers\Admin\SocialMediaController::class, 'productPosts'])->name('products.posts');
+
+        // Post management
+        Route::delete('/posts/{post}', [App\Http\Controllers\Admin\SocialMediaController::class, 'deletePost'])->name('posts.delete');
+        Route::post('/posts/{post}/retry', [App\Http\Controllers\Admin\SocialMediaController::class, 'retryPost'])->name('posts.retry');
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');
