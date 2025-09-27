@@ -59,20 +59,20 @@
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Didn't receive the code?
             </p>
-            
+
             <div class="space-y-2">
-                <form method="POST" action="{{ route('otp.resend') }}" class="inline">
-                    @csrf
-                    <button type="submit" 
-                            class="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium"
-                            id="resendBtn">
-                        Resend Code
-                    </button>
-                </form>
-                
+                <button type="button"
+                        onclick="resendOtp()"
+                        class="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium"
+                        id="resendBtn">
+                    Resend Code
+                </button>
+
                 <div class="text-xs text-gray-500 dark:text-gray-400">
                     <span id="countdown"></span>
                 </div>
+
+                <div id="resendMessage" class="text-xs hidden"></div>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
         document.getElementById('otp').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
             e.target.value = value;
-            
+
             // Auto-submit when 6 digits entered
             if (value.length === 6) {
                 document.getElementById('otpForm').submit();
@@ -100,7 +100,8 @@
         let countdown = 60;
         const countdownElement = document.getElementById('countdown');
         const resendBtn = document.getElementById('resendBtn');
-        
+        const resendMessage = document.getElementById('resendMessage');
+
         function updateCountdown() {
             if (countdown > 0) {
                 countdownElement.textContent = `Resend available in ${countdown}s`;
@@ -114,21 +115,77 @@
                 resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         }
-        
+
         // Start countdown
         updateCountdown();
+
+        // Resend OTP function
+        function resendOtp() {
+            if (resendBtn.disabled) return;
+
+            // Show loading state
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Sending...';
+            resendMessage.classList.add('hidden');
+
+            // Make AJAX request
+            fetch('{{ route("otp.resend") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    resendMessage.textContent = data.message;
+                    resendMessage.className = 'text-xs text-green-600 dark:text-green-400';
+                    resendMessage.classList.remove('hidden');
+
+                    // Reset countdown
+                    countdown = 60;
+                    updateCountdown();
+                } else {
+                    // Show error message
+                    resendMessage.textContent = data.message;
+                    resendMessage.className = 'text-xs text-red-600 dark:text-red-400';
+                    resendMessage.classList.remove('hidden');
+
+                    // If there's remaining time, update countdown
+                    if (data.remaining_time) {
+                        countdown = data.remaining_time;
+                        updateCountdown();
+                    } else {
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'Resend Code';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resendMessage.textContent = 'Failed to resend code. Please try again.';
+                resendMessage.className = 'text-xs text-red-600 dark:text-red-400';
+                resendMessage.classList.remove('hidden');
+
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend Code';
+            });
+        }
 
         // Form validation
         document.getElementById('otpForm').addEventListener('submit', function(e) {
             const otp = document.getElementById('otp').value;
             const verifyBtn = document.getElementById('verifyBtn');
-            
+
             if (otp.length !== 6) {
                 e.preventDefault();
                 alert('Please enter a 6-digit verification code');
                 return;
             }
-            
+
             // Show loading state
             verifyBtn.disabled = true;
             verifyBtn.innerHTML = 'Verifying...';

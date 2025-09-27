@@ -132,26 +132,69 @@ class OtpVerificationController extends Controller
         $metadata = $request->session()->get('otp_metadata');
 
         if (!$identifier || !$type || !$purpose) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid verification session. Please start again.',
+                    'redirect' => route('register')
+                ]);
+            }
             return back()->with('error', 'Invalid verification session');
         }
 
-        // Check rate limiting (max 3 resends per 10 minutes)
-        $recentOtps = UserOtp::where('identifier', $identifier)
+        // Check rate limiting - allow resend after 60 seconds
+        $lastOtp = UserOtp::where('identifier', $identifier)
             ->where('purpose', $purpose)
-            ->where('created_at', '>', now()->subMinutes(10))
-            ->count();
+            ->orderBy('created_at', 'desc')
+            ->first();
 
-        if ($recentOtps >= 3) {
-            return back()->with('error', 'Too many OTP requests. Please wait 10 minutes before requesting again.');
+        if ($lastOtp && $lastOtp->created_at->diffInSeconds(now()) < 60) {
+            $remainingTime = 60 - $lastOtp->created_at->diffInSeconds(now());
+            $message = "Please wait {$remainingTime} seconds before requesting a new code.";
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'remaining_time' => $remainingTime
+                ]);
+            }
+            return back()->with('error', $message);
         }
+
+        // Delete previous unverified OTPs for this identifier and purpose
+        UserOtp::where('identifier', $identifier)
+            ->where('purpose', $purpose)
+            ->where('verified', false)
+            ->delete();
 
         // Generate and send new OTP
         $otpRecord = UserOtp::generateAndSend($identifier, $type, $purpose, null, $metadata);
 
         if (!$otpRecord) {
-            return back()->with('error', 'Failed to send OTP. Please try again.');
+            $message = 'Failed to send verification code. Please try again.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message
+                ]);
+            }
+            return back()->with('error', $message);
         }
 
-        return back()->with('success', 'New OTP sent successfully!');
+        // Update session with new method
+        $request->session()->put('otp_method', $otpRecord->method);
+
+        $message = 'New verification code sent to your ' . ($type === 'email' ? 'email' : 'phone') . '!';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'method' => $otpRecord->method
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 }

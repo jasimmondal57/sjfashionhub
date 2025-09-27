@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use App\Models\CommunicationSetting;
+use App\Notifications\OtpNotification;
+use App\Services\MailConfigService;
 
 class UserOtp extends Model
 {
@@ -191,10 +195,35 @@ class UserOtp extends Model
      */
     private static function sendEmail($email, $message, $purpose)
     {
-        // Implementation would use your email service
-        // For now, just log it
-        Log::info("Email OTP sent to {$email}: {$message}");
-        return true;
+        try {
+            // Configure mail settings from database
+            MailConfigService::configure();
+
+            // Extract OTP from message
+            preg_match('/OTP is: (\d{6})/', $message, $matches);
+            $otp = $matches[1] ?? '000000';
+
+            // Create a temporary notifiable object
+            $notifiable = new class($email) {
+                public $email;
+                public function __construct($email) {
+                    $this->email = $email;
+                }
+                public function routeNotificationForMail() {
+                    return $this->email;
+                }
+            };
+
+            // Send notification
+            Notification::send($notifiable, new OtpNotification($otp, $purpose));
+
+            Log::info("Email OTP sent to {$email}: {$otp}");
+            return true;
+
+        } catch (\Exception $e) {
+            Log::error("Failed to send email OTP to {$email}: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
