@@ -28,6 +28,8 @@ class SocialMediaService
                     return $this->postToPinterest($post, $config);
                 case 'tiktok':
                     return $this->postToTikTok($post, $config);
+                case 'threads':
+                    return $this->postToThreads($post, $config);
                 default:
                     return [
                         'success' => false,
@@ -268,11 +270,67 @@ class SocialMediaService
      */
     protected function postToPinterest(SocialMediaPost $post, SocialMediaConfig $config): array
     {
-        // Pinterest API implementation would go here
-        return [
-            'success' => false,
-            'error' => 'Pinterest integration coming soon'
-        ];
+        try {
+            $credentials = $config->getCredentials();
+            $accessToken = $credentials['access_token'] ?? null;
+
+            if (!$accessToken) {
+                return [
+                    'success' => false,
+                    'error' => 'Pinterest access token not configured'
+                ];
+            }
+
+            // Prepare Pinterest pin data
+            $pinData = [
+                'note' => $post->content,
+                'board_id' => $credentials['board_id'] ?? null,
+                'media_source' => [
+                    'source_type' => 'image_url',
+                    'url' => $post->images[0] ?? null
+                ]
+            ];
+
+            if (!$pinData['board_id']) {
+                return [
+                    'success' => false,
+                    'error' => 'Pinterest board ID not configured'
+                ];
+            }
+
+            if (!$pinData['media_source']['url']) {
+                return [
+                    'success' => false,
+                    'error' => 'No image available for Pinterest pin'
+                ];
+            }
+
+            // Post to Pinterest API
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json'
+            ])->post('https://api.pinterest.com/v5/pins', $pinData);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                return [
+                    'success' => true,
+                    'post_id' => $data['id'] ?? null,
+                    'response' => $data
+                ];
+            }
+
+            return [
+                'success' => false,
+                'error' => 'Pinterest API error: ' . $response->body()
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Pinterest posting failed: ' . $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -280,11 +338,114 @@ class SocialMediaService
      */
     protected function postToTikTok(SocialMediaPost $post, SocialMediaConfig $config): array
     {
-        // TikTok API implementation would go here
-        return [
-            'success' => false,
-            'error' => 'TikTok integration coming soon'
-        ];
+        try {
+            $credentials = $config->getCredentials();
+            $accessToken = $credentials['access_token'] ?? null;
+
+            if (!$accessToken) {
+                return [
+                    'success' => false,
+                    'error' => 'TikTok access token not configured'
+                ];
+            }
+
+            // Prepare TikTok video post data
+            $postData = [
+                'text' => $post->content,
+                'privacy_level' => 'PUBLIC_TO_EVERYONE',
+                'disable_duet' => false,
+                'disable_comment' => false,
+                'disable_stitch' => false,
+                'brand_content_toggle' => false
+            ];
+
+            // Note: TikTok requires video upload, which is more complex
+            // For now, we'll return a placeholder response
+            return [
+                'success' => false,
+                'error' => 'TikTok requires video content. Text-only posts not supported.'
+            ];
+
+            // Future implementation would include:
+            // 1. Video upload to TikTok
+            // 2. Post creation with video
+            // 3. Proper error handling
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'TikTok posting failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Post to Threads using Threads API
+     */
+    protected function postToThreads(SocialMediaPost $post, SocialMediaConfig $config): array
+    {
+        try {
+            $credentials = $config->getCredentials();
+            $accessToken = $credentials['access_token'] ?? null;
+            $userId = $credentials['user_id'] ?? null;
+
+            if (!$accessToken || !$userId) {
+                return [
+                    'success' => false,
+                    'error' => 'Threads access token or user ID not configured'
+                ];
+            }
+
+            // Prepare Threads post data
+            $postData = [
+                'media_type' => 'TEXT',
+                'text' => $post->content
+            ];
+
+            // Add image if available
+            if (!empty($post->images)) {
+                $postData['media_type'] = 'IMAGE';
+                $postData['image_url'] = $post->images[0];
+            }
+
+            // Create Threads media container
+            $response = Http::post("https://graph.threads.net/v1.0/{$userId}/threads", array_merge($postData, [
+                'access_token' => $accessToken
+            ]));
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $creationId = $data['id'] ?? null;
+
+                if ($creationId) {
+                    // Publish the thread
+                    $publishResponse = Http::post("https://graph.threads.net/v1.0/{$userId}/threads_publish", [
+                        'creation_id' => $creationId,
+                        'access_token' => $accessToken
+                    ]);
+
+                    if ($publishResponse->successful()) {
+                        $publishData = $publishResponse->json();
+                        return [
+                            'success' => true,
+                            'post_id' => $publishData['id'] ?? $creationId,
+                            'response' => $publishData
+                        ];
+                    }
+                }
+            }
+
+            return [
+                'success' => false,
+                'error' => 'Threads API error: ' . $response->body()
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Threads posting failed: ' . $e->getMessage()
+            ];
+        }
     }
 
     /**

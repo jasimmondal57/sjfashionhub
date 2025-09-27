@@ -99,6 +99,7 @@ class SocialMediaPost extends Model
             'linkedin' => '💼',
             'pinterest' => '📌',
             'tiktok' => '🎵',
+            'threads' => '🧵',
             default => '📱',
         };
     }

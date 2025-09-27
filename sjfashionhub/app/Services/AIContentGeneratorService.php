@@ -176,6 +176,11 @@ class AIContentGeneratorService
                 'hashtag_style' => 'Trending, viral hashtags',
                 'tone' => 'Fun, energetic, youthful'
             ],
+            'threads' => [
+                'char_limit' => 500,
+                'hashtag_style' => 'Conversational, community hashtags',
+                'tone' => 'Casual, authentic, conversational'
+            ],
             default => [
                 'char_limit' => 1000,
                 'hashtag_style' => 'General hashtags',

@@ -51,12 +51,13 @@ class SocialMediaController extends Controller
         $configs = SocialMediaConfig::all()->keyBy('platform');
 
         $availablePlatforms = [
-            'instagram' => ['name' => 'Instagram', 'icon' => '📷'],
-            'facebook' => ['name' => 'Facebook', 'icon' => '📘'],
-            'twitter' => ['name' => 'Twitter/X', 'icon' => '🐦'],
-            'linkedin' => ['name' => 'LinkedIn', 'icon' => '💼'],
-            'pinterest' => ['name' => 'Pinterest', 'icon' => '📌'],
-            'tiktok' => ['name' => 'TikTok', 'icon' => '🎵'],
+            'instagram' => ['name' => 'Instagram', 'icon' => '📷', 'active' => true],
+            'facebook' => ['name' => 'Facebook', 'icon' => '📘', 'active' => true],
+            'twitter' => ['name' => 'Twitter/X', 'icon' => '🐦', 'active' => true],
+            'linkedin' => ['name' => 'LinkedIn', 'icon' => '💼', 'active' => true],
+            'pinterest' => ['name' => 'Pinterest', 'icon' => '📌', 'active' => true],
+            'tiktok' => ['name' => 'TikTok', 'icon' => '🎵', 'active' => true],
+            'threads' => ['name' => 'Threads', 'icon' => '🧵', 'active' => true],
         ];
 
         return view('admin.social-media.config', compact('configs', 'availablePlatforms'));

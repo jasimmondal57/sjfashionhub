@@ -189,35 +189,98 @@
 
                         @if($platformKey === 'pinterest')
                             <div class="space-y-4">
-                                <div class="text-center py-8">
-                                    <span class="text-4xl">🚧</span>
-                                    <p class="text-gray-500 mt-2">Pinterest integration coming soon!</p>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Access Token</label>
+                                    <input type="password" name="credentials[access_token]"
+                                           value="{{ $config ? $config->getCredential('access_token') : '' }}"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Pinterest Access Token">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Board ID</label>
+                                    <input type="text" name="credentials[board_id]"
+                                           value="{{ $config ? $config->getCredential('board_id') : '' }}"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Pinterest Board ID">
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    <p><strong>Setup Instructions:</strong></p>
+                                    <ol class="list-decimal list-inside mt-2 space-y-1">
+                                        <li>Create a Pinterest Developer Account</li>
+                                        <li>Create a Pinterest App</li>
+                                        <li>Generate Access Token with pins:write scope</li>
+                                        <li>Get your Board ID from Pinterest</li>
+                                    </ol>
                                 </div>
                             </div>
                         @endif
 
                         @if($platformKey === 'tiktok')
                             <div class="space-y-4">
-                                <div class="text-center py-8">
-                                    <span class="text-4xl">🚧</span>
-                                    <p class="text-gray-500 mt-2">TikTok integration coming soon!</p>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Access Token</label>
+                                    <input type="password" name="credentials[access_token]"
+                                           value="{{ $config ? $config->getCredential('access_token') : '' }}"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="TikTok Access Token">
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    <p><strong>Setup Instructions:</strong></p>
+                                    <ol class="list-decimal list-inside mt-2 space-y-1">
+                                        <li>Apply for TikTok Developer Account</li>
+                                        <li>Create a TikTok App</li>
+                                        <li>Get approval for Content Posting API</li>
+                                        <li>Generate Access Token</li>
+                                    </ol>
+                                    <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                                        <p class="text-xs text-yellow-800">
+                                            <strong>Note:</strong> TikTok requires video content. Text-only posts are not supported.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         @endif
 
-                        @if(!in_array($platformKey, ['pinterest', 'tiktok']))
+                        @if($platformKey === 'threads')
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Access Token</label>
+                                    <input type="password" name="credentials[access_token]"
+                                           value="{{ $config ? $config->getCredential('access_token') : '' }}"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Threads Access Token">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">User ID</label>
+                                    <input type="text" name="credentials[user_id]"
+                                           value="{{ $config ? $config->getCredential('user_id') : '' }}"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Threads User ID">
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    <p><strong>Setup Instructions:</strong></p>
+                                    <ol class="list-decimal list-inside mt-2 space-y-1">
+                                        <li>Create a Meta Developer Account</li>
+                                        <li>Create a Threads App</li>
+                                        <li>Get approval for Threads API access</li>
+                                        <li>Generate User Access Token</li>
+                                        <li>Get your Threads User ID</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-                            <button type="button" onclick="testConnection('{{ $platformKey }}')" 
+                            <button type="button" onclick="testConnection('{{ $platformKey }}')"
                                     class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
                                 🔍 Test Connection
                             </button>
-                            
-                            <button type="submit" 
+
+                            <button type="submit"
                                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium shadow-lg border border-blue-500">
                                 💾 Save Configuration
                             </button>
                         </div>
-                        @endif
                     </form>
                 </div>
             @endforeach

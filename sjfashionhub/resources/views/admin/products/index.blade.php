@@ -290,6 +290,18 @@
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     💼 LinkedIn
                                                 </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'pinterest')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    📌 Pinterest
+                                                </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'tiktok')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    🎵 TikTok
+                                                </button>
+                                                <button onclick="postToSingle({{ $product->id }}, 'threads')"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
+                                                    🧵 Threads
+                                                </button>
                                                 <hr class="my-1">
                                                 <button onclick="viewProductPosts({{ $product->id }})"
                                                         class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center">
