@@ -397,11 +397,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-
-// Registration success route
+// Registration success route (must be before auth.php)
 Route::get('register/success', [App\Http\Controllers\Auth\RegisteredUserController::class, 'success'])
     ->name('register.success');
+
+require __DIR__.'/auth.php';
 
 // Social Login Routes
 Route::prefix('auth')->group(function () {
