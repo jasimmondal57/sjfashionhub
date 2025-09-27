@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('provider')->nullable()->after('email'); // google, facebook
             $table->string('provider_id')->nullable()->after('provider');
-            $table->string('avatar')->nullable()->after('provider_id');
-            $table->string('phone')->nullable()->after('avatar');
+            // avatar and phone columns already exist, skip them
             $table->timestamp('phone_verified_at')->nullable()->after('phone');
             $table->string('login_type')->default('email')->after('phone_verified_at'); // email, google, facebook, phone
         });
@@ -29,9 +28,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
                 'provider',
-                'provider_id', 
-                'avatar',
-                'phone',
+                'provider_id',
+                // avatar column should remain, don't drop it
                 'phone_verified_at',
                 'login_type'
             ]);
