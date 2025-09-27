@@ -15,7 +15,7 @@ class GeminiAiService
     public function __construct()
     {
         $this->apiKey = config('services.gemini.api_key');
-        $this->baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        $this->baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
     }
 
     /**
@@ -26,8 +26,7 @@ class GeminiAiService
         try {
             $prompt = $this->buildBlogPrompt($product, $options);
             
-            $response = Http::timeout(60)->post($this->baseUrl, [
-                'key' => $this->apiKey,
+            $response = Http::timeout(60)->post($this->baseUrl . '?key=' . $this->apiKey, [
                 'contents' => [
                     [
                         'parts' => [
@@ -179,7 +178,7 @@ class GeminiAiService
         $data['product_id'] = $product->id;
         $data['ai_generated'] = true;
         $data['ai_metadata'] = [
-            'model' => 'gemini-1.5-flash-latest',
+            'model' => 'gemini-2.0-flash',
             'generated_at' => now()->toISOString(),
             'product_name' => $product->name,
             'product_category' => $product->category->name,
@@ -198,8 +197,7 @@ class GeminiAiService
         $prompt .= "Return as a JSON array of strings.";
 
         try {
-            $response = Http::timeout(30)->post($this->baseUrl, [
-                'key' => $this->apiKey,
+            $response = Http::timeout(30)->post($this->baseUrl . '?key=' . $this->apiKey, [
                 'contents' => [
                     [
                         'parts' => [
