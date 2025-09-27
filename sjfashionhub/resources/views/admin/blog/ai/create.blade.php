@@ -1,6 +1,8 @@
 <x-layouts.admin>
     <x-slot name="title">AI Blog Generator - Create</x-slot>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <div class="container mx-auto px-4 py-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
@@ -388,6 +390,9 @@
             const progressBar = document.getElementById('progress-bar');
             const progressText = document.getElementById('progress-text');
 
+            // Get CSRF token from meta tag or fallback
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+
             // Show loading state
             generateBtn.disabled = true;
             generateText.textContent = 'Generating...';
@@ -420,16 +425,22 @@
             const formData = new FormData();
             formData.append('product_id', '{{ $product->id ?? "" }}');
             formData.append('auto_generate', 'true');
+            formData.append('_token', csrfToken);
 
             fetch('{{ route("admin.blog.ai.generate") }}', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
                 },
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 clearInterval(progressInterval);
                 progressBar.style.width = '100%';
@@ -443,7 +454,8 @@
                         // Show success message
                         showSuccessMessage('✨ Your SEO-optimized blog post has been generated automatically!');
                     } else {
-                        alert('Error: ' + data.message);
+                        alert('Error: ' + (data.message || 'Unknown error occurred'));
+                        console.error('Generation error:', data);
                     }
                 }, 1000);
             })
