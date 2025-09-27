@@ -217,14 +217,26 @@ class CommunicationController extends Controller
      */
     public function testConnection(Request $request)
     {
-        $request->validate([
-            'provider' => 'required|in:email,sms,whatsapp',
-            'service' => 'required|string'
-        ]);
+        try {
+            $request->validate([
+                'provider' => 'required|in:email,sms,whatsapp',
+                'service' => 'required|string'
+            ]);
 
-        $result = CommunicationSetting::testConnection($request->provider, $request->service);
+            $result = CommunicationSetting::testConnection($request->provider, $request->service);
 
-        return response()->json($result);
+            return response()->json($result);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed: ' . implode(', ', $e->validator->errors()->all())
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Test connection failed: ' . $e->getMessage()
+            ]);
+        }
     }
 
     /**
