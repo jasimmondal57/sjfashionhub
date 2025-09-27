@@ -310,6 +310,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/{post}', [App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('destroy');
     });
 
+    // Backup routes
+    Route::prefix('backup')->name('backup.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\BackupController::class, 'index'])->name('index');
+        Route::get('/settings', [App\Http\Controllers\Admin\BackupController::class, 'settings'])->name('settings');
+        Route::post('/settings', [App\Http\Controllers\Admin\BackupController::class, 'updateSettings'])->name('settings.update');
+        Route::get('/authorize', [App\Http\Controllers\Admin\BackupController::class, 'authorize'])->name('authorize');
+        Route::get('/callback', [App\Http\Controllers\Admin\BackupController::class, 'callback'])->name('callback');
+        Route::post('/create', [App\Http\Controllers\Admin\BackupController::class, 'create'])->name('create');
+        Route::get('/download/{fileId}', [App\Http\Controllers\Admin\BackupController::class, 'download'])->name('download');
+        Route::delete('/delete/{fileId}', [App\Http\Controllers\Admin\BackupController::class, 'delete'])->name('delete');
+        Route::post('/test-connection', [App\Http\Controllers\Admin\BackupController::class, 'testConnection'])->name('test-connection');
+        Route::get('/status', [App\Http\Controllers\Admin\BackupController::class, 'status'])->name('status');
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');
