@@ -12,9 +12,17 @@ class BackupController extends Controller
 {
     private $backupService;
 
-    public function __construct(GoogleDriveBackupService $backupService)
+    public function __construct()
     {
-        $this->backupService = $backupService;
+        // Initialize service only when needed to avoid constructor errors
+    }
+
+    private function getBackupService()
+    {
+        if (!$this->backupService) {
+            $this->backupService = new GoogleDriveBackupService();
+        }
+        return $this->backupService;
     }
 
     /**
@@ -22,19 +30,27 @@ class BackupController extends Controller
      */
     public function index()
     {
-        try {
-            $isConfigured = $this->backupService->isConfigured();
-            $backups = $isConfigured ? $this->backupService->listBackups() : [];
-            
-            return view('admin.backup.index', compact('backups', 'isConfigured'));
-        } catch (\Exception $e) {
-            Log::error('Failed to load backups: ' . $e->getMessage());
-            return view('admin.backup.index', [
-                'backups' => [],
-                'isConfigured' => false,
-                'error' => 'Failed to connect to Google Drive: ' . $e->getMessage()
-            ]);
+        // Simple implementation without Google Drive service for now
+        $backups = [];
+        $isConfigured = false;
+
+        // Check if basic config exists
+        $clientId = config('backup.google_drive_client_id');
+        $clientSecret = config('backup.google_drive_client_secret');
+
+        if ($clientId && $clientSecret) {
+            $isConfigured = true;
+            // Try to get backups only if configured
+            try {
+                $backupService = $this->getBackupService();
+                $backups = $backupService->listBackups();
+            } catch (\Exception $e) {
+                Log::error('Failed to load backups: ' . $e->getMessage());
+                $error = 'Failed to connect to Google Drive: ' . $e->getMessage();
+            }
         }
+
+        return view('admin.backup.index', compact('backups', 'isConfigured'));
     }
 
     /**
@@ -43,16 +59,16 @@ class BackupController extends Controller
     public function settings()
     {
         $settings = [
-            'google_drive_client_id' => setting('google_drive_client_id'),
-            'google_drive_client_secret' => setting('google_drive_client_secret'),
-            'google_drive_redirect_uri' => setting('google_drive_redirect_uri'),
-            'google_drive_backup_folder' => setting('google_drive_backup_folder', 'SJ Fashion Hub Backups'),
-            'backup_schedule_enabled' => setting('backup_schedule_enabled', false),
-            'backup_schedule_time' => setting('backup_schedule_time', '02:00'),
-            'backup_retention_days' => setting('backup_retention_days', 7),
+            'google_drive_client_id' => config('backup.google_drive_client_id'),
+            'google_drive_client_secret' => config('backup.google_drive_client_secret'),
+            'google_drive_redirect_uri' => config('backup.google_drive_redirect_uri'),
+            'google_drive_backup_folder' => config('backup.google_drive_backup_folder', 'SJ Fashion Hub Backups'),
+            'backup_schedule_enabled' => config('backup.schedule_enabled', false),
+            'backup_schedule_time' => config('backup.schedule_time', '02:00'),
+            'backup_retention_days' => config('backup.retention_days', 7),
         ];
 
-        $isConfigured = $this->backupService->isConfigured();
+        $isConfigured = $this->getBackupService()->isConfigured();
         
         return view('admin.backup.settings', compact('settings', 'isConfigured'));
     }
@@ -72,16 +88,32 @@ class BackupController extends Controller
             'backup_retention_days' => 'required|integer|min:1|max:30',
         ]);
 
-        // Save settings
-        setting([
-            'google_drive_client_id' => $request->google_drive_client_id,
-            'google_drive_client_secret' => $request->google_drive_client_secret,
-            'google_drive_redirect_uri' => $request->google_drive_redirect_uri,
-            'google_drive_backup_folder' => $request->google_drive_backup_folder,
-            'backup_schedule_enabled' => $request->has('backup_schedule_enabled'),
-            'backup_schedule_time' => $request->backup_schedule_time,
-            'backup_retention_days' => $request->backup_retention_days,
-        ]);
+        // Save settings to .env file (simplified approach)
+        // Note: In production, you might want to use a database or proper config management
+        $envFile = base_path('.env');
+        $envContent = file_get_contents($envFile);
+
+        // Update or add environment variables
+        $updates = [
+            'GOOGLE_DRIVE_CLIENT_ID' => $request->google_drive_client_id,
+            'GOOGLE_DRIVE_CLIENT_SECRET' => $request->google_drive_client_secret,
+            'GOOGLE_DRIVE_REDIRECT_URI' => $request->google_drive_redirect_uri,
+            'GOOGLE_DRIVE_BACKUP_FOLDER' => '"' . $request->google_drive_backup_folder . '"',
+            'BACKUP_SCHEDULE_ENABLED' => $request->has('backup_schedule_enabled') ? 'true' : 'false',
+            'BACKUP_SCHEDULE_TIME' => $request->backup_schedule_time,
+            'BACKUP_RETENTION_DAYS' => $request->backup_retention_days,
+        ];
+
+        // Update .env file
+        foreach ($updates as $key => $value) {
+            if (strpos($envContent, $key . '=') !== false) {
+                $envContent = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $envContent);
+            } else {
+                $envContent .= "\n{$key}={$value}";
+            }
+        }
+
+        file_put_contents($envFile, $envContent);
 
         return redirect()->route('admin.backup.settings')
                         ->with('success', 'Google Drive settings updated successfully!');
@@ -276,7 +308,7 @@ class BackupController extends Controller
                 'backup_count' => $backupCount,
                 'last_backup' => $lastBackup,
                 'total_size' => $this->formatFileSize($totalSize),
-                'schedule_enabled' => setting('backup_schedule_enabled', false),
+                'schedule_enabled' => config('backup.schedule_enabled', false),
                 'next_backup' => $this->getNextBackupTime()
             ]);
 
@@ -293,11 +325,11 @@ class BackupController extends Controller
      */
     private function getNextBackupTime()
     {
-        if (!setting('backup_schedule_enabled', false)) {
+        if (!config('backup.schedule_enabled', false)) {
             return null;
         }
 
-        $scheduleTime = setting('backup_schedule_time', '02:00');
+        $scheduleTime = config('backup.schedule_time', '02:00');
         $nextBackup = Carbon::today()->setTimeFromTimeString($scheduleTime);
         
         if ($nextBackup->isPast()) {

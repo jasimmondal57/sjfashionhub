@@ -1,13 +1,10 @@
-@extends('admin.layouts.app')
+<x-layouts.admin>
+    <x-slot name="title">Backup Settings</x-slot>
 
-@section('title', 'Backup Settings')
-
-@section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0 text-gray-800">⚙️ Backup Settings</h1>
+    <div class="container mx-auto px-4 py-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">⚙️ Backup Settings</h1>
                 <a href="{{ route('admin.backup.index') }}" class="btn btn-outline-primary">
                     <i class="fas fa-arrow-left"></i> Back to Backups
                 </a>
@@ -328,4 +325,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endpush
+
+</x-layouts.admin>
