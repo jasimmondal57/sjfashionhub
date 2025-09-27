@@ -1,7 +1,7 @@
 @auth
     <!-- User Menu Dropdown -->
     <div class="relative" x-data="{ open: false }">
-        <button @click="open = !open" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-white p-1">
+        <button @click="open = !open" class="flex items-center text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-white border border-gray-200 px-3 py-2 hover:bg-gray-50">
             @if(Auth::user()->avatar)
                 <img class="h-8 w-8 rounded-full object-cover" src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
             @else
@@ -9,8 +9,8 @@
                     <span class="text-white text-sm font-medium">{{ substr(Auth::user()->name, 0, 1) }}</span>
                 </div>
             @endif
-            <span class="ml-2 text-gray-700 hidden sm:block">{{ Auth::user()->name }}</span>
-            <svg class="ml-1 h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <span class="ml-2 text-gray-700 font-medium">{{ Auth::user()->name }}</span>
+            <svg class="ml-2 h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
         </button>
@@ -73,11 +73,17 @@
     </div>
 @else
     <!-- Login/Register Links -->
-    <div class="flex items-center space-x-4">
-        <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+    <div class="flex items-center space-x-3">
+        <a href="{{ route('login') }}" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 hover:bg-gray-50">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+            </svg>
             Login
         </a>
-        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700">
+        <a href="{{ route('register') }}" class="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>
             Register
         </a>
     </div>
