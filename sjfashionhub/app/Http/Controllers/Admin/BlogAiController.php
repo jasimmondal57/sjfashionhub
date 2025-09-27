@@ -246,6 +246,8 @@ class BlogAiController extends Controller
             'message' => $isConfigured
                 ? 'Gemini AI is configured and ready to use.'
                 : 'Gemini AI is not configured. Please add GEMINI_API_KEY to your environment variables.',
+            'csrf_token' => csrf_token(),
+            'success' => true
         ]);
     }
 
@@ -282,6 +284,8 @@ class BlogAiController extends Controller
             'products' => $products,
         ]);
     }
+
+
 
     /**
      * Get automatic generation settings based on product

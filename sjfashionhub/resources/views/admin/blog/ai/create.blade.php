@@ -390,9 +390,6 @@
             const progressBar = document.getElementById('progress-bar');
             const progressText = document.getElementById('progress-text');
 
-            // Get CSRF token from meta tag or fallback
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
-
             // Show loading state
             generateBtn.disabled = true;
             generateText.textContent = 'Generating...';
@@ -421,27 +418,71 @@
                 }
             }, 1000);
 
-            // Create automated form data
-            const formData = new FormData();
-            formData.append('product_id', '{{ $product->id ?? "" }}');
-            formData.append('auto_generate', 'true');
-            formData.append('_token', csrfToken);
+            // Create a hidden form and submit it
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("admin.blog.ai.generate") }}';
+            form.style.display = 'none';
 
-            fetch('{{ route("admin.blog.ai.generate") }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            // Add CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            // Add product ID
+            const productInput = document.createElement('input');
+            productInput.type = 'hidden';
+            productInput.name = 'product_id';
+            productInput.value = '{{ $product->id ?? "" }}';
+            form.appendChild(productInput);
+
+            // Add auto generate flag
+            const autoInput = document.createElement('input');
+            autoInput.type = 'hidden';
+            autoInput.name = 'auto_generate';
+            autoInput.value = 'true';
+            form.appendChild(autoInput);
+
+            document.body.appendChild(form);
+
+            // Use XMLHttpRequest for better control
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData(form);
+
+            xhr.open('POST', '{{ route("admin.blog.ai.generate") }}', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Accept', 'application/json');
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    document.body.removeChild(form);
+
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            handleGenerationSuccess(data);
+                        } catch (e) {
+                            console.error('JSON parse error:', e);
+                            alert('Error parsing response');
+                        }
+                    } else {
+                        console.error('HTTP error:', xhr.status, xhr.responseText);
+                        alert('Error: HTTP ' + xhr.status + ' - ' + xhr.statusText);
+                    }
+
+                    // Reset button state
+                    generateBtn.disabled = false;
+                    generateText.textContent = 'Generate Complete Blog Post';
+                    progressDiv.classList.add('hidden');
+                    progressBar.style.width = '0%';
                 }
-                return response.json();
-            })
-            .then(data => {
+            };
+
+            xhr.send(formData);
+
+            function handleGenerationSuccess(data) {
                 clearInterval(progressInterval);
                 progressBar.style.width = '100%';
                 progressText.textContent = 'Blog post generated successfully!';
@@ -458,21 +499,7 @@
                         console.error('Generation error:', data);
                     }
                 }, 1000);
-            })
-            .catch(error => {
-                clearInterval(progressInterval);
-                console.error('Error:', error);
-                alert('An error occurred while generating content.');
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    // Reset button state
-                    generateBtn.disabled = false;
-                    generateText.textContent = 'Generate Complete Blog Post';
-                    progressDiv.classList.add('hidden');
-                    progressBar.style.width = '0%';
-                }, 2000);
-            });
+            }
         }
 
         function showSuccessMessage(message) {
