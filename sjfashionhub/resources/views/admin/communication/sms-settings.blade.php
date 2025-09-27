@@ -88,8 +88,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('twilio')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('twilio')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -140,8 +141,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('msg91')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('msg91')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -176,8 +178,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('textlocal')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('textlocal')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -221,8 +224,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('fast2sms')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('fast2sms')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 

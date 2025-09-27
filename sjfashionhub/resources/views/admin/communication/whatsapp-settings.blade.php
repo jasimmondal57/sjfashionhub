@@ -77,17 +77,17 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
-                        <input type="url" name="webhook_url" 
-                               value="{{ old('webhook_url', isset($settings['whatsapp_business']) ? $settings['whatsapp_business']->where('key', 'webhook_url')->first()->value ?? '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="url" name="webhook_url"
+                               value="{{ old('webhook_url', isset($settings['whatsapp_business']) ? ($settings['whatsapp_business']->where('key', 'webhook_url')->first()->value ?? '') : '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="https://yoursite.com/webhook/whatsapp">
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Webhook Verify Token</label>
-                        <input type="text" name="webhook_verify_token" 
-                               value="{{ old('webhook_verify_token', isset($settings['whatsapp_business']) ? $settings['whatsapp_business']->where('key', 'webhook_verify_token')->first()->value ?? '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        <input type="text" name="webhook_verify_token"
+                               value="{{ old('webhook_verify_token', isset($settings['whatsapp_business']) ? ($settings['whatsapp_business']->where('key', 'webhook_verify_token')->first()->value ?? '') : '') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                placeholder="your_verify_token">
                     </div>
                     
@@ -102,8 +102,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('whatsapp_business')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('whatsapp_business')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -154,8 +155,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('twilio_whatsapp')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('twilio_whatsapp')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -206,8 +208,9 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('msg91_whatsapp')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('msg91_whatsapp')"
+                            class="px-4 py-2 rounded-lg transition-colors border shadow-md font-medium"
+                            style="background-color: #059669 !important; color: white !important; border-color: #047857 !important;">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
