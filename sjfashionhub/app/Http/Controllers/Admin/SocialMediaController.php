@@ -102,7 +102,7 @@ class SocialMediaController extends Controller
             // Generate AI content
             $content = $this->aiContentGenerator->generateProductPost($product, $platform);
 
-            // Create social media post record
+            // Create social media post record with enhanced data
             $post = SocialMediaPost::create([
                 'product_id' => $product->id,
                 'user_id' => Auth::id(),
@@ -113,6 +113,12 @@ class SocialMediaController extends Controller
                 'status' => 'pending',
                 'is_ai_generated' => true,
                 'ai_prompt' => $content['prompt'],
+                'metadata' => [
+                    'product_url' => $content['product_url'] ?? url("/products/{$product->slug}"),
+                    'price_info' => $content['price_info'] ?? null,
+                    'call_to_action' => $content['call_to_action'] ?? 'Shop now at sjfashionhub.in',
+                    'ai_model' => 'gemini-pro'
+                ]
             ]);
 
             // Post to platform
@@ -172,10 +178,10 @@ class SocialMediaController extends Controller
 
             foreach ($activeConfigs as $config) {
                 try {
-                    // Generate AI content for this platform
+                    // Generate AI content for this platform with enhanced features
                     $content = $this->aiContentGenerator->generateProductPost($product, $config->platform);
 
-                    // Create social media post record
+                    // Create social media post record with enhanced data
                     $post = SocialMediaPost::create([
                         'product_id' => $product->id,
                         'user_id' => Auth::id(),
@@ -186,6 +192,12 @@ class SocialMediaController extends Controller
                         'status' => 'pending',
                         'is_ai_generated' => true,
                         'ai_prompt' => $content['prompt'],
+                        'metadata' => [
+                            'product_url' => $content['product_url'] ?? url("/products/{$product->slug}"),
+                            'price_info' => $content['price_info'] ?? null,
+                            'call_to_action' => $content['call_to_action'] ?? 'Shop now at sjfashionhub.in',
+                            'ai_model' => 'gemini-pro'
+                        ]
                     ]);
 
                     // Post to platform

@@ -23,6 +23,7 @@ class SocialMediaPost extends Model
         'engagement_stats',
         'is_ai_generated',
         'ai_prompt',
+        'metadata',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class SocialMediaPost extends Model
         'images' => 'array',
         'platform_response' => 'array',
         'engagement_stats' => 'array',
+        'metadata' => 'array',
         'is_ai_generated' => 'boolean',
         'scheduled_at' => 'datetime',
         'posted_at' => 'datetime',

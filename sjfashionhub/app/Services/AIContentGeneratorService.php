@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Log;
 class AIContentGeneratorService
 {
     protected $openaiApiKey;
+    protected $geminiApiKey;
     protected $maxRetries = 3;
 
     public function __construct()
     {
         $this->openaiApiKey = config('services.openai.api_key');
+        $this->geminiApiKey = config('services.gemini.api_key');
     }
 
     /**
@@ -22,10 +24,15 @@ class AIContentGeneratorService
     public function generateProductPost(Product $product, string $platform): array
     {
         try {
-            $prompt = $this->buildPrompt($product, $platform);
-            
-            $response = $this->callOpenAI($prompt);
-            
+            $prompt = $this->buildEnhancedPrompt($product, $platform);
+
+            // Try Gemini first, fallback to OpenAI
+            $response = $this->callGemini($prompt);
+
+            if (!$response) {
+                $response = $this->callOpenAI($prompt);
+            }
+
             if (!$response) {
                 return $this->getFallbackContent($product, $platform);
             }
@@ -39,57 +46,95 @@ class AIContentGeneratorService
     }
 
     /**
-     * Build the AI prompt based on product and platform
+     * Build enhanced AI prompt with comprehensive product information
      */
-    protected function buildPrompt(Product $product, string $platform): string
+    protected function buildEnhancedPrompt(Product $product, string $platform): string
     {
         $platformSpecs = $this->getPlatformSpecifications($platform);
-        
+        $productUrl = url("/products/{$product->slug}");
+
         $prompt = "Create an engaging social media post for {$platform} about this fashion product:\n\n";
+
+        // Basic Product Information
+        $prompt .= "=== PRODUCT DETAILS ===\n";
         $prompt .= "Product Name: {$product->name}\n";
         $prompt .= "Brand: {$product->brand}\n";
+        $prompt .= "Category: {$product->category->name}\n";
         $prompt .= "Description: {$product->description}\n";
-        $prompt .= "Price: {$product->formatted_price}";
-        
+
+        // Pricing Information
+        $prompt .= "\n=== PRICING & OFFERS ===\n";
+        $prompt .= "Regular Price: {$product->formatted_price}\n";
+
         if ($product->sale_price) {
-            $prompt .= " (Sale: {$product->formatted_sale_price})";
-        }
-        
-        $prompt .= "\nCategory: {$product->category->name}\n";
-        
-        if ($product->color) {
-            $prompt .= "Color: {$product->color}\n";
-        }
-        
-        if ($product->size) {
-            $prompt .= "Size: {$product->size}\n";
-        }
-        
-        if ($product->material) {
-            $prompt .= "Material: {$product->material}\n";
+            $prompt .= "Sale Price: {$product->formatted_sale_price}\n";
+            $prompt .= "Discount: {$product->discount_percentage}% OFF\n";
+            $prompt .= "Savings: ₹" . number_format($product->price - $product->sale_price, 0) . "\n";
         }
 
-        $prompt .= "\nPlatform: {$platform}\n";
+        if ($product->compare_at_price && $product->compare_at_price > $product->price) {
+            $prompt .= "Compare at: ₹" . number_format($product->compare_at_price, 0) . "\n";
+        }
+
+        // Product Attributes
+        $prompt .= "\n=== PRODUCT ATTRIBUTES ===\n";
+        if ($product->color) $prompt .= "Color: {$product->color}\n";
+        if ($product->size) $prompt .= "Size: {$product->size}\n";
+        if ($product->material) $prompt .= "Material: {$product->material}\n";
+        if ($product->pattern) $prompt .= "Pattern: {$product->pattern}\n";
+        if ($product->gender) $prompt .= "Gender: " . ucfirst($product->gender) . "\n";
+        if ($product->age_group) $prompt .= "Age Group: {$product->age_group}\n";
+
+        // Stock & Availability
+        $prompt .= "\n=== AVAILABILITY ===\n";
+        $prompt .= "Stock Status: " . ($product->stock_quantity > 0 ? "In Stock ({$product->stock_quantity} available)" : "Limited Stock") . "\n";
+        if ($product->stock_quantity <= 10 && $product->stock_quantity > 0) {
+            $prompt .= "⚠️ Only {$product->stock_quantity} left in stock!\n";
+        }
+
+        // SEO & Tags
+        $prompt .= "\n=== SEO INFORMATION ===\n";
+        if ($product->meta_keywords) $prompt .= "SEO Keywords: {$product->meta_keywords}\n";
+        if ($product->tags) $prompt .= "Product Tags: " . implode(', ', $product->tags) . "\n";
+
+        // Direct Product Link
+        $prompt .= "\n=== PRODUCT LINK ===\n";
+        $prompt .= "Direct Product URL: {$productUrl}\n";
+        $prompt .= "Website: sjfashionhub.in\n";
+
+        // Platform Specifications
+        $prompt .= "\n=== PLATFORM REQUIREMENTS ===\n";
+        $prompt .= "Platform: {$platform}\n";
         $prompt .= "Character limit: {$platformSpecs['char_limit']}\n";
         $prompt .= "Hashtag style: {$platformSpecs['hashtag_style']}\n";
-        $prompt .= "Tone: {$platformSpecs['tone']}\n\n";
+        $prompt .= "Tone: {$platformSpecs['tone']}\n";
 
-        $prompt .= "Requirements:\n";
+        $prompt .= "\n=== CONTENT REQUIREMENTS ===\n";
         $prompt .= "- Create engaging, trendy copy that appeals to fashion enthusiasts\n";
-        $prompt .= "- Include relevant fashion hashtags (5-10 hashtags)\n";
+        $prompt .= "- MUST include the direct product link: {$productUrl}\n";
+        $prompt .= "- Include pricing information prominently\n";
+        $prompt .= "- Highlight any discounts or special offers\n";
+        $prompt .= "- Include 8-15 relevant fashion hashtags\n";
+        $prompt .= "- Add SEO-friendly hashtags based on product attributes\n";
         $prompt .= "- Mention key product features and benefits\n";
-        $prompt .= "- Include a call-to-action\n";
+        $prompt .= "- Include urgency if low stock\n";
+        $prompt .= "- Add a strong call-to-action\n";
         $prompt .= "- Keep within character limits\n";
         $prompt .= "- Use emojis appropriately for the platform\n";
-        $prompt .= "- Make it sound natural and authentic\n\n";
+        $prompt .= "- Make it sound natural and authentic\n";
+        $prompt .= "- Include brand mention and website\n\n";
 
         $prompt .= "Return the response in this exact JSON format:\n";
         $prompt .= "{\n";
-        $prompt .= '  "text": "The main post content",';
+        $prompt .= '  "text": "The main post content with product link",';
         $prompt .= "\n";
-        $prompt .= '  "hashtags": ["hashtag1", "hashtag2", "hashtag3"],';
+        $prompt .= '  "hashtags": ["hashtag1", "hashtag2", "hashtag3", "seo_tag1", "seo_tag2"],';
         $prompt .= "\n";
-        $prompt .= '  "call_to_action": "Shop now at sjfashionhub.in"';
+        $prompt .= '  "call_to_action": "Shop now at sjfashionhub.in",';
+        $prompt .= "\n";
+        $prompt .= '  "product_url": "' . $productUrl . '",';
+        $prompt .= "\n";
+        $prompt .= '  "price_info": "Price and offer details"';
         $prompt .= "\n}";
 
         return $prompt;
@@ -140,7 +185,55 @@ class AIContentGeneratorService
     }
 
     /**
-     * Call OpenAI API
+     * Call Gemini API to generate content
+     */
+    protected function callGemini(string $prompt): ?string
+    {
+        if (!$this->geminiApiKey) {
+            Log::warning("Gemini API key not configured");
+            return null;
+        }
+
+        try {
+            $response = Http::timeout(30)->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={$this->geminiApiKey}", [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ],
+                'generationConfig' => [
+                    'temperature' => 0.7,
+                    'topK' => 40,
+                    'topP' => 0.95,
+                    'maxOutputTokens' => 1024,
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+                    return $data['candidates'][0]['content']['parts'][0]['text'];
+                }
+            }
+
+            Log::warning('Gemini API call failed', [
+                'status' => $response->status(),
+                'response' => $response->body()
+            ]);
+
+            return null;
+
+        } catch (\Exception $e) {
+            Log::error('Gemini API error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Call OpenAI API (fallback)
      */
     protected function callOpenAI(string $prompt): ?string
     {
@@ -212,20 +305,39 @@ class AIContentGeneratorService
                 $parsed = json_decode($jsonString, true);
                 
                 if ($parsed && isset($parsed['text'])) {
+                    $productUrl = url("/products/{$product->slug}");
+
+                    // Ensure product URL is included in content
+                    $content = $parsed['text'];
+                    if (!str_contains($content, $productUrl) && !str_contains($content, 'sjfashionhub.in')) {
+                        $content .= "\n\n🛒 Shop now: {$productUrl}";
+                    }
+
                     return [
-                        'text' => $parsed['text'],
-                        'hashtags' => $parsed['hashtags'] ?? $this->getDefaultHashtags($product, $platform),
+                        'text' => $content,
+                        'hashtags' => $parsed['hashtags'] ?? $this->getEnhancedHashtags($product, $platform),
                         'call_to_action' => $parsed['call_to_action'] ?? 'Shop now at sjfashionhub.in',
+                        'product_url' => $parsed['product_url'] ?? $productUrl,
+                        'price_info' => $parsed['price_info'] ?? $this->formatPriceInfo($product),
                         'prompt' => "AI Generated for {$platform}"
                     ];
                 }
             }
 
-            // If JSON parsing fails, treat the whole response as text
+            // If JSON parsing fails, treat the whole response as text with enhancements
+            $productUrl = url("/products/{$product->slug}");
+            $content = $response;
+
+            if (!str_contains($content, $productUrl) && !str_contains($content, 'sjfashionhub.in')) {
+                $content .= "\n\n🛒 Shop now: {$productUrl}";
+            }
+
             return [
-                'text' => $response,
-                'hashtags' => $this->getDefaultHashtags($product, $platform),
+                'text' => $content,
+                'hashtags' => $this->getEnhancedHashtags($product, $platform),
                 'call_to_action' => 'Shop now at sjfashionhub.in',
+                'product_url' => $productUrl,
+                'price_info' => $this->formatPriceInfo($product),
                 'prompt' => "AI Generated for {$platform}"
             ];
 
@@ -269,7 +381,93 @@ class AIContentGeneratorService
     }
 
     /**
-     * Get default hashtags for a product and platform
+     * Format price information for social media
+     */
+    protected function formatPriceInfo(Product $product): string
+    {
+        $priceInfo = "💰 {$product->formatted_price}";
+
+        if ($product->sale_price) {
+            $priceInfo = "💰 {$product->formatted_sale_price} (was {$product->formatted_price})";
+            $priceInfo .= " - Save {$product->discount_percentage}%!";
+        }
+
+        return $priceInfo;
+    }
+
+    /**
+     * Get enhanced hashtags with SEO and product attributes
+     */
+    protected function getEnhancedHashtags(Product $product, string $platform): array
+    {
+        $hashtags = [];
+
+        // Brand and product hashtags
+        if ($product->brand) {
+            $hashtags[] = strtolower(str_replace(' ', '', $product->brand));
+        }
+
+        // Category hashtags
+        $hashtags[] = strtolower(str_replace(' ', '', $product->category->name));
+
+        // Product attribute hashtags
+        if ($product->color) {
+            $hashtags[] = strtolower($product->color);
+        }
+
+        if ($product->material) {
+            $hashtags[] = strtolower(str_replace(' ', '', $product->material));
+        }
+
+        if ($product->pattern) {
+            $hashtags[] = strtolower(str_replace(' ', '', $product->pattern));
+        }
+
+        if ($product->gender) {
+            $hashtags[] = strtolower($product->gender) . 'fashion';
+        }
+
+        // SEO hashtags from meta keywords
+        if ($product->meta_keywords) {
+            $seoTags = explode(',', $product->meta_keywords);
+            foreach (array_slice($seoTags, 0, 3) as $tag) {
+                $hashtags[] = strtolower(str_replace(' ', '', trim($tag)));
+            }
+        }
+
+        // Product tags
+        if ($product->tags && is_array($product->tags)) {
+            foreach (array_slice($product->tags, 0, 3) as $tag) {
+                $hashtags[] = strtolower(str_replace(' ', '', $tag));
+            }
+        }
+
+        // Fashion-specific hashtags
+        $fashionHashtags = [
+            'fashion', 'style', 'trendy', 'outfit', 'ootd', 'fashionista',
+            'shopping', 'onlineshopping', 'sjfashionhub', 'indianfashion'
+        ];
+
+        // Sale/offer hashtags
+        if ($product->sale_price) {
+            $fashionHashtags = array_merge($fashionHashtags, ['sale', 'discount', 'offer', 'deal']);
+        }
+
+        // Add fashion hashtags to fill up to 15 total
+        $remainingSlots = 15 - count($hashtags);
+        $hashtags = array_merge($hashtags, array_slice($fashionHashtags, 0, $remainingSlots));
+
+        // Remove duplicates and clean up
+        $hashtags = array_unique($hashtags);
+        $hashtags = array_filter($hashtags, function($tag) {
+            return strlen($tag) > 2 && preg_match('/^[a-z0-9]+$/', $tag);
+        });
+
+        return array_values($hashtags);
+    }
+
+    /**
+     * Get default hashtags for a product and platform (fallback)
      */
     protected function getDefaultHashtags(Product $product, string $platform): array
     {

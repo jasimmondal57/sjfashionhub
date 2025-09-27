@@ -142,6 +142,16 @@
                                         @if($post->hashtags)
                                             <p class="text-xs text-blue-600 mt-1">{{ Str::limit($post->formatted_hashtags, 50) }}</p>
                                         @endif
+                                        @if($post->metadata && isset($post->metadata['price_info']))
+                                            <p class="text-xs text-green-600 mt-1">{{ $post->metadata['price_info'] }}</p>
+                                        @endif
+                                        @if($post->metadata && isset($post->metadata['product_url']))
+                                            <p class="text-xs text-gray-500 mt-1">
+                                                <a href="{{ $post->metadata['product_url'] }}" target="_blank" class="hover:text-blue-600">
+                                                    🔗 Product Link
+                                                </a>
+                                            </p>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
