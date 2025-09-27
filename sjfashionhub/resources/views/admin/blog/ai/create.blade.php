@@ -29,8 +29,9 @@
                         <!-- Selected Product -->
                         <div class="border border-gray-200 rounded-lg p-4 mb-4">
                             @if($product->images && count($product->images) > 0)
-                                <img src="{{ $product->images[0]['image_path'] }}" alt="{{ $product->name }}" 
-                                     class="w-full h-32 object-cover rounded-lg mb-3">
+                                <img src="{{ asset('storage/' . $product->images[0]['image_path']) }}" alt="{{ $product->name }}"
+                                     class="w-full h-32 object-cover rounded-lg mb-3"
+                                     onerror="this.style.display='none'">
                             @endif
                             <h3 class="font-medium text-gray-900">{{ $product->name }}</h3>
                             <p class="text-sm text-gray-600">{{ $product->category->name }}</p>

@@ -57,7 +57,7 @@ class BlogAiController extends Controller
         $product = null;
 
         if ($productId) {
-            $product = Product::with(['category', 'images'])->findOrFail($productId);
+            $product = Product::with(['category'])->findOrFail($productId);
         }
 
         $categories = BlogCategory::active()->ordered()->get();
