@@ -42,4 +42,8 @@ return [
         'pickup_postcode' => env('SHIPROCKET_PICKUP_POSTCODE', '110001'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+    ],
+
 ];

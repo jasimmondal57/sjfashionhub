@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\BlogPost;
+use App\Models\BlogCategory;
 use App\Services\SeoService;
 use Illuminate\Http\Request;
 
@@ -264,6 +266,30 @@ class SeoController extends Controller
                     $product->updated_at,
                     'weekly',
                     '0.7'
+                );
+            }
+
+            // Add blog categories
+            $blogCategories = BlogCategory::where('is_active', true)->get();
+            foreach ($blogCategories as $category) {
+                $sitemap .= $this->addSitemapUrl(
+                    route('blog.category', $category->slug),
+                    $category->updated_at,
+                    'weekly',
+                    '0.6'
+                );
+            }
+
+            // Add blog posts
+            $blogPosts = BlogPost::where('status', 'published')
+                                ->where('published_at', '<=', now())
+                                ->get();
+            foreach ($blogPosts as $post) {
+                $sitemap .= $this->addSitemapUrl(
+                    route('blog.show', $post->slug),
+                    $post->updated_at,
+                    'monthly',
+                    '0.6'
                 );
             }
 

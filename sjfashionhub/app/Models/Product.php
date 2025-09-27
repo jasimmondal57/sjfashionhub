@@ -204,4 +204,10 @@ class Product extends Model
     {
         return $this->belongsTo(SizeChart::class);
     }
+
+    // Blog Posts relationship
+    public function blogPosts(): HasMany
+    {
+        return $this->hasMany(BlogPost::class);
+    }
 }

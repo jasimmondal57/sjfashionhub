@@ -271,10 +271,54 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 
+    // Blog Management
+    Route::prefix('blog')->name('blog.')->group(function () {
+        // Main blog routes
+        Route::get('/', [App\Http\Controllers\Admin\BlogController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\BlogController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\BlogController::class, 'store'])->name('store');
+        Route::post('/bulk-action', [App\Http\Controllers\Admin\BlogController::class, 'bulkAction'])->name('bulk-action');
+
+        // Blog categories (must come before {post} routes)
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\BlogCategoryController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Admin\BlogCategoryController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Admin\BlogCategoryController::class, 'store'])->name('store');
+            Route::get('/{category}/edit', [App\Http\Controllers\Admin\BlogCategoryController::class, 'edit'])->name('edit');
+            Route::put('/{category}', [App\Http\Controllers\Admin\BlogCategoryController::class, 'update'])->name('update');
+            Route::delete('/{category}', [App\Http\Controllers\Admin\BlogCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        // AI Blog Generator (must come before {post} routes)
+        Route::prefix('ai')->name('ai.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\BlogAiController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Admin\BlogAiController::class, 'create'])->name('create');
+            Route::post('/generate', [App\Http\Controllers\Admin\BlogAiController::class, 'generate'])->name('generate');
+            Route::post('/store', [App\Http\Controllers\Admin\BlogAiController::class, 'store'])->name('store');
+            Route::post('/generate-titles', [App\Http\Controllers\Admin\BlogAiController::class, 'generateTitles'])->name('generate-titles');
+            Route::get('/status', [App\Http\Controllers\Admin\BlogAiController::class, 'status'])->name('status');
+            Route::get('/products-without-blogs', [App\Http\Controllers\Admin\BlogAiController::class, 'getProductsWithoutBlogs'])->name('products-without-blogs');
+        });
+
+        // Individual blog post routes (must come last)
+        Route::get('/{post}', [App\Http\Controllers\Admin\BlogController::class, 'show'])->name('show');
+        Route::get('/{post}/edit', [App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('edit');
+        Route::put('/{post}', [App\Http\Controllers\Admin\BlogController::class, 'update'])->name('update');
+        Route::delete('/{post}', [App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('destroy');
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');
     })->name('settings.index');
+});
+
+// Blog routes (public)
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', [App\Http\Controllers\BlogController::class, 'index'])->name('index');
+    Route::get('/category/{category}', [App\Http\Controllers\BlogController::class, 'category'])->name('category');
+    Route::get('/tag/{tag}', [App\Http\Controllers\BlogController::class, 'tag'])->name('tag');
+    Route::get('/{post}', [App\Http\Controllers\BlogController::class, 'show'])->name('show');
 });
 
 // Static pages
