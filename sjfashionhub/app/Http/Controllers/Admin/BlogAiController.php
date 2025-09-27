@@ -113,10 +113,7 @@ class BlogAiController extends Controller
             $suggestedTags = [];
             if (!empty($generatedContent['suggested_tags'])) {
                 foreach ($generatedContent['suggested_tags'] as $tagName) {
-                    $tag = BlogTag::firstOrCreate(
-                        ['slug' => Str::slug($tagName)],
-                        ['name' => $tagName, 'is_active' => true]
-                    );
+                    $tag = $this->createOrFindTag($tagName);
                     $suggestedTags[] = $tag->id;
                 }
             }
@@ -322,10 +319,7 @@ class BlogAiController extends Controller
             $suggestedTags = [];
             if (!empty($generatedContent['suggested_tags'])) {
                 foreach ($generatedContent['suggested_tags'] as $tagName) {
-                    $tag = BlogTag::firstOrCreate(
-                        ['slug' => Str::slug($tagName)],
-                        ['name' => $tagName, 'is_active' => true]
-                    );
+                    $tag = $this->createOrFindTag($tagName);
                     $suggestedTags[] = $tag->id;
                 }
             }
@@ -446,10 +440,7 @@ class BlogAiController extends Controller
         $suggestedTags = [];
         if (!empty($generatedContent['suggested_tags'])) {
             foreach ($generatedContent['suggested_tags'] as $tagName) {
-                $tag = BlogTag::firstOrCreate(
-                    ['name' => $tagName],
-                    ['slug' => Str::slug($tagName), 'is_active' => true]
-                );
+                $tag = $this->createOrFindTag($tagName);
                 $suggestedTags[] = $tag->id;
             }
         }
@@ -665,5 +656,32 @@ class BlogAiController extends Controller
         } else {
             return 'casual';
         }
+    }
+
+    /**
+     * Create or find existing tag by name, handling duplicates properly
+     */
+    private function createOrFindTag($tagName)
+    {
+        $slug = Str::slug($tagName);
+        $tag = BlogTag::where('slug', $slug)->first();
+
+        if (!$tag) {
+            try {
+                $tag = BlogTag::create([
+                    'name' => $tagName,
+                    'slug' => $slug,
+                    'is_active' => true
+                ]);
+            } catch (\Exception $e) {
+                // If creation fails due to race condition, try to find again
+                $tag = BlogTag::where('slug', $slug)->first();
+                if (!$tag) {
+                    throw $e; // Re-throw if still not found
+                }
+            }
+        }
+
+        return $tag;
     }
 }
