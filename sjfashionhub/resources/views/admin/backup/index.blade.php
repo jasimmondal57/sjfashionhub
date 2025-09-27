@@ -252,9 +252,7 @@
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
 <script>
 function createBackup() {
     $('#createBackupModal').modal('show');

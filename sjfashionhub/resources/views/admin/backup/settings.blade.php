@@ -266,9 +266,7 @@
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
 <script>
 function testConnection() {
     const button = event.target;
