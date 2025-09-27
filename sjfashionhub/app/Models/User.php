@@ -35,7 +35,11 @@ class User extends Authenticatable
         'last_login_at',
         'email_marketing_consent',
         'sms_marketing_consent',
-        'notes'
+        'notes',
+        'provider',
+        'provider_id',
+        'phone_verified_at',
+        'login_type'
     ];
 
     /**
@@ -62,6 +66,7 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'email_marketing_consent' => 'boolean',
             'sms_marketing_consent' => 'boolean',
+            'phone_verified_at' => 'datetime',
         ];
     }
 

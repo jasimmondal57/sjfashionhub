@@ -398,3 +398,23 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Social Login Routes
+Route::prefix('auth')->group(function () {
+    Route::get('{provider}/redirect', [App\Http\Controllers\Auth\SocialLoginController::class, 'redirect'])
+        ->name('social.redirect');
+    Route::get('{provider}/callback', [App\Http\Controllers\Auth\SocialLoginController::class, 'callback'])
+        ->name('social.callback');
+});
+
+// Mobile OTP Login Routes
+Route::prefix('mobile')->group(function () {
+    Route::get('login', [App\Http\Controllers\Auth\MobileLoginController::class, 'showLoginForm'])
+        ->name('mobile.login');
+    Route::post('send-otp', [App\Http\Controllers\Auth\MobileLoginController::class, 'sendOtp'])
+        ->name('mobile.send-otp');
+    Route::post('verify-otp', [App\Http\Controllers\Auth\MobileLoginController::class, 'verifyOtp'])
+        ->name('mobile.verify-otp');
+    Route::get('verify', [App\Http\Controllers\Auth\MobileLoginController::class, 'showVerifyForm'])
+        ->name('mobile.verify');
+});

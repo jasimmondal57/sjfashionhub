@@ -17,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(\App\Services\SocialMediaService::class);
         $this->app->singleton(\App\Services\AIContentGeneratorService::class);
+        $this->app->singleton(\App\Services\SmsService::class);
+        $this->app->singleton(\App\Services\WhatsAppService::class);
     }
 
     /**

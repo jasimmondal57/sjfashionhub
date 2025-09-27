@@ -50,4 +50,31 @@ return [
         'api_key' => env('OPENAI_API_KEY'),
     ],
 
+    // Social Login Configuration
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL') . '/auth/google/callback'),
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI', env('APP_URL') . '/auth/facebook/callback'),
+    ],
+
+    // SMS Configuration
+    'sms' => [
+        'api_key' => env('SMS_API_KEY'),
+        'sender_id' => env('SMS_SENDER_ID', 'SJFASHION'),
+        'base_url' => env('SMS_BASE_URL', 'https://api.textlocal.in/send/'),
+    ],
+
+    // WhatsApp Configuration
+    'whatsapp' => [
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'base_url' => env('WHATSAPP_BASE_URL', 'https://graph.facebook.com/v18.0'),
+    ],
+
 ];
