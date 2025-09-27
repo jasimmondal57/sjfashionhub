@@ -24,6 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -138,16 +141,18 @@
                     <!-- Search -->
                     @if($headerSettings->show_search)
                         <div class="hidden md:block">
-                            <div class="relative">
+                            <form action="{{ route('search') }}" method="GET" class="relative">
                                 <input type="text"
+                                       name="q"
+                                       value="{{ request('q') }}"
                                        placeholder="{{ $headerSettings->search_placeholder }}"
                                        class="w-64 px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button type="submit" class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                                    <svg class="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                     </svg>
-                                </div>
-                            </div>
+                                </button>
+                            </form>
                         </div>
                         <!-- Mobile Search Button -->
                         <button class="md:hidden p-2 hover:bg-gray-100 rounded-full" onclick="toggleSearch()">
@@ -159,42 +164,45 @@
 
                     <!-- User Account -->
                     @if($headerSettings->show_account)
-                        @auth
-                            <div class="relative group">
-                                <button class="p-2 hover:bg-gray-100 rounded-full">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </button>
-                                <!-- User dropdown would go here -->
-                            </div>
-                        @else
-                            <a href="{{ route('login') }}" class="p-2 hover:bg-gray-100 rounded-full">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </a>
-                        @endauth
+                        <x-user-menu />
                     @endif
 
                     <!-- Wishlist -->
                     @if($headerSettings->show_wishlist)
-                        <a href="{{ route('wishlist.index') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                            <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                        </a>
+                        @auth
+                            <a href="{{ route('user.wishlist') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                            </a>
+                        @endauth
                     @endif
 
                     <!-- Cart -->
                     @if($headerSettings->show_cart)
-                        <button class="p-2 hover:bg-gray-100 rounded-full relative" onclick="toggleCart()">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
-                            </svg>
-                            <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                        </button>
+                        @auth
+                            <a href="{{ route('user.cart') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                                </svg>
+                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                            </a>
+                        @else
+                            <button class="p-2 hover:bg-gray-100 rounded-full relative" onclick="showLoginPrompt()">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                                </svg>
+                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                            </button>
+                        @endauth
                     @endif
 
                     <!-- Mobile Menu Toggle -->
@@ -501,9 +509,33 @@
     </div>
 
     <!-- Search Modal -->
-    <div id="search-overlay" class="search-overlay hidden">
-        <div class="search-modal mt-20 mx-4">
-            <!-- Search content would go here -->
+    <div id="search-overlay" class="search-overlay hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+        <div class="search-modal mt-20 mx-4 max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Search Products</h3>
+                    <button onclick="toggleSearch()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form action="{{ route('search') }}" method="GET">
+                    <div class="relative">
+                        <input type="text"
+                               name="q"
+                               value="{{ request('q') }}"
+                               placeholder="{{ $headerSettings->search_placeholder ?? 'Search products...' }}"
+                               class="w-full px-4 py-3 pl-12 pr-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                               autofocus>
+                        <button type="submit" class="absolute inset-y-0 left-0 pl-4 flex items-center">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -525,6 +557,34 @@
             const overlay = document.getElementById('search-overlay');
             overlay.classList.toggle('hidden');
         }
+
+        function showLoginPrompt() {
+            if (confirm('Please login to access your cart. Would you like to login now?')) {
+                window.location.href = '{{ route("login") }}';
+            }
+        }
+
+        // Close search modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const searchOverlay = document.getElementById('search-overlay');
+            const searchModal = document.querySelector('.search-modal');
+
+            if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
+                if (!searchModal.contains(event.target)) {
+                    toggleSearch();
+                }
+            }
+        });
+
+        // Close search modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const searchOverlay = document.getElementById('search-overlay');
+                if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
+                    toggleSearch();
+                }
+            }
+        });
     </script>
 
     <!-- GSAP Library for Animated Order Button -->

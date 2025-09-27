@@ -20,6 +20,14 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
+// Search Route
+Route::get('/search', function () {
+    $query = request('q');
+    // For now, just redirect to products with search query
+    // Later this can be implemented with actual product search
+    return redirect()->route('products.index', ['search' => $query]);
+})->name('search');
+
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::post('/newsletter/unsubscribe', [App\Http\Controllers\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
