@@ -4,21 +4,44 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Full Name *')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" :value="__('Email *')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Phone Number -->
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('Phone Number *')" />
+            <div class="flex mt-1">
+                <select name="country_code" id="country_code" class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <option value="+91" {{ old('country_code', '+91') == '+91' ? 'selected' : '' }}>🇮🇳 +91</option>
+                    <option value="+1" {{ old('country_code') == '+1' ? 'selected' : '' }}>🇺🇸 +1</option>
+                    <option value="+44" {{ old('country_code') == '+44' ? 'selected' : '' }}>🇬🇧 +44</option>
+                    <option value="+971" {{ old('country_code') == '+971' ? 'selected' : '' }}>🇦🇪 +971</option>
+                    <option value="+966" {{ old('country_code') == '+966' ? 'selected' : '' }}>🇸🇦 +966</option>
+                    <option value="+65" {{ old('country_code') == '+65' ? 'selected' : '' }}>🇸🇬 +65</option>
+                    <option value="+60" {{ old('country_code') == '+60' ? 'selected' : '' }}>🇲🇾 +60</option>
+                    <option value="+61" {{ old('country_code') == '+61' ? 'selected' : '' }}>🇦🇺 +61</option>
+                    <option value="+49" {{ old('country_code') == '+49' ? 'selected' : '' }}>🇩🇪 +49</option>
+                    <option value="+33" {{ old('country_code') == '+33' ? 'selected' : '' }}>🇫🇷 +33</option>
+                </select>
+                <x-text-input id="phone" class="block w-full rounded-l-none" type="tel" name="phone" :value="old('phone')"
+                             placeholder="Enter mobile number" required maxlength="15" autocomplete="tel" />
+            </div>
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+            <x-input-error :messages="$errors->get('country_code')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Password *')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -26,11 +49,14 @@
                             required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Password must be at least 8 characters long
+            </p>
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input-label for="password_confirmation" :value="__('Confirm Password *')" />
 
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                             type="password"
@@ -90,4 +116,82 @@
             </a>
         </p>
     </div>
+
+    <script>
+        // Phone number validation based on country code
+        document.getElementById('country_code').addEventListener('change', function() {
+            const phone = document.getElementById('phone');
+            const countryCode = this.value;
+
+            // Set placeholder and maxlength based on country
+            switch(countryCode) {
+                case '+91': // India
+                    phone.placeholder = 'Enter 10-digit mobile number';
+                    phone.maxLength = 10;
+                    break;
+                case '+1': // USA
+                    phone.placeholder = 'Enter 10-digit phone number';
+                    phone.maxLength = 10;
+                    break;
+                case '+44': // UK
+                    phone.placeholder = 'Enter 10-11 digit phone number';
+                    phone.maxLength = 11;
+                    break;
+                default:
+                    phone.placeholder = 'Enter mobile number';
+                    phone.maxLength = 15;
+            }
+        });
+
+        // Auto-format phone number input (numbers only)
+        document.getElementById('phone').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirmation = document.getElementById('password_confirmation').value;
+
+            let errors = [];
+
+            // Validate name
+            if (name.length < 2) {
+                errors.push('Name must be at least 2 characters long');
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errors.push('Please enter a valid email address');
+            }
+
+            // Validate phone
+            const countryCode = document.getElementById('country_code').value;
+            if (countryCode === '+91' && phone.length !== 10) {
+                errors.push('Indian mobile number must be exactly 10 digits');
+            } else if (phone.length < 7) {
+                errors.push('Phone number must be at least 7 digits');
+            }
+
+            // Validate password
+            if (password.length < 8) {
+                errors.push('Password must be at least 8 characters long');
+            }
+
+            if (password !== passwordConfirmation) {
+                errors.push('Passwords do not match');
+            }
+
+            // Show errors if any
+            if (errors.length > 0) {
+                e.preventDefault();
+                alert('Please fix the following errors:\n\n' + errors.join('\n'));
+                return false;
+            }
+        });
+    </script>
 </x-guest-layout>
