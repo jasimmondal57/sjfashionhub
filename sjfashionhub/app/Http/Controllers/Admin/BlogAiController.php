@@ -288,12 +288,20 @@ class BlogAiController extends Controller
     /**
      * Auto-generate blog content via GET request (no CSRF needed)
      */
-    public function autoGenerate($productId)
+    public function autoGenerate($productId, Request $request)
     {
         try {
             $product = Product::with(['category'])->findOrFail($productId);
 
-            // Auto-generate settings
+            // Check if specific blog type is requested
+            $requestedBlogType = $request->get('blog_type');
+
+            // If specific blog type requested, generate only that type
+            if ($requestedBlogType && in_array($requestedBlogType, ['product_review', 'buying_guide', 'style_guide', 'trend_analysis'])) {
+                return $this->generateSingleBlogType($product, $requestedBlogType);
+            }
+
+            // Auto-generate settings for default type
             $autoSettings = $this->getAutoGenerationSettings($product);
 
             // Prepare options for AI generation
@@ -366,7 +374,185 @@ class BlogAiController extends Controller
         }
     }
 
+    /**
+     * Generate all blog types for a product
+     */
+    public function generateAllBlogTypes($productId)
+    {
+        try {
+            $product = Product::with(['category'])->findOrFail($productId);
 
+            $blogTypes = ['product_review', 'buying_guide', 'style_guide', 'trend_analysis'];
+            $generatedBlogs = [];
+            $errors = [];
+
+            foreach ($blogTypes as $blogType) {
+                try {
+                    // Check if this blog type already exists for this product
+                    $existingBlog = BlogPost::where('product_id', $product->id)
+                                          ->where('ai_generated', true)
+                                          ->whereJsonContains('ai_prompt->blog_type', $blogType)
+                                          ->first();
+
+                    if ($existingBlog) {
+                        $generatedBlogs[] = [
+                            'blog_type' => $blogType,
+                            'status' => 'exists',
+                            'blog_post' => $existingBlog,
+                            'message' => ucfirst(str_replace('_', ' ', $blogType)) . ' already exists'
+                        ];
+                        continue;
+                    }
+
+                    $result = $this->generateSingleBlogType($product, $blogType);
+                    $generatedBlogs[] = [
+                        'blog_type' => $blogType,
+                        'status' => 'generated',
+                        'blog_post' => $result['blog_post'],
+                        'message' => ucfirst(str_replace('_', ' ', $blogType)) . ' generated successfully'
+                    ];
+
+                    // Add a small delay between generations to avoid rate limiting
+                    sleep(2);
+
+                } catch (Exception $e) {
+                    $errors[] = [
+                        'blog_type' => $blogType,
+                        'error' => $e->getMessage()
+                    ];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Blog generation completed!',
+                'generated_blogs' => $generatedBlogs,
+                'errors' => $errors,
+                'product' => $product,
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate blogs: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Generate a single blog type for a product
+     */
+    private function generateSingleBlogType($product, $blogType)
+    {
+        // Get settings optimized for this blog type
+        $settings = $this->getBlogTypeSettings($product, $blogType);
+
+        // Prepare options for AI generation
+        $options = [
+            'blog_type' => $blogType,
+            'tone' => $settings['tone'],
+            'word_count' => $settings['word_count'],
+            'target_keywords' => array_map('trim', explode(',', $settings['target_keywords'])),
+        ];
+
+        // Generate content using AI
+        $generatedContent = $this->geminiService->generateBlogPost($product, $options);
+
+        // Create suggested tags
+        $suggestedTags = [];
+        if (!empty($generatedContent['suggested_tags'])) {
+            foreach ($generatedContent['suggested_tags'] as $tagName) {
+                $tag = BlogTag::firstOrCreate(
+                    ['name' => $tagName],
+                    ['slug' => Str::slug($tagName), 'is_active' => true]
+                );
+                $suggestedTags[] = $tag->id;
+            }
+        }
+
+        // Create the blog post
+        $blogPost = BlogPost::create([
+            'title' => $generatedContent['title'],
+            'slug' => $this->generateUniqueSlug($generatedContent['title']),
+            'excerpt' => $generatedContent['excerpt'] ?? '',
+            'content' => $generatedContent['content'],
+            'seo_title' => $generatedContent['seo_title'],
+            'seo_description' => $generatedContent['seo_description'],
+            'seo_keywords' => implode(', ', $generatedContent['seo_keywords'] ?? []),
+            'product_id' => $product->id,
+            'blog_category_id' => null,
+            'author_id' => Auth::id() ?? 1,
+            'ai_generated' => true,
+            'ai_prompt' => json_encode($options),
+            'ai_metadata' => json_encode($generatedContent['ai_metadata']),
+            'status' => 'published',
+            'reading_time' => $generatedContent['reading_time'] ?? null,
+            'featured_image' => $product->images[0]['image_path'] ?? null,
+            'published_at' => now(),
+        ]);
+
+        // Attach suggested tags
+        if (!empty($suggestedTags)) {
+            $blogPost->tags()->attach($suggestedTags);
+        }
+
+        return [
+            'blog_post' => $blogPost,
+            'blog_url' => route('admin.blog.show', $blogPost->id),
+            'view_url' => route('blog.show', $blogPost->slug),
+            'suggested_tags' => $suggestedTags,
+        ];
+    }
+
+    /**
+     * Get blog type specific settings
+     */
+    private function getBlogTypeSettings($product, $blogType)
+    {
+        $baseKeywords = $this->generateAutoKeywords($product);
+
+        $settings = [
+            'product_review' => [
+                'tone' => 'professional',
+                'word_count' => 1800,
+                'target_keywords' => $baseKeywords . ', product review, detailed review, pros and cons',
+            ],
+            'buying_guide' => [
+                'tone' => 'casual',
+                'word_count' => 1500,
+                'target_keywords' => $baseKeywords . ', buying guide, how to choose, best price, purchase tips',
+            ],
+            'style_guide' => [
+                'tone' => 'friendly',
+                'word_count' => 1200,
+                'target_keywords' => $baseKeywords . ', style guide, fashion tips, how to wear, styling ideas',
+            ],
+            'trend_analysis' => [
+                'tone' => 'authoritative',
+                'word_count' => 1600,
+                'target_keywords' => $baseKeywords . ', fashion trends, latest trends, trend analysis, style trends',
+            ],
+        ];
+
+        return $settings[$blogType] ?? $settings['product_review'];
+    }
+
+    /**
+     * Generate unique slug to avoid conflicts
+     */
+    private function generateUniqueSlug($title)
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (BlogPost::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
 
     /**
      * Get automatic generation settings based on product
