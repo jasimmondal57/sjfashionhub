@@ -125,7 +125,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Account SID *</label>
                         <input type="text" name="account_sid" 
-                               value="{{ old('account_sid', isset($settings['twilio_whatsapp']) ? $settings['twilio_whatsapp']->where('key', 'account_sid')->first()->value ?? '') }}"
+                               value="{{ old('account_sid', isset($settings['twilio_whatsapp']) ? ($settings['twilio_whatsapp']->where('key', 'account_sid')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" required>
                     </div>
@@ -140,7 +140,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Number *</label>
                         <input type="text" name="phone_number" 
-                               value="{{ old('phone_number', isset($settings['twilio_whatsapp']) ? $settings['twilio_whatsapp']->where('key', 'phone_number')->first()->value ?? '') }}"
+                               value="{{ old('phone_number', isset($settings['twilio_whatsapp']) ? ($settings['twilio_whatsapp']->where('key', 'phone_number')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="whatsapp:+14155238886" required>
                     </div>
@@ -148,7 +148,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
                         <input type="url" name="webhook_url" 
-                               value="{{ old('webhook_url', isset($settings['twilio_whatsapp']) ? $settings['twilio_whatsapp']->where('key', 'webhook_url')->first()->value ?? '') }}"
+                               value="{{ old('webhook_url', isset($settings['twilio_whatsapp']) ? ($settings['twilio_whatsapp']->where('key', 'webhook_url')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="https://yoursite.com/webhook/twilio-whatsapp">
                     </div>
@@ -185,7 +185,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Number *</label>
                         <input type="text" name="phone_number" 
-                               value="{{ old('phone_number', isset($settings['msg91_whatsapp']) ? $settings['msg91_whatsapp']->where('key', 'phone_number')->first()->value ?? '') }}"
+                               value="{{ old('phone_number', isset($settings['msg91_whatsapp']) ? ($settings['msg91_whatsapp']->where('key', 'phone_number')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="+91xxxxxxxxxx" required>
                     </div>
@@ -193,7 +193,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Template Namespace</label>
                         <input type="text" name="template_namespace" 
-                               value="{{ old('template_namespace', isset($settings['msg91_whatsapp']) ? $settings['msg91_whatsapp']->where('key', 'template_namespace')->first()->value ?? '') }}"
+                               value="{{ old('template_namespace', isset($settings['msg91_whatsapp']) ? ($settings['msg91_whatsapp']->where('key', 'template_namespace')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="your_namespace">
                     </div>
@@ -201,7 +201,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
                         <input type="url" name="webhook_url" 
-                               value="{{ old('webhook_url', isset($settings['msg91_whatsapp']) ? $settings['msg91_whatsapp']->where('key', 'webhook_url')->first()->value ?? '') }}"
+                               value="{{ old('webhook_url', isset($settings['msg91_whatsapp']) ? ($settings['msg91_whatsapp']->where('key', 'webhook_url')->first()->value ?? '') : '') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2" 
                                placeholder="https://yoursite.com/webhook/msg91-whatsapp">
                     </div>
