@@ -9,12 +9,12 @@
                 <p class="text-gray-600 mt-1">Manage your site backups and Google Drive integration</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('admin.backup.settings') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    Settings
+                <a href="{{ route('admin.backup.settings') }}" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-gray-700">
+                    ⚙️ Settings
                 </a>
                 @if($isConfigured ?? false)
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    Create Backup
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-blue-500">
+                    ➕ Create Backup
                 </button>
                 @endif
             </div>
@@ -24,7 +24,7 @@
             <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
                 <h4 class="font-bold text-lg mb-2">⚠️ Google Drive Not Configured</h4>
                 <p class="mb-4">To use the backup system, you need to configure Google Drive integration first.</p>
-                <a href="{{ route('admin.backup.settings') }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                <a href="{{ route('admin.backup.settings') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center font-medium">
                     Configure Google Drive
                 </a>
             </div>
@@ -77,8 +77,8 @@
                     <h3 class="mt-2 text-sm font-medium text-gray-900">No backups</h3>
                     <p class="mt-1 text-sm text-gray-500">Get started by creating your first backup.</p>
                     <div class="mt-6">
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                            Create Backup
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg border border-blue-500">
+                            ➕ Create Backup
                         </button>
                     </div>
                 </div>

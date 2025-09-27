@@ -9,7 +9,7 @@
                 <p class="text-gray-600 mt-1">Configure Google Drive integration and backup schedule</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('admin.backup.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <a href="{{ route('admin.backup.index') }}" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-gray-700">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -146,31 +146,31 @@
                 <div class="px-6 py-4 border-t border-gray-200 flex justify-between">
                     <div class="flex space-x-3">
                         @if($isConfigured)
-                            <button type="button" 
-                                    onclick="testConnection()" 
-                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <button type="button"
+                                    onclick="testConnection()"
+                                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-green-500">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Test Connection
+                                ✅ Test Connection
                             </button>
                         @else
-                            <a href="{{ route('admin.backup.authorize') }}" 
-                               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <a href="{{ route('admin.backup.authorize') }}"
+                               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-blue-500">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                 </svg>
-                                Authorize Google Drive
+                                🔐 Authorize Google Drive
                             </a>
                         @endif
                     </div>
                     
-                    <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg flex items-center font-medium shadow-lg border border-blue-500">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        Save Settings
+                        💾 Save Settings
                     </button>
                 </div>
             </form>
