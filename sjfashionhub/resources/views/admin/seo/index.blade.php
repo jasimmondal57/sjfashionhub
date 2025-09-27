@@ -76,13 +76,21 @@
                     Generate SEO for All Categories
                 </button>
                 <div class="flex space-x-3">
-                    <a href="#" class="flex-1 btn btn-outline">
+                    <a href="{{ route('admin.seo.products') }}" class="flex-1 btn btn-outline">
                         Manage Products
-                            </a>
-                            <a href="{{ route('admin.seo.categories') }}" class="flex-1 btn btn-outline">
-                                Manage Categories
-                            </a>
-                        </div>
+                    </a>
+                    <a href="{{ route('admin.seo.categories') }}" class="flex-1 btn btn-outline">
+                        Manage Categories
+                    </a>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{{ route('admin.seo.sitemap') }}" class="flex-1 btn btn-outline">
+                        🗺️ Sitemap Management
+                    </a>
+                    <a href="{{ route('admin.seo.robots') }}" class="flex-1 btn btn-outline">
+                        🤖 Robots.txt
+                    </a>
+                </div>
                     </div>
                 </div>
 

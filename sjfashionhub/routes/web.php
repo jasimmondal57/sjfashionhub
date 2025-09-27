@@ -24,6 +24,27 @@ Route::get('/categories/{category}', [CategoryController::class, 'show'])->name(
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::post('/newsletter/unsubscribe', [App\Http\Controllers\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
+// SEO routes (public)
+Route::get('/sitemap.xml', function () {
+    $sitemapPath = public_path('sitemap.xml');
+    if (file_exists($sitemapPath)) {
+        return response()->file($sitemapPath, [
+            'Content-Type' => 'application/xml'
+        ]);
+    }
+    return response('Sitemap not found', 404);
+})->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $robotsPath = public_path('robots.txt');
+    if (file_exists($robotsPath)) {
+        return response()->file($robotsPath, [
+            'Content-Type' => 'text/plain'
+        ]);
+    }
+    return response('Robots.txt not found', 404);
+})->name('robots');
+
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
@@ -225,6 +246,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/generate/product/{product}', [App\Http\Controllers\Admin\SeoController::class, 'generateProduct'])->name('generate.product');
         Route::post('/generate/category/{category}', [App\Http\Controllers\Admin\SeoController::class, 'generateCategory'])->name('generate.category');
         Route::post('/bulk-generate', [App\Http\Controllers\Admin\SeoController::class, 'bulkGenerate'])->name('bulk.generate');
+
+        // Sitemap Management
+        Route::get('/sitemap', [App\Http\Controllers\Admin\SeoController::class, 'sitemap'])->name('sitemap');
+        Route::post('/sitemap/generate', [App\Http\Controllers\Admin\SeoController::class, 'generateSitemap'])->name('sitemap.generate');
+
+        // Robots.txt Management
+        Route::get('/robots', [App\Http\Controllers\Admin\SeoController::class, 'robots'])->name('robots');
+        Route::post('/robots/update', [App\Http\Controllers\Admin\SeoController::class, 'updateRobots'])->name('robots.update');
+    });
+
+    // Analytics Management
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('index');
+        Route::post('/update', [App\Http\Controllers\Admin\AnalyticsController::class, 'update'])->name('update');
+        Route::post('/test/google-analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'testGoogleAnalytics'])->name('test.google-analytics');
+        Route::post('/test/facebook-pixel', [App\Http\Controllers\Admin\AnalyticsController::class, 'testFacebookPixel'])->name('test.facebook-pixel');
     });
 
     // Footer Settings
@@ -232,10 +269,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/footer-settings/edit', [App\Http\Controllers\Admin\FooterSettingController::class, 'edit'])->name('footer-settings.edit');
     Route::put('/footer-settings', [App\Http\Controllers\Admin\FooterSettingController::class, 'update'])->name('footer-settings.update');
 
-    // Analytics
-    Route::get('/analytics', function () {
-        return view('admin.analytics.index');
-    })->name('analytics.index');
+
 
     // Settings
     Route::get('/settings', function () {

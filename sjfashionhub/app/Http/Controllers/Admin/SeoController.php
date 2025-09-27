@@ -224,4 +224,118 @@ class SeoController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Display sitemap management
+     */
+    public function sitemap()
+    {
+        return view('admin.seo.sitemap');
+    }
+
+    /**
+     * Generate sitemap
+     */
+    public function generateSitemap()
+    {
+        try {
+            $sitemap = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+            $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+            // Add homepage
+            $sitemap .= $this->addSitemapUrl(url('/'), now(), 'daily', '1.0');
+
+            // Add categories
+            $categories = Category::where('is_active', true)->get();
+            foreach ($categories as $category) {
+                $sitemap .= $this->addSitemapUrl(
+                    route('categories.show', $category->slug),
+                    $category->updated_at,
+                    'weekly',
+                    '0.8'
+                );
+            }
+
+            // Add products
+            $products = Product::where('is_active', true)->get();
+            foreach ($products as $product) {
+                $sitemap .= $this->addSitemapUrl(
+                    route('products.show', $product->slug),
+                    $product->updated_at,
+                    'weekly',
+                    '0.7'
+                );
+            }
+
+            $sitemap .= '</urlset>';
+
+            // Save sitemap to public directory
+            file_put_contents(public_path('sitemap.xml'), $sitemap);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sitemap generated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate sitemap: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper method to add URL to sitemap
+     */
+    private function addSitemapUrl($url, $lastmod, $changefreq, $priority)
+    {
+        return "  <url>\n" .
+               "    <loc>" . htmlspecialchars($url) . "</loc>\n" .
+               "    <lastmod>" . $lastmod->format('Y-m-d\TH:i:s\Z') . "</lastmod>\n" .
+               "    <changefreq>{$changefreq}</changefreq>\n" .
+               "    <priority>{$priority}</priority>\n" .
+               "  </url>\n";
+    }
+
+    /**
+     * Display robots.txt management
+     */
+    public function robots()
+    {
+        $robotsContent = '';
+        $robotsPath = public_path('robots.txt');
+
+        if (file_exists($robotsPath)) {
+            $robotsContent = file_get_contents($robotsPath);
+        } else {
+            // Default robots.txt content
+            $robotsContent = "User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml');
+        }
+
+        return view('admin.seo.robots', compact('robotsContent'));
+    }
+
+    /**
+     * Update robots.txt
+     */
+    public function updateRobots(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        try {
+            file_put_contents(public_path('robots.txt'), $request->content);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Robots.txt updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update robots.txt: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

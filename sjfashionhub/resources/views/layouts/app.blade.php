@@ -13,8 +13,15 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Analytics & Tracking -->
+        <x-tracking.google-tag-manager />
+        <x-tracking.google-analytics />
+        <x-tracking.facebook-pixel />
     </head>
     <body class="font-sans antialiased">
+        <!-- Google Tag Manager (noscript) -->
+        <x-tracking.google-tag-manager />
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
 
