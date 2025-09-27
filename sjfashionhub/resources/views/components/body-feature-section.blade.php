@@ -26,13 +26,15 @@
                     @foreach($contentItems as $item)
                         @if($section->section_type === 'products' || (isset($item->content_type) && $item->content_type === 'product'))
                             <!-- Product Card -->
-                            <a href="{{ route('products.show', $item) }}" class="product-card group block">
+                            <div class="product-card group">
                                 <div class="relative">
-                                    <div class="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
+                                    <a href="{{ route('products.show', $item) }}" class="block">
+                                        <div class="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                    </a>
                                     @if($item->sale_price)
                                     <span class="product-badge product-badge-sale">Sale</span>
                                     @endif
@@ -41,9 +43,11 @@
                                     @endif
                                 </div>
                                 <div class="p-4">
-                                    <h3 class="font-medium text-black mb-2 line-clamp-2 group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                    <a href="{{ route('products.show', $item) }}">
+                                        <h3 class="font-medium text-black mb-2 line-clamp-2 group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                    </a>
                                     <p class="text-sm text-gray-600 mb-2">{{ $item->category->name }}</p>
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center space-x-2">
                                             @if($item->sale_price)
                                             <span class="text-lg font-semibold text-black">₹{{ number_format($item->sale_price) }}</span>
@@ -52,10 +56,18 @@
                                             <span class="text-lg font-semibold text-black">₹{{ number_format($item->price) }}</span>
                                             @endif
                                         </div>
-                                        <span class="btn btn-sm btn-outline group-hover:bg-black group-hover:text-white transition-colors">View</span>
+                                    </div>
+                                    <!-- Action Buttons -->
+                                    <div class="flex space-x-2">
+                                        <button onclick="addToCart({{ $item->id }})" class="flex-1 bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                            Add to Cart
+                                        </button>
+                                        <button onclick="buyNow({{ $item->id }})" class="flex-1 bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                            Buy Now
+                                        </button>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         @elseif($section->section_type === 'categories' || (isset($item->content_type) && $item->content_type === 'category'))
                             <!-- Category Card -->
                             <a href="{{ route('categories.show', $item) }}" class="group">
@@ -86,13 +98,15 @@
                             @foreach($contentItems as $item)
                                 @if($section->section_type === 'products' || (isset($item->content_type) && $item->content_type === 'product'))
                                     <!-- Product Card -->
-                                    <a href="{{ route('products.show', $item) }}" class="product-card w-64 flex-shrink-0 group block">
+                                    <div class="product-card w-64 flex-shrink-0 group">
                                         <div class="relative">
-                                            <div class="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                </svg>
-                                            </div>
+                                            <a href="{{ route('products.show', $item) }}" class="block">
+                                                <div class="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                                                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </div>
+                                            </a>
                                             @if($item->sale_price)
                                             <span class="product-badge product-badge-sale">Sale</span>
                                             @endif
@@ -101,9 +115,11 @@
                                             @endif
                                         </div>
                                         <div class="p-4">
-                                            <h3 class="font-medium text-black mb-2 line-clamp-2 group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                            <a href="{{ route('products.show', $item) }}">
+                                                <h3 class="font-medium text-black mb-2 line-clamp-2 group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                            </a>
                                             <p class="text-sm text-gray-600 mb-2">{{ $item->category->name }}</p>
-                                            <div class="flex items-center justify-between">
+                                            <div class="flex items-center justify-between mb-3">
                                                 <div class="flex items-center space-x-2">
                                                     @if($item->sale_price)
                                                     <span class="text-lg font-semibold text-black">₹{{ number_format($item->sale_price) }}</span>
@@ -112,10 +128,18 @@
                                                     <span class="text-lg font-semibold text-black">₹{{ number_format($item->price) }}</span>
                                                     @endif
                                                 </div>
-                                                <span class="btn btn-sm btn-outline group-hover:bg-black group-hover:text-white transition-colors">View</span>
+                                            </div>
+                                            <!-- Action Buttons -->
+                                            <div class="flex space-x-2">
+                                                <button onclick="addToCart({{ $item->id }})" class="flex-1 bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                                    Add to Cart
+                                                </button>
+                                                <button onclick="buyNow({{ $item->id }})" class="flex-1 bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                                    Buy Now
+                                                </button>
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
                                 @elseif($section->section_type === 'categories' || (isset($item->content_type) && $item->content_type === 'category'))
                                     <!-- Category Card -->
                                     <a href="{{ route('categories.show', $item) }}" class="group w-48 flex-shrink-0">
@@ -146,14 +170,18 @@
                     @foreach($contentItems as $item)
                         @if($section->section_type === 'products' || (isset($item->content_type) && $item->content_type === 'product'))
                             <!-- Product List Item -->
-                            <a href="{{ route('products.show', $item) }}" class="bg-white rounded-lg p-4 flex items-center space-x-4 hover:shadow-md transition-shadow group block">
-                                <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-gray-200 transition-colors">
-                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
+                            <div class="bg-white rounded-lg p-4 flex items-center space-x-4 hover:shadow-md transition-shadow group">
+                                <a href="{{ route('products.show', $item) }}" class="flex-shrink-0">
+                                    <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                </a>
                                 <div class="flex-1">
-                                    <h3 class="font-medium text-black group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                    <a href="{{ route('products.show', $item) }}">
+                                        <h3 class="font-medium text-black group-hover:text-gray-700 transition-colors">{{ $item->name }}</h3>
+                                    </a>
                                     <p class="text-sm text-gray-600">{{ $item->category->name }}</p>
                                     <div class="flex items-center space-x-2 mt-1">
                                         @if($item->sale_price)
@@ -164,8 +192,15 @@
                                         @endif
                                     </div>
                                 </div>
-                                <span class="btn btn-sm btn-outline group-hover:bg-black group-hover:text-white transition-colors">View</span>
-                            </a>
+                                <div class="flex space-x-2">
+                                    <button onclick="addToCart({{ $item->id }})" class="bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                        Add to Cart
+                                    </button>
+                                    <button onclick="buyNow({{ $item->id }})" class="bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                        Buy Now
+                                    </button>
+                                </div>
+                            </div>
                         @elseif($section->section_type === 'categories' || (isset($item->content_type) && $item->content_type === 'category'))
                             <!-- Category List Item -->
                             <a href="{{ route('categories.show', $item) }}" class="bg-white rounded-lg p-4 flex items-center space-x-4 hover:shadow-md transition-shadow group">
