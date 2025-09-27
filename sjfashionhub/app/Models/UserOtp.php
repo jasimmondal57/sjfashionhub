@@ -196,12 +196,16 @@ class UserOtp extends Model
     private static function sendEmail($email, $message, $purpose)
     {
         try {
+            Log::info("Attempting to send OTP email to: {$email}");
+
             // Configure mail settings from database
-            MailConfigService::configure();
+            $mailConfigured = MailConfigService::configure();
+            Log::info("Mail configuration result: " . ($mailConfigured ? 'success' : 'failed'));
 
             // Extract OTP from message
             preg_match('/OTP is: (\d{6})/', $message, $matches);
             $otp = $matches[1] ?? '000000';
+            Log::info("Extracted OTP: {$otp}");
 
             // Create a temporary notifiable object
             $notifiable = new class($email) {
@@ -214,15 +218,41 @@ class UserOtp extends Model
                 }
             };
 
+            Log::info("Sending notification to: {$email}");
+
             // Send notification
             Notification::send($notifiable, new OtpNotification($otp, $purpose));
 
-            Log::info("Email OTP sent to {$email}: {$otp}");
+            Log::info("Email OTP sent successfully to {$email}: {$otp}");
             return true;
 
         } catch (\Exception $e) {
             Log::error("Failed to send email OTP to {$email}: " . $e->getMessage());
-            return false;
+            Log::error("Stack trace: " . $e->getTraceAsString());
+
+            // Try fallback with simple mail
+            try {
+                Log::info("Attempting fallback email method");
+
+                // Extract OTP from message
+                preg_match('/OTP is: (\d{6})/', $message, $matches);
+                $otp = $matches[1] ?? '000000';
+
+                // Use Laravel's Mail facade directly
+                Mail::raw("Your SJ Fashion Hub OTP is: {$otp}. Valid for 10 minutes.", function ($mail) use ($email) {
+                    $mail->to($email)
+                         ->subject('Your SJ Fashion Hub Verification Code')
+                         ->from(config('mail.from.address', 'noreply@sjfashionhub.in'),
+                                config('mail.from.name', 'SJ Fashion Hub'));
+                });
+
+                Log::info("Fallback email sent successfully to {$email}: {$otp}");
+                return true;
+
+            } catch (\Exception $fallbackError) {
+                Log::error("Fallback email also failed: " . $fallbackError->getMessage());
+                return false;
+            }
         }
     }
 
