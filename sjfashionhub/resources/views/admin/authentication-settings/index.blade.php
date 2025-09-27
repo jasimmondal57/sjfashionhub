@@ -93,7 +93,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">🔑 Authentication Methods</h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Configure available login methods for users</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Enable or disable login methods (SMS/WhatsApp settings are in Communication menu)</p>
         </div>
 
         <div class="p-6">
@@ -130,57 +130,16 @@
                     </div>
 
                     @if($method->method !== 'email')
-                    <!-- Configuration Form for SMS/WhatsApp -->
-                    <form action="{{ route('admin.auth-settings.update-method', $method->method) }}" method="POST" class="space-y-4">
-                        @csrf
-                        @method('PUT')
-                        
-                        <input type="hidden" name="enabled" value="{{ $method->enabled ? 1 : 0 }}">
-
-                        @if($method->method === 'mobile_sms')
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMS API Key</label>
-                                    <input type="password" name="settings[api_key]" value="{{ $method->getSetting('api_key') }}" 
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                           placeholder="Enter SMS API Key">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sender ID</label>
-                                    <input type="text" name="settings[sender_id]" value="{{ $method->getSetting('sender_id') }}" 
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                           placeholder="SJFASHION">
-                                </div>
-                            </div>
-                        @elseif($method->method === 'mobile_whatsapp')
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Access Token</label>
-                                    <input type="password" name="settings[access_token]" value="{{ $method->getSetting('access_token') }}" 
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                           placeholder="Enter WhatsApp Access Token">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number ID</label>
-                                    <input type="text" name="settings[phone_number_id]" value="{{ $method->getSetting('phone_number_id') }}" 
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                           placeholder="Enter Phone Number ID">
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="flex space-x-3">
-                            <button type="submit" 
-                                    class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                💾 Save Settings
-                            </button>
-                            <button type="button" 
-                                    onclick="testMethod('{{ $method->method }}')"
-                                    class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                🧪 Test
-                            </button>
-                        </div>
-                    </form>
+                    <!-- Note about configuration -->
+                    <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <p class="text-sm text-blue-700 dark:text-blue-300">
+                            @if($method->method === 'mobile_sms')
+                                📱 SMS settings are configured in <a href="{{ route('admin.communication.sms-settings') }}" class="underline font-medium">Communication → SMS Settings</a>
+                            @elseif($method->method === 'mobile_whatsapp')
+                                💬 WhatsApp settings are configured in <a href="{{ route('admin.communication.whatsapp-settings') }}" class="underline font-medium">Communication → WhatsApp Settings</a>
+                            @endif
+                        </p>
+                    </div>
                     @endif
                 </div>
                 @endforeach
@@ -233,10 +192,19 @@ async function testProvider(provider) {
 }
 
 async function testMethod(method) {
+    if (method === 'mobile_sms') {
+        alert('📱 SMS settings are configured in Communication → SMS Settings');
+        return;
+    }
+    if (method === 'mobile_whatsapp') {
+        alert('💬 WhatsApp settings are configured in Communication → WhatsApp Settings');
+        return;
+    }
+
     try {
         const response = await fetch(`{{ url('admin/auth-settings/test-method') }}/${method}`);
         const data = await response.json();
-        
+
         if (data.success) {
             alert('✅ ' + data.message);
         } else {
