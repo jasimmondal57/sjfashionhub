@@ -78,21 +78,28 @@ class BlogAiController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'blog_type' => 'required|in:product_review,buying_guide,style_guide,trend_analysis',
+            'auto_generate' => 'nullable|boolean',
+            'blog_type' => 'nullable|in:product_review,buying_guide,style_guide,trend_analysis',
             'blog_category_id' => 'nullable|exists:blog_categories,id',
             'target_keywords' => 'nullable|string',
-            'tone' => 'required|in:professional,casual,friendly,authoritative',
-            'word_count' => 'required|integer|min:500|max:3000',
+            'tone' => 'nullable|in:professional,casual,friendly,authoritative',
+            'word_count' => 'nullable|integer|min:500|max:3000',
         ]);
 
         try {
-            $product = Product::with(['category', 'images'])->findOrFail($request->product_id);
+            $product = Product::with(['category'])->findOrFail($request->product_id);
+
+            // Auto-generate settings if requested
+            if ($request->auto_generate) {
+                $autoSettings = $this->getAutoGenerationSettings($product);
+                $request->merge($autoSettings);
+            }
 
             // Prepare options for AI generation
             $options = [
-                'blog_type' => $request->blog_type,
-                'tone' => $request->tone,
-                'word_count' => $request->word_count,
+                'blog_type' => $request->blog_type ?? 'product_review',
+                'tone' => $request->tone ?? 'professional',
+                'word_count' => $request->word_count ?? 1500,
             ];
 
             if ($request->filled('target_keywords')) {
@@ -274,5 +281,114 @@ class BlogAiController extends Controller
             'success' => true,
             'products' => $products,
         ]);
+    }
+
+    /**
+     * Get automatic generation settings based on product
+     */
+    private function getAutoGenerationSettings($product)
+    {
+        // Determine best blog type based on product category and characteristics
+        $blogType = $this->determineBestBlogType($product);
+
+        // Auto-generate keywords based on product
+        $keywords = $this->generateAutoKeywords($product);
+
+        // Determine optimal word count
+        $wordCount = $this->getOptimalWordCount($product);
+
+        // Choose appropriate tone
+        $tone = $this->selectOptimalTone($product);
+
+        return [
+            'blog_type' => $blogType,
+            'target_keywords' => $keywords,
+            'word_count' => $wordCount,
+            'tone' => $tone,
+        ];
+    }
+
+    /**
+     * Determine the best blog type for the product
+     */
+    private function determineBestBlogType($product)
+    {
+        $categoryName = strtolower($product->category->name ?? '');
+        $productName = strtolower($product->name);
+
+        // Logic to determine blog type based on product characteristics
+        if (str_contains($categoryName, 'dress') || str_contains($categoryName, 'fashion')) {
+            return 'style_guide';
+        } elseif (str_contains($productName, 'trend') || str_contains($productName, 'latest')) {
+            return 'trend_analysis';
+        } elseif ($product->price > 2000) {
+            return 'product_review';
+        } else {
+            return 'buying_guide';
+        }
+    }
+
+    /**
+     * Generate automatic keywords based on product
+     */
+    private function generateAutoKeywords($product)
+    {
+        $keywords = [];
+
+        // Add product name variations
+        $keywords[] = strtolower($product->name);
+        $keywords[] = strtolower($product->category->name ?? 'fashion');
+
+        // Add category-specific keywords
+        $categoryKeywords = [
+            'shirts' => ['formal shirts', 'casual shirts', 'cotton shirts', 'office wear'],
+            'dresses' => ['party dresses', 'formal dresses', 'evening wear', 'casual dresses'],
+            'jeans' => ['denim', 'casual pants', 'skinny jeans', 'straight fit'],
+            't-shirts' => ['casual tees', 'cotton t-shirts', 'graphic tees', 'basic tees'],
+            'tops' => ['women tops', 'casual tops', 'formal tops', 'trendy tops'],
+        ];
+
+        $categoryName = strtolower($product->category->name ?? '');
+        if (isset($categoryKeywords[$categoryName])) {
+            $keywords = array_merge($keywords, $categoryKeywords[$categoryName]);
+        }
+
+        // Add general fashion keywords
+        $keywords = array_merge($keywords, [
+            'fashion', 'style', 'trendy', 'online shopping', 'best price'
+        ]);
+
+        return implode(', ', array_slice($keywords, 0, 8));
+    }
+
+    /**
+     * Get optimal word count based on product
+     */
+    private function getOptimalWordCount($product)
+    {
+        // Higher-priced items get longer, more detailed content
+        if ($product->price > 2500) {
+            return 2000; // Comprehensive
+        } elseif ($product->price > 1500) {
+            return 1500; // Detailed
+        } else {
+            return 1200; // Medium
+        }
+    }
+
+    /**
+     * Select optimal tone based on product
+     */
+    private function selectOptimalTone($product)
+    {
+        $categoryName = strtolower($product->category->name ?? '');
+
+        if (str_contains($categoryName, 'formal') || $product->price > 2000) {
+            return 'professional';
+        } elseif (str_contains($categoryName, 'casual') || str_contains($categoryName, 't-shirt')) {
+            return 'friendly';
+        } else {
+            return 'casual';
+        }
     }
 }

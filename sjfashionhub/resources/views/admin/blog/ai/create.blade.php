@@ -67,72 +67,95 @@
                 </div>
 
                 @if($product)
-                <!-- AI Generation Settings -->
+                <!-- AI Auto-Generation -->
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Generation Settings</h2>
-                    
-                    <form id="ai-generation-form">
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        
-                        <!-- Blog Type -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Blog Type</label>
-                            <select name="blog_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                @foreach($blogTypes as $value => $label)
-                                    <option value="{{ $value }}">{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">AI Blog Generator</h2>
 
-                        <!-- Category -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Blog Category</label>
-                            <select name="blog_category_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <option value="">Select Category</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Target Keywords -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Target Keywords</label>
-                            <input type="text" name="target_keywords" placeholder="keyword1, keyword2, keyword3" 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                            <p class="text-xs text-gray-500 mt-1">Separate keywords with commas</p>
-                        </div>
-
-                        <!-- Tone -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Writing Tone</label>
-                            <select name="tone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <option value="professional">Professional</option>
-                                <option value="casual">Casual</option>
-                                <option value="friendly">Friendly</option>
-                                <option value="authoritative">Authoritative</option>
-                            </select>
-                        </div>
-
-                        <!-- Word Count -->
+                    <div class="text-center">
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Word Count</label>
-                            <select name="word_count" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <option value="800">800 words (Short)</option>
-                                <option value="1200">1200 words (Medium)</option>
-                                <option value="1500" selected>1500 words (Long)</option>
-                                <option value="2000">2000 words (Detailed)</option>
-                            </select>
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Ready to Generate</h3>
+                            <p class="text-gray-600 text-sm">AI will automatically create a complete SEO-optimized blog post for this product</p>
                         </div>
 
-                        <!-- Generate Button -->
-                        <button type="submit" id="generate-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Auto-Generate Button -->
+                        <button type="button" id="auto-generate-btn"
+                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg font-medium text-lg flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
-                            Generate Blog Post
+                            <span id="generate-text">Generate Complete Blog Post</span>
                         </button>
-                    </form>
+
+                        <div id="generation-progress" class="hidden mt-6">
+                            <div class="flex items-center justify-center space-x-2 text-purple-600 mb-3">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-purple-600"></div>
+                                <span id="progress-text">Analyzing product and generating content...</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="progress-bar" class="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
+                            <p class="text-sm font-medium text-gray-700 mb-2">✨ AI will automatically handle:</p>
+                            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Blog type selection
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    SEO optimization
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Keyword research
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Content creation
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Category assignment
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Meta descriptions
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Tag suggestions
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Ready to publish
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                     <!-- Title Suggestions -->
                     <div class="mt-6 pt-6 border-t border-gray-200">
@@ -344,10 +367,10 @@
         }
         @endif
 
-        // AI Generation Form Handler
-        document.getElementById('ai-generation-form')?.addEventListener('submit', function(e) {
+        // Auto-Generate Button Handler
+        document.getElementById('auto-generate-btn')?.addEventListener('click', function(e) {
             e.preventDefault();
-            generateBlogContent();
+            autoGenerateBlogContent();
         });
 
         // Save Blog Form Handler
@@ -356,23 +379,45 @@
             saveBlogPost();
         });
 
-        function generateBlogContent() {
-            const form = document.getElementById('ai-generation-form');
-            const formData = new FormData(form);
-            const generateBtn = document.getElementById('generate-btn');
-            const statusDiv = document.getElementById('generation-status');
-            const previewDiv = document.getElementById('content-preview');
+        function autoGenerateBlogContent() {
+            const generateBtn = document.getElementById('auto-generate-btn');
+            const generateText = document.getElementById('generate-text');
+            const progressDiv = document.getElementById('generation-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
 
             // Show loading state
             generateBtn.disabled = true;
-            generateBtn.innerHTML = `
-                <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Generating...
-            `;
-            statusDiv.classList.remove('hidden');
+            generateText.textContent = 'Generating...';
+            progressDiv.classList.remove('hidden');
+
+            // Progress simulation
+            let progress = 0;
+            const progressSteps = [
+                { percent: 20, text: 'Analyzing product details...' },
+                { percent: 40, text: 'Researching SEO keywords...' },
+                { percent: 60, text: 'Generating content structure...' },
+                { percent: 80, text: 'Creating engaging content...' },
+                { percent: 95, text: 'Optimizing for search engines...' },
+                { percent: 100, text: 'Finalizing blog post...' }
+            ];
+
+            let stepIndex = 0;
+            const progressInterval = setInterval(() => {
+                if (stepIndex < progressSteps.length) {
+                    const step = progressSteps[stepIndex];
+                    progressBar.style.width = step.percent + '%';
+                    progressText.textContent = step.text;
+                    stepIndex++;
+                } else {
+                    clearInterval(progressInterval);
+                }
+            }, 1000);
+
+            // Create automated form data
+            const formData = new FormData();
+            formData.append('product_id', '{{ $product->id ?? "" }}');
+            formData.append('auto_generate', 'true');
 
             fetch('{{ route("admin.blog.ai.generate") }}', {
                 method: 'POST',
@@ -384,28 +429,48 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    populateGeneratedContent(data.blog_data, data.suggested_tags);
-                    document.getElementById('generated-content-form').classList.remove('hidden');
-                } else {
-                    alert('Error: ' + data.message);
-                }
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Blog post generated successfully!';
+
+                setTimeout(() => {
+                    if (data.success) {
+                        populateGeneratedContent(data.blog_data, data.suggested_tags);
+                        document.getElementById('generated-content-form').classList.remove('hidden');
+
+                        // Show success message
+                        showSuccessMessage('✨ Your SEO-optimized blog post has been generated automatically!');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                }, 1000);
             })
             .catch(error => {
+                clearInterval(progressInterval);
                 console.error('Error:', error);
                 alert('An error occurred while generating content.');
             })
             .finally(() => {
-                // Reset button state
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = `
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    Generate Blog Post
-                `;
-                statusDiv.classList.add('hidden');
+                setTimeout(() => {
+                    // Reset button state
+                    generateBtn.disabled = false;
+                    generateText.textContent = 'Generate Complete Blog Post';
+                    progressDiv.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }, 2000);
             });
+        }
+
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.style.transform = 'translateX(100%)';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 3000);
         }
 
         function populateGeneratedContent(blogData, suggestedTags) {
