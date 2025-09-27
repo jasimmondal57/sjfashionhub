@@ -388,22 +388,6 @@ class BlogAiController extends Controller
 
             foreach ($blogTypes as $blogType) {
                 try {
-                    // Check if this blog type already exists for this product
-                    $existingBlog = BlogPost::where('product_id', $product->id)
-                                          ->where('ai_generated', true)
-                                          ->whereJsonContains('ai_prompt->blog_type', $blogType)
-                                          ->first();
-
-                    if ($existingBlog) {
-                        $generatedBlogs[] = [
-                            'blog_type' => $blogType,
-                            'status' => 'exists',
-                            'blog_post' => $existingBlog,
-                            'message' => ucfirst(str_replace('_', ' ', $blogType)) . ' already exists'
-                        ];
-                        continue;
-                    }
-
                     $result = $this->generateSingleBlogType($product, $blogType);
                     $generatedBlogs[] = [
                         'blog_type' => $blogType,
@@ -505,50 +489,70 @@ class BlogAiController extends Controller
     }
 
     /**
-     * Get blog type specific settings
+     * Get blog type specific settings with variation for SEO diversity
      */
     private function getBlogTypeSettings($product, $blogType)
     {
         $baseKeywords = $this->generateAutoKeywords($product);
 
-        $settings = [
+        // Add random variation to keywords for better SEO coverage
+        $variations = [
             'product_review' => [
-                'tone' => 'professional',
-                'word_count' => 1800,
-                'target_keywords' => $baseKeywords . ', product review, detailed review, pros and cons',
+                ['product review, detailed review, pros and cons, honest review', 1800, 'professional'],
+                ['in-depth review, comprehensive review, product analysis, review guide', 1900, 'authoritative'],
+                ['unbiased review, expert review, product evaluation, detailed analysis', 1700, 'professional'],
+                ['complete review, thorough review, product breakdown, review summary', 1850, 'casual'],
             ],
             'buying_guide' => [
-                'tone' => 'casual',
-                'word_count' => 1500,
-                'target_keywords' => $baseKeywords . ', buying guide, how to choose, best price, purchase tips',
+                ['buying guide, how to choose, best price, purchase tips', 1500, 'casual'],
+                ['shopping guide, buying advice, purchase guide, smart shopping', 1600, 'friendly'],
+                ['buyer guide, shopping tips, how to buy, purchase decisions', 1550, 'casual'],
+                ['complete buying guide, shopping advice, purchase recommendations', 1650, 'authoritative'],
             ],
             'style_guide' => [
-                'tone' => 'friendly',
-                'word_count' => 1200,
-                'target_keywords' => $baseKeywords . ', style guide, fashion tips, how to wear, styling ideas',
+                ['style guide, fashion tips, how to wear, styling ideas', 1200, 'friendly'],
+                ['styling guide, fashion advice, outfit ideas, style tips', 1300, 'casual'],
+                ['fashion guide, style inspiration, wardrobe tips, styling secrets', 1250, 'friendly'],
+                ['complete style guide, fashion styling, outfit guide, style advice', 1350, 'authoritative'],
             ],
             'trend_analysis' => [
-                'tone' => 'authoritative',
-                'word_count' => 1600,
-                'target_keywords' => $baseKeywords . ', fashion trends, latest trends, trend analysis, style trends',
+                ['fashion trends, latest trends, trend analysis, style trends', 1600, 'authoritative'],
+                ['trend forecast, fashion predictions, style evolution, trend insights', 1700, 'professional'],
+                ['current trends, trending styles, fashion movements, style direction', 1650, 'authoritative'],
+                ['trend report, fashion outlook, style trends analysis, trend guide', 1750, 'professional'],
             ],
         ];
 
-        return $settings[$blogType] ?? $settings['product_review'];
+        // Get random variation for the blog type
+        $typeVariations = $variations[$blogType] ?? $variations['product_review'];
+        $selectedVariation = $typeVariations[array_rand($typeVariations)];
+
+        return [
+            'tone' => $selectedVariation[2],
+            'word_count' => $selectedVariation[1],
+            'target_keywords' => $baseKeywords . ', ' . $selectedVariation[0],
+        ];
     }
 
     /**
-     * Generate unique slug to avoid conflicts
+     * Generate unique slug to avoid conflicts with timestamp for better SEO diversity
      */
     private function generateUniqueSlug($title)
     {
         $baseSlug = Str::slug($title);
         $slug = $baseSlug;
-        $counter = 1;
 
-        while (BlogPost::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $counter;
-            $counter++;
+        // Add timestamp-based suffix for uniqueness and SEO diversity
+        if (BlogPost::where('slug', $slug)->exists()) {
+            $timestamp = now()->format('Y-m-d');
+            $slug = $baseSlug . '-' . $timestamp;
+
+            // If still exists, add counter
+            $counter = 1;
+            while (BlogPost::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $timestamp . '-' . $counter;
+                $counter++;
+            }
         }
 
         return $slug;
