@@ -50,8 +50,20 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Don't auto-login, redirect to success page instead
+        return redirect()->route('register.success')->with([
+            'success' => 'Registration successful! Please login with your credentials.',
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'user_phone' => $user->phone,
+        ]);
+    }
 
-        return redirect(route('dashboard', absolute: false));
+    /**
+     * Show registration success page.
+     */
+    public function success(): View
+    {
+        return view('auth.register-success');
     }
 }

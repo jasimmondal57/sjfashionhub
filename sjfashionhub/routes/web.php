@@ -399,6 +399,10 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+// Registration success route
+Route::get('register/success', [App\Http\Controllers\Auth\RegisteredUserController::class, 'success'])
+    ->name('register.success');
+
 // Social Login Routes
 Route::prefix('auth')->group(function () {
     Route::get('{provider}/redirect', [App\Http\Controllers\Auth\SocialLoginController::class, 'redirect'])
