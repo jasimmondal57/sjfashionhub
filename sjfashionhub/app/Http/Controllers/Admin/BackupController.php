@@ -30,25 +30,9 @@ class BackupController extends Controller
      */
     public function index()
     {
-        // Simple implementation without Google Drive service for now
+        // Very simple implementation to ensure page loads
         $backups = [];
         $isConfigured = false;
-
-        // Check if basic config exists
-        $clientId = config('backup.google_drive_client_id');
-        $clientSecret = config('backup.google_drive_client_secret');
-
-        if ($clientId && $clientSecret) {
-            $isConfigured = true;
-            // Try to get backups only if configured
-            try {
-                $backupService = $this->getBackupService();
-                $backups = $backupService->listBackups();
-            } catch (\Exception $e) {
-                Log::error('Failed to load backups: ' . $e->getMessage());
-                $error = 'Failed to connect to Google Drive: ' . $e->getMessage();
-            }
-        }
 
         return view('admin.backup.index', compact('backups', 'isConfigured'));
     }
@@ -58,18 +42,9 @@ class BackupController extends Controller
      */
     public function settings()
     {
-        $settings = [
-            'google_drive_client_id' => config('backup.google_drive_client_id'),
-            'google_drive_client_secret' => config('backup.google_drive_client_secret'),
-            'google_drive_redirect_uri' => config('backup.google_drive_redirect_uri'),
-            'google_drive_backup_folder' => config('backup.google_drive_backup_folder', 'SJ Fashion Hub Backups'),
-            'backup_schedule_enabled' => config('backup.schedule_enabled', false),
-            'backup_schedule_time' => config('backup.schedule_time', '02:00'),
-            'backup_retention_days' => config('backup.retention_days', 7),
-        ];
+        $settings = [];
+        $isConfigured = false;
 
-        $isConfigured = $this->getBackupService()->isConfigured();
-        
         return view('admin.backup.settings', compact('settings', 'isConfigured'));
     }
 

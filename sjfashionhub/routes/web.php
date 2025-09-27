@@ -312,6 +312,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Backup routes
     Route::prefix('backup')->name('backup.')->group(function () {
+        Route::get('/test', function() { return view('admin.backup.test'); })->name('test');
         Route::get('/', [App\Http\Controllers\Admin\BackupController::class, 'index'])->name('index');
         Route::get('/settings', [App\Http\Controllers\Admin\BackupController::class, 'settings'])->name('settings');
         Route::post('/settings', [App\Http\Controllers\Admin\BackupController::class, 'updateSettings'])->name('settings.update');
