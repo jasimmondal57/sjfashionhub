@@ -140,19 +140,20 @@
                 <div class="flex items-center space-x-4">
                     <!-- Search -->
                     @if($headerSettings->show_search)
-                        <div class="hidden md:block">
-                            <form action="{{ route('search') }}" method="GET" class="relative">
+                        <div class="hidden md:flex items-center space-x-2">
+                            <form id="search-form" action="{{ route('search') }}" method="GET" class="relative">
                                 <input type="text"
                                        name="q"
                                        value="{{ request('q') }}"
                                        placeholder="{{ $headerSettings->search_placeholder }}"
-                                       class="w-64 px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
-                                <button type="submit" class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                    <svg class="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </button>
+                                       class="w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                       onkeypress="if(event.key==='Enter') submitSearch()">
                             </form>
+                            <button type="button" onclick="submitSearch()" class="p-2 hover:bg-gray-100 rounded-full">
+                                <svg class="w-5 h-5 text-gray-600 hover:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
                         </div>
                         <!-- Mobile Search Button -->
                         <button class="md:hidden p-2 hover:bg-gray-100 rounded-full" onclick="toggleSearch()">
@@ -542,6 +543,19 @@
             const cart = document.getElementById('cart-drawer');
             cart.classList.toggle('cart-drawer-open');
             cart.classList.toggle('cart-drawer-closed');
+        }
+
+        function submitSearch() {
+            const form = document.getElementById('search-form');
+            const input = form.querySelector('input[name="q"]');
+
+            // Only submit if there's a search query
+            if (input.value.trim()) {
+                form.submit();
+            } else {
+                // Focus the input if empty
+                input.focus();
+            }
         }
 
         function toggleSearch() {
