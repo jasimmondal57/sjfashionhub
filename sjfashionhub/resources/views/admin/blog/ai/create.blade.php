@@ -495,7 +495,7 @@
                 progressText.textContent = 'Blog post generated successfully!';
 
                 setTimeout(() => {
-                    if (data.success) {
+                    if (data && data.success) {
                         // Show success message with links
                         const successMessage = `
                             <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
@@ -540,7 +540,7 @@
                         // Scroll to top to show the success message
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else {
-                        alert('Error: ' + (data.message || 'Unknown error occurred'));
+                        alert('Error: ' + (data && data.message ? data.message : 'Unknown error occurred'));
                         console.error('Generation error:', data);
                     }
                 }, 1000);
@@ -574,32 +574,50 @@
         }
 
         function populateGeneratedContent(blogData, suggestedTags) {
-            document.getElementById('generated-title').value = blogData.title || '';
-            document.getElementById('generated-excerpt').value = blogData.excerpt || '';
-            document.getElementById('generated-content').value = blogData.content || '';
-            document.getElementById('generated-seo-title').value = blogData.seo_title || '';
-            document.getElementById('generated-seo-description').value = blogData.seo_description || '';
-            document.getElementById('generated-seo-keywords').value = blogData.seo_keywords || '';
-            
-            // Set hidden fields
-            document.getElementById('ai-prompt').value = JSON.stringify(blogData.ai_prompt || {});
-            document.getElementById('ai-metadata').value = JSON.stringify(blogData.ai_metadata || {});
-            document.getElementById('featured-image').value = blogData.featured_image || '';
-            document.getElementById('blog-category-id').value = blogData.blog_category_id || '';
+            if (!blogData) {
+                console.error('No blog data provided to populateGeneratedContent');
+                return;
+            }
+
+            // Safely populate form fields with null checks
+            const setFieldValue = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value || '';
+                }
+            };
+
+            setFieldValue('generated-title', blogData.title);
+            setFieldValue('generated-excerpt', blogData.excerpt);
+            setFieldValue('generated-content', blogData.content);
+            setFieldValue('generated-seo-title', blogData.seo_title);
+            setFieldValue('generated-seo-description', blogData.seo_description);
+            setFieldValue('generated-seo-keywords', blogData.seo_keywords);
+            setFieldValue('ai-prompt', JSON.stringify(blogData.ai_prompt || {}));
+            setFieldValue('ai-metadata', JSON.stringify(blogData.ai_metadata || {}));
+            setFieldValue('featured-image', blogData.featured_image);
+            setFieldValue('blog-category-id', blogData.blog_category_id);
 
             // Populate suggested tags
             const tagsContainer = document.getElementById('suggested-tags');
-            tagsContainer.innerHTML = '';
-            selectedTags = suggestedTags || [];
-            
-            selectedTags.forEach(tagId => {
-                const tagElement = document.createElement('span');
-                tagElement.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
-                tagElement.innerHTML = `Tag ${tagId} <button type="button" onclick="removeTag(${tagId})" class="ml-1 text-blue-600 hover:text-blue-800">×</button>`;
-                tagsContainer.appendChild(tagElement);
-            });
+            if (tagsContainer) {
+                tagsContainer.innerHTML = '';
+                selectedTags = Array.isArray(suggestedTags) ? suggestedTags : [];
 
-            document.getElementById('selected-tags').value = JSON.stringify(selectedTags);
+                selectedTags.forEach(tagId => {
+                    if (tagId) {
+                        const tagElement = document.createElement('span');
+                        tagElement.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+                        tagElement.innerHTML = `Tag ${tagId} <button type="button" onclick="removeTag(${tagId})" class="ml-1 text-blue-600 hover:text-blue-800">×</button>`;
+                        tagsContainer.appendChild(tagElement);
+                    }
+                });
+            }
+
+            const selectedTagsElement = document.getElementById('selected-tags');
+            if (selectedTagsElement) {
+                selectedTagsElement.value = JSON.stringify(selectedTags);
+            }
         }
 
         function removeTag(tagId) {
@@ -705,10 +723,14 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    showSuccessMessage(data.message, data.blog_url, data.view_url);
+                if (data && data.success) {
+                    showSuccessMessage(
+                        data.message || 'Blog generated successfully!',
+                        data.blog_url || '#',
+                        data.view_url || '#'
+                    );
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Error: ' + (data && data.message ? data.message : 'Unknown error occurred'));
                 }
             })
             .catch(error => {
@@ -766,17 +788,21 @@
                 });
             })
             .then(data => {
-                if (data.success) {
+                if (data && data.success) {
                     let message = 'Blog generation completed!\n\n';
-                    if (data.generated_blogs && data.generated_blogs.length > 0) {
+                    if (data.generated_blogs && Array.isArray(data.generated_blogs) && data.generated_blogs.length > 0) {
                         data.generated_blogs.forEach(blog => {
-                            message += `✅ ${blog.message}\n`;
+                            if (blog && blog.message) {
+                                message += `✅ ${blog.message}\n`;
+                            }
                         });
                     }
-                    if (data.errors && data.errors.length > 0) {
+                    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
                         message += '\nErrors:\n';
                         data.errors.forEach(error => {
-                            message += `❌ ${error.blog_type}: ${error.error}\n`;
+                            if (error && error.blog_type && error.error) {
+                                message += `❌ ${error.blog_type}: ${error.error}\n`;
+                            }
                         });
                     }
                     alert(message);
@@ -784,7 +810,7 @@
                     // Refresh the page to show updated blog list
                     window.location.reload();
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Error: ' + (data && data.message ? data.message : 'Unknown error occurred'));
                 }
             })
             .catch(error => {
