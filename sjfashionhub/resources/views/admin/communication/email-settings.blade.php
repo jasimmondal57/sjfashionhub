@@ -114,8 +114,8 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('smtp')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('smtp')"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -167,8 +167,8 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('mailgun')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('mailgun')"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -231,8 +231,8 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('ses')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('ses')"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
@@ -276,8 +276,8 @@
                 </div>
                 
                 <div class="flex justify-between items-center mt-6">
-                    <button type="button" onclick="testConnection('postmark')" 
-                            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <button type="button" onclick="testConnection('postmark')"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors border border-green-700 shadow-md">
                         🧪 Test Connection
                     </button>
                     <button type="submit" 
