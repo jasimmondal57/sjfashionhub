@@ -298,6 +298,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/generate-titles', [App\Http\Controllers\Admin\BlogAiController::class, 'generateTitles'])->name('generate-titles');
             Route::get('/status', [App\Http\Controllers\Admin\BlogAiController::class, 'status'])->name('status');
             Route::get('/products-without-blogs', [App\Http\Controllers\Admin\BlogAiController::class, 'getProductsWithoutBlogs'])->name('products-without-blogs');
+            Route::get('/all-products', [App\Http\Controllers\Admin\BlogAiController::class, 'getAllProducts'])->name('all-products');
         });
 
         // Individual blog post routes (must come last)

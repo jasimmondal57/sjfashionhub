@@ -259,4 +259,20 @@ class BlogAiController extends Controller
             'products' => $products,
         ]);
     }
+
+    /**
+     * Get all active products for selection
+     */
+    public function getAllProducts()
+    {
+        $products = Product::where('is_active', true)
+                          ->with('category')
+                          ->latest()
+                          ->get();
+
+        return response()->json([
+            'success' => true,
+            'products' => $products,
+        ]);
+    }
 }

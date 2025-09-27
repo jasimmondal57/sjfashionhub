@@ -58,6 +58,10 @@
                         
                         <div id="product-results" class="space-y-2 max-h-64 overflow-y-auto">
                             <!-- Product search results will be loaded here -->
+                            <div class="text-center py-4">
+                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 mx-auto"></div>
+                                <p class="text-sm text-gray-500 mt-2">Loading products...</p>
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -265,6 +269,80 @@
 
     <script>
         let selectedTags = [];
+        let allProducts = [];
+
+        // Load products when page loads (only if no product is selected)
+        @if(!$product)
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            setupProductSearch();
+        });
+
+        function loadProducts() {
+            fetch('{{ route("admin.blog.ai.all-products") }}')
+                .then(response => response.json())
+                .then(data => {
+                    allProducts = data.products || [];
+                    displayProducts(allProducts);
+                })
+                .catch(error => {
+                    console.error('Error loading products:', error);
+                    document.getElementById('product-results').innerHTML =
+                        '<div class="text-center py-4 text-red-500">Error loading products</div>';
+                });
+        }
+
+        function setupProductSearch() {
+            const searchInput = document.getElementById('product-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase();
+                    const filteredProducts = allProducts.filter(product =>
+                        product.name.toLowerCase().includes(query) ||
+                        (product.category && product.category.name.toLowerCase().includes(query))
+                    );
+                    displayProducts(filteredProducts);
+                });
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('product-results');
+            if (!container) return;
+
+            if (products.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-gray-500">No products found</div>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer product-item"
+                     onclick="selectProduct(${product.id})">
+                    <div class="flex items-center space-x-3">
+                        ${product.images && product.images.length > 0 ?
+                            `<img src="{{ asset('storage/') }}/${product.images[0].image_path}" alt="${product.name}"
+                                  class="w-12 h-12 object-cover rounded"
+                                  onerror="this.parentElement.innerHTML='<div class=\\'w-12 h-12 bg-gray-200 rounded flex items-center justify-center\\'><svg class=\\'w-6 h-6 text-gray-400\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'></path></svg></div>'">` :
+                            `<div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>`
+                        }
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">${product.name}</h4>
+                            <p class="text-sm text-gray-600">${product.category ? product.category.name : 'No category'}</p>
+                            <p class="text-sm font-semibold text-gray-900">₹${product.price}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectProduct(productId) {
+            window.location.href = `{{ route('admin.blog.ai.create') }}?product_id=${productId}`;
+        }
+        @endif
 
         // AI Generation Form Handler
         document.getElementById('ai-generation-form')?.addEventListener('submit', function(e) {
