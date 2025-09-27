@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\SocialLoginSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,14 +18,28 @@ class SocialLoginController extends Controller
      */
     public function redirect($provider)
     {
-        if (!in_array($provider, ['google', 'facebook'])) {
-            return redirect()->route('login')->with('error', 'Invalid social provider.');
+        // Check if provider is enabled in database
+        $setting = SocialLoginSetting::getProviderConfig($provider);
+
+        if (!$setting || !$setting->enabled) {
+            return redirect()->route('login')->with('error', ucfirst($provider) . ' login is currently disabled');
+        }
+
+        if (!$setting->client_id || !$setting->client_secret) {
+            return redirect()->route('login')->with('error', ucfirst($provider) . ' is not properly configured');
         }
 
         try {
+            // Configure Socialite with database settings
+            config([
+                "services.{$provider}.client_id" => $setting->client_id,
+                "services.{$provider}.client_secret" => $setting->client_secret,
+                "services.{$provider}.redirect" => $setting->redirect_uri,
+            ]);
+
             return Socialite::driver($provider)->redirect();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Social login is not configured properly.');
+            return redirect()->route('login')->with('error', 'Unable to connect to ' . ucfirst($provider));
         }
     }
 
@@ -33,11 +48,21 @@ class SocialLoginController extends Controller
      */
     public function callback($provider)
     {
-        if (!in_array($provider, ['google', 'facebook'])) {
-            return redirect()->route('login')->with('error', 'Invalid social provider.');
+        // Check if provider is enabled
+        $setting = SocialLoginSetting::getProviderConfig($provider);
+
+        if (!$setting || !$setting->enabled) {
+            return redirect()->route('login')->with('error', ucfirst($provider) . ' login is currently disabled');
         }
 
         try {
+            // Configure Socialite with database settings
+            config([
+                "services.{$provider}.client_id" => $setting->client_id,
+                "services.{$provider}.client_secret" => $setting->client_secret,
+                "services.{$provider}.redirect" => $setting->redirect_uri,
+            ]);
+
             $socialUser = Socialite::driver($provider)->user();
             
             // Check if user already exists with this provider

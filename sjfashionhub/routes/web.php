@@ -363,6 +363,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/posts/{post}/retry', [App\Http\Controllers\Admin\SocialMediaController::class, 'retryPost'])->name('posts.retry');
     });
 
+    // Authentication Settings Management
+    Route::prefix('auth-settings')->name('auth-settings.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'index'])->name('index');
+        Route::put('/social/{provider}', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'updateSocialProvider'])->name('update-social');
+        Route::put('/method/{method}', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'updateAuthMethod'])->name('update-method');
+        Route::post('/toggle', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'toggleStatus'])->name('toggle');
+        Route::get('/test-social/{provider}', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'testSocialProvider']);
+        Route::get('/test-method/{method}', [App\Http\Controllers\Admin\AuthenticationSettingController::class, 'testAuthMethod']);
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');
