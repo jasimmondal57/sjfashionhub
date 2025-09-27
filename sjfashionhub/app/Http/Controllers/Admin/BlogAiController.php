@@ -397,7 +397,7 @@ class BlogAiController extends Controller
                     ];
 
                     // Add a small delay between generations to avoid rate limiting
-                    sleep(2);
+                    sleep(1);
 
                 } catch (Exception $e) {
                     $errors[] = [

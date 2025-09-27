@@ -736,21 +736,44 @@
             button.disabled = true;
             button.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline-block mr-2"></div>Generating All Types...';
 
+            // Show initial message
+            alert('Starting bulk blog generation! This may take 2-3 minutes. Please wait...');
+
+            // Use a longer timeout for bulk generation
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes timeout
+
             fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                signal: controller.signal
             })
-            .then(response => response.json())
+            .then(response => {
+                clearTimeout(timeoutId);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Response is not valid JSON:', text);
+                        throw new Error('Server returned invalid response. This usually means the generation is taking longer than expected. Please check your blog list in a few minutes.');
+                    }
+                });
+            })
             .then(data => {
                 if (data.success) {
                     let message = 'Blog generation completed!\n\n';
-                    data.generated_blogs.forEach(blog => {
-                        message += `✅ ${blog.message}\n`;
-                    });
-                    if (data.errors.length > 0) {
+                    if (data.generated_blogs && data.generated_blogs.length > 0) {
+                        data.generated_blogs.forEach(blog => {
+                            message += `✅ ${blog.message}\n`;
+                        });
+                    }
+                    if (data.errors && data.errors.length > 0) {
                         message += '\nErrors:\n';
                         data.errors.forEach(error => {
                             message += `❌ ${error.blog_type}: ${error.error}\n`;
@@ -765,8 +788,13 @@
                 }
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 console.error('Error:', error);
-                alert('Error: ' + error.message);
+                if (error.name === 'AbortError') {
+                    alert('Blog generation is taking longer than expected. The process may still be running in the background. Please check your blog list in a few minutes.');
+                } else {
+                    alert('Error: ' + error.message);
+                }
             })
             .finally(() => {
                 button.disabled = false;
