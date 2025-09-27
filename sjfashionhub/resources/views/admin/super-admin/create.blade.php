@@ -9,7 +9,7 @@
                 <p class="text-gray-600 mt-1">Add a new administrator to the system</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('admin.super-admin.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg">
+                <a href="{{ route('admin.super-admin.index') }}" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg flex items-center font-medium shadow-lg border border-gray-600">
                     ← Back to Admin List
                 </a>
             </div>
@@ -106,12 +106,12 @@
                 
                 <!-- Submit Buttons -->
                 <div class="mt-8 flex justify-end space-x-4">
-                    <a href="{{ route('admin.super-admin.index') }}" 
-                       class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium">
+                    <a href="{{ route('admin.super-admin.index') }}"
+                       class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg font-medium border border-gray-600 shadow-lg">
                         Cancel
                     </a>
-                    <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg border border-blue-500">
                         ➕ Create Admin
                     </button>
                 </div>
