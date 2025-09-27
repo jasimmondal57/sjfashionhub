@@ -45,7 +45,13 @@ class GeminiAiService
             if ($response->successful()) {
                 $data = $response->json();
                 $content = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
-                
+
+                // Log successful generation (without full content for performance)
+                Log::info('Gemini AI blog generated successfully', [
+                    'product_id' => $product->id,
+                    'content_length' => strlen($content)
+                ]);
+
                 return $this->parseBlogContent($content, $product);
             }
 
@@ -151,19 +157,38 @@ class GeminiAiService
      */
     protected function parseBlogContent($content, Product $product)
     {
-        // Extract JSON from the response
-        $jsonStart = strpos($content, '{');
-        $jsonEnd = strrpos($content, '}');
-        
-        if ($jsonStart === false || $jsonEnd === false) {
-            throw new Exception('Invalid response format from Gemini AI');
+        // Log parsing attempt
+        Log::debug('Parsing blog content', [
+            'product_id' => $product->id,
+            'content_length' => strlen($content)
+        ]);
+
+        // Try to find JSON in the response - look for ```json blocks first
+        if (preg_match('/```json\s*(\{.*?\})\s*```/s', $content, $matches)) {
+            $jsonContent = $matches[1];
+        } else {
+            // Fallback to finding first { to last }
+            $jsonStart = strpos($content, '{');
+            $jsonEnd = strrpos($content, '}');
+
+            if ($jsonStart === false || $jsonEnd === false) {
+                Log::error('No JSON found in response', ['content' => $content]);
+                throw new Exception('Invalid response format from Gemini AI - no JSON found');
+            }
+
+            $jsonContent = substr($content, $jsonStart, $jsonEnd - $jsonStart + 1);
         }
-        
-        $jsonContent = substr($content, $jsonStart, $jsonEnd - $jsonStart + 1);
+
+        Log::debug('Extracted JSON content', ['json_length' => strlen($jsonContent)]);
+
         $data = json_decode($jsonContent, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Failed to parse JSON response from Gemini AI');
+            Log::error('JSON parsing failed', [
+                'error' => json_last_error_msg(),
+                'json_content' => $jsonContent
+            ]);
+            throw new Exception('Failed to parse JSON response from Gemini AI: ' . json_last_error_msg());
         }
 
         // Validate required fields
