@@ -59,10 +59,10 @@
                                     </div>
                                     <!-- Action Buttons -->
                                     <div class="flex space-x-2">
-                                        <button onclick="addToCart({{ $item->id }})" class="flex-1 bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                        <button onclick="addToCart({{ $item->id }})" class="flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #111827 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#374151'" onmouseout="this.style.backgroundColor='#111827'">
                                             Add to Cart
                                         </button>
-                                        <button onclick="buyNow({{ $item->id }})" class="flex-1 bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                        <button onclick="buyNow({{ $item->id }})" class="flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #4f46e5 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#4338ca'" onmouseout="this.style.backgroundColor='#4f46e5'">
                                             Buy Now
                                         </button>
                                     </div>
@@ -131,10 +131,10 @@
                                             </div>
                                             <!-- Action Buttons -->
                                             <div class="flex space-x-2">
-                                                <button onclick="addToCart({{ $item->id }})" class="flex-1 bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                                <button onclick="addToCart({{ $item->id }})" class="flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #111827 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#374151'" onmouseout="this.style.backgroundColor='#111827'">
                                                     Add to Cart
                                                 </button>
-                                                <button onclick="buyNow({{ $item->id }})" class="flex-1 bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                                <button onclick="buyNow({{ $item->id }})" class="flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #4f46e5 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#4338ca'" onmouseout="this.style.backgroundColor='#4f46e5'">
                                                     Buy Now
                                                 </button>
                                             </div>
@@ -193,10 +193,10 @@
                                     </div>
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button onclick="addToCart({{ $item->id }})" class="bg-gray-900 text-white text-xs py-2 px-3 rounded hover:bg-gray-800 transition-colors">
+                                    <button onclick="addToCart({{ $item->id }})" class="text-xs py-2 px-3 rounded transition-colors" style="background-color: #111827 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#374151'" onmouseout="this.style.backgroundColor='#111827'">
                                         Add to Cart
                                     </button>
-                                    <button onclick="buyNow({{ $item->id }})" class="bg-indigo-600 text-white text-xs py-2 px-3 rounded hover:bg-indigo-700 transition-colors">
+                                    <button onclick="buyNow({{ $item->id }})" class="text-xs py-2 px-3 rounded transition-colors" style="background-color: #4f46e5 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#4338ca'" onmouseout="this.style.backgroundColor='#4f46e5'">
                                         Buy Now
                                     </button>
                                 </div>
