@@ -54,7 +54,7 @@
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                                                             </svg>
                                                         </button>
-                                                        <span class="px-4 py-1 text-black font-bold quantity-display bg-white border-l border-r border-gray-300 min-w-[3rem] text-center">{{ $item->quantity }}</span>
+                                                        <span class="px-4 py-1 quantity-display border-l border-r border-gray-300 min-w-[3rem] text-center" style="background-color: #f9fafb !important; color: #000000 !important; font-weight: bold !important;">{{ $item->quantity }}</span>
                                                         <button class="px-3 py-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50" onclick="updateQuantity({{ $item->id }}, 1)">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -276,6 +276,24 @@
             const shipping = 99;
             const total = subtotal + shipping + tax;
             document.getElementById('total').textContent = `₹${Math.round(total).toLocaleString()}`;
+        }
+
+        // Initialize cart count when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+
+        // Update cart count function (same as in main layout)
+        function updateCartCount() {
+            fetch('/cart/count')
+                .then(response => response.json())
+                .then(data => {
+                    const cartCountElements = document.querySelectorAll('.cart-count');
+                    cartCountElements.forEach(element => {
+                        element.textContent = data.count;
+                    });
+                })
+                .catch(error => console.error('Error updating cart count:', error));
         }
     </script>
 </x-layouts.main>

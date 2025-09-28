@@ -667,6 +667,11 @@
                 .catch(error => console.error('Error updating cart count:', error));
         }
 
+        // Initialize cart count when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+
         // Show truck animation
         function showTruckAnimation(buttonElement) {
             // Create truck element
