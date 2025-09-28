@@ -124,8 +124,8 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
-                    'price' => $price,
-                    'total' => $price * $cartItem->quantity,
+                    'unit_price' => $price,
+                    'total_price' => $price * $cartItem->quantity,
                     'product_name' => $cartItem->product->name,
                     'product_sku' => $cartItem->product->sku ?? '',
                 ]);

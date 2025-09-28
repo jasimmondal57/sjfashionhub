@@ -35,7 +35,7 @@
                                         <p class="text-sm text-gray-600">Quantity: {{ $item->quantity }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-medium text-gray-900">₹{{ number_format($item->total, 0) }}</p>
+                                        <p class="text-sm font-medium text-gray-900">₹{{ number_format($item->total_price, 0) }}</p>
                                     </div>
                                 </div>
                             @endforeach

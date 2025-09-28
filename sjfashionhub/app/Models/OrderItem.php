@@ -10,16 +10,18 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'product_variant_id',
         'quantity',
-        'price',
-        'total',
+        'unit_price',
+        'total_price',
         'product_name',
         'product_sku',
+        'variant_details',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'total' => 'decimal:2',
+        'unit_price' => 'decimal:2',
+        'total_price' => 'decimal:2',
     ];
 
     // Relationships
