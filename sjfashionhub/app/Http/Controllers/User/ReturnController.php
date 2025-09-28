@@ -113,8 +113,12 @@ class ReturnController extends Controller
             ];
         }
 
+        // Generate return number
+        $returnNumber = 'RET-' . date('Y') . '-' . strtoupper(substr(uniqid(), -6));
+
         // Create return request
         $returnOrder = ReturnOrder::create([
+            'return_number' => $returnNumber,
             'order_id' => $order->id,
             'user_id' => Auth::id(),
             'status' => 'pending',
