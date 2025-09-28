@@ -39,7 +39,7 @@
                                         </div>
                                     @endif
                                     <div class="flex-1">
-                                        <h4 class="font-medium text-gray-900">{{ $item['name'] }}</h4>
+                                        <h4 class="font-medium text-gray-900">{{ $item['product_name'] }}</h4>
                                         <p class="text-sm text-gray-600">SKU: {{ $item['sku'] ?? 'N/A' }}</p>
                                         @if(isset($item['variant_details']))
                                             <p class="text-sm text-gray-600">
@@ -48,9 +48,9 @@
                                         @endif
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-medium text-gray-900">₹{{ number_format($item['price'], 2) }}</p>
+                                        <p class="font-medium text-gray-900">₹{{ number_format($item['unit_price'], 2) }}</p>
                                         <p class="text-sm text-gray-600">Qty: {{ $item['quantity'] }}</p>
-                                        <p class="text-sm font-medium text-gray-900">₹{{ number_format($item['price'] * $item['quantity'], 2) }}</p>
+                                        <p class="text-sm font-medium text-gray-900">₹{{ number_format($item['total_price'], 2) }}</p>
                                     </div>
                                 </div>
                             @endforeach
