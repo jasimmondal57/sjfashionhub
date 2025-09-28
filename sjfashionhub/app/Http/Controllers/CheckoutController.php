@@ -140,7 +140,12 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->withErrors(['error' => 'Failed to place order. Please try again.'])->withInput();
+            \Log::error('Order creation failed: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors(['error' => 'Failed to place order: ' . $e->getMessage()])->withInput();
         }
     }
     

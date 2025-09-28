@@ -197,6 +197,6 @@ class User extends Authenticatable
     // Relationships
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(\App\Models\Order::class);
     }
 }
