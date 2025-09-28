@@ -46,7 +46,7 @@
             <!-- Main Content Area - Desktop: Side by Side -->
             <div class="lg:col-span-3">
                 <!-- Desktop Layout: 3 columns side by side -->
-                <div class="hidden lg:grid lg:grid-cols-3 gap-6">
+                <div class="lg:grid lg:grid-cols-3 gap-6">
                     <!-- Personal Information -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-6">Personal Information</h3>
