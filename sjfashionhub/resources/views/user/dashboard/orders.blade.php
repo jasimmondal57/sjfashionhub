@@ -10,14 +10,9 @@
                                 <p class="text-sm text-gray-600">Placed on {{ $order->created_at->format('F j, Y') }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-lg font-semibold text-gray-900">${{ number_format($order->total, 2) }}</p>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    @if($order->status === 'delivered') bg-green-100 text-green-800
-                                    @elseif($order->status === 'shipped') bg-blue-100 text-blue-800
-                                    @elseif($order->status === 'processing') bg-yellow-100 text-yellow-800
-                                    @else bg-gray-100 text-gray-800
-                                    @endif">
-                                    {{ ucfirst($order->status) }}
+                                <p class="text-lg font-semibold text-gray-900">₹{{ number_format($order->total_amount, 0) }}</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $order->status_badge['class'] }}">
+                                    {{ $order->status_badge['text'] }}
                                 </span>
                             </div>
                         </div>
@@ -26,27 +21,35 @@
                         <div class="space-y-4">
                             @foreach($order->items as $item)
                                 <div class="flex items-center space-x-4">
-                                    <img class="h-16 w-16 rounded-lg object-cover" src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}">
+                                    @if($item->product && $item->product->featured_image)
+                                        <img class="h-16 w-16 rounded-lg object-cover" src="{{ Storage::url($item->product->featured_image) }}" alt="{{ $item->product_name }}">
+                                    @else
+                                        <div class="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                    @endif
                                     <div class="flex-1">
-                                        <h4 class="text-sm font-medium text-gray-900">{{ $item->product->name }}</h4>
+                                        <h4 class="text-sm font-medium text-gray-900">{{ $item->product_name }}</h4>
                                         <p class="text-sm text-gray-600">Quantity: {{ $item->quantity }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-medium text-gray-900">${{ number_format($item->price * $item->quantity, 2) }}</p>
+                                        <p class="text-sm font-medium text-gray-900">₹{{ number_format($item->total, 0) }}</p>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                         <div class="mt-6 flex justify-between items-center">
-                            <button class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
+                            <button class="text-black hover:text-gray-700 text-sm font-medium">
                                 View Details
                             </button>
-                            @if($order->status === 'delivered')
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700">
+                            @if($order->order_status === 'delivered')
+                                <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
                                     Reorder
                                 </button>
-                            @elseif($order->status === 'shipped')
-                                <button class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+                            @elseif(in_array($order->order_status, ['in_transit', 'out_for_delivery']))
+                                <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
                                     Track Order
                                 </button>
                             @endif
@@ -69,7 +72,7 @@
             <h3 class="mt-4 text-lg font-medium text-gray-900">No orders yet</h3>
             <p class="mt-2 text-gray-600">You haven't placed any orders yet. Start shopping to see your orders here.</p>
             <div class="mt-6">
-                <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                     Start Shopping
                 </a>
             </div>

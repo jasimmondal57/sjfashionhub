@@ -96,9 +96,8 @@ class DashboardController extends Controller
     public function orders()
     {
         $user = Auth::user();
-        // For now, return empty orders - you can implement order model later
-        $orders = collect(); // Replace with: $user->orders()->latest()->paginate(10);
-        
+        $orders = $user->orders()->with('items.product')->latest()->paginate(10);
+
         return view('user.dashboard.orders', compact('orders'));
     }
 

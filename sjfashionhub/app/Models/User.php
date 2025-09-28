@@ -193,4 +193,10 @@ class User extends Authenticatable
     {
         $this->update(['last_login_at' => now()]);
     }
+
+    // Relationships
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

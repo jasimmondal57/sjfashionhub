@@ -69,13 +69,13 @@
 
         <div class="flex">
             <!-- Sidebar -->
-            <div class="w-64 bg-gray-900 shadow-sm min-h-screen">
+            <div class="w-64 bg-black shadow-sm min-h-screen">
                 <div class="p-6">
                     <h2 class="text-lg font-semibold text-white mb-6">My Account</h2>
-                    
+
                     <nav class="space-y-2">
                         <a href="{{ route('user.dashboard') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.dashboard') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                             </svg>
@@ -83,7 +83,7 @@
                         </a>
 
                         <a href="{{ route('user.profile') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.profile') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.profile') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
@@ -91,17 +91,15 @@
                         </a>
 
                         <a href="{{ route('user.orders') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                             </svg>
                             My Orders
                         </a>
 
-
-
                         <a href="{{ route('user.wishlist') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.wishlist') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.wishlist') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                             </svg>
