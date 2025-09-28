@@ -1,15 +1,16 @@
 <x-layouts.user title="My Profile" subtitle="Manage your personal information and account settings">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Profile Picture -->
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Profile Picture -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Picture</h3>
                 
                 <div class="text-center">
                     @if($user->avatar)
-                        <img class="mx-auto h-32 w-32 rounded-full object-cover" src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}">
+                        <img class="mx-auto h-32 w-32 rounded-full object-cover border-4 border-gray-200" src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}">
                     @else
-                        <div class="mx-auto h-32 w-32 rounded-full bg-indigo-500 flex items-center justify-center">
+                        <div class="mx-auto h-32 w-32 rounded-full bg-black flex items-center justify-center border-4 border-gray-200">
                             <span class="text-4xl font-bold text-white">{{ substr($user->name, 0, 1) }}</span>
                         </div>
                     @endif
@@ -24,17 +25,17 @@
                         <input type="hidden" name="phone" value="{{ $user->phone }}">
                         
                         <div class="mt-4">
-                            <label for="avatar" class="block text-sm font-medium text-gray-700">
+                            <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">
                                 Choose new picture
                             </label>
-                            <input type="file" name="avatar" id="avatar" accept="image/*" 
-                                   class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <input type="file" name="avatar" id="avatar" accept="image/*"
+                                   class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 border border-gray-300 rounded-md">
                             @error('avatar')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
-                        <button type="submit" class="mt-4 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                        <button type="submit" class="mt-4 w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black font-medium">
                             Update Picture
                         </button>
                     </form>
@@ -42,21 +43,21 @@
             </div>
         </div>
 
-        <!-- Profile Information -->
-        <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow p-6">
+            <!-- Profile Information -->
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Personal Information</h3>
                 
                 <form method="POST" action="{{ route('user.profile.update') }}">
                     @csrf
                     @method('PUT')
                     
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Name -->
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="md:col-span-2">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                             <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
                             @error('name')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -64,46 +65,66 @@
 
                         <!-- Email -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                             <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             @if($user->email_verified_at)
-                                <p class="mt-1 text-sm text-green-600">✓ Email verified</p>
+                                <p class="mt-1 text-sm text-green-600 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Email verified
+                                </p>
                             @else
-                                <p class="mt-1 text-sm text-red-600">✗ Email not verified</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Email not verified
+                                </p>
                             @endif
                         </div>
 
                         <!-- Phone -->
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                             <input type="tel" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                   placeholder="+1234567890">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                                   placeholder="+91 1234567890">
                             @error('phone')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             @if($user->phone_verified_at)
-                                <p class="mt-1 text-sm text-green-600">✓ Phone verified</p>
+                                <p class="mt-1 text-sm text-green-600 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Phone verified
+                                </p>
                             @else
-                                <p class="mt-1 text-sm text-red-600">✗ Phone not verified</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Phone not verified
+                                </p>
                             @endif
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="mt-8">
+                        <button type="submit" class="bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black font-medium">
                             Update Profile
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Change Password -->
-            <div class="bg-white rounded-lg shadow p-6 mt-6">
+                <!-- Change Password -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Change Password</h3>
                 
                 <form method="POST" action="{{ route('user.password.update') }}">
@@ -113,9 +134,9 @@
                     <div class="grid grid-cols-1 gap-6">
                         <!-- Current Password -->
                         <div>
-                            <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                            <label for="current_password" class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
                             <input type="password" name="current_password" id="current_password" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
                             @error('current_password')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -123,9 +144,9 @@
 
                         <!-- New Password -->
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
                             <input type="password" name="password" id="password" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
                             @error('password')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -134,22 +155,22 @@
 
                         <!-- Confirm Password -->
                         <div>
-                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
                             <input type="password" name="password_confirmation" id="password_confirmation" required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <div class="mt-8">
+                        <button type="submit" class="bg-red-600 text-white py-3 px-6 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 font-medium">
                             Change Password
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Account Information -->
-            <div class="bg-white rounded-lg shadow p-6 mt-6">
+                <!-- Account Information -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Account Information</h3>
                 
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -188,6 +209,7 @@
                         </dd>
                     </div>
                 </dl>
+            </div>
             </div>
         </div>
     </div>
