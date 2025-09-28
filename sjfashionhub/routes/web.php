@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TrackOrderController;
 use Illuminate\Support\Facades\Route;
 
 // Homepage
@@ -409,10 +410,14 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/{post}', [App\Http\Controllers\BlogController::class, 'show'])->name('show');
 });
 
+// Track Order Routes
+Route::get('/track-order', [TrackOrderController::class, 'index'])->name('track-order.index');
+Route::post('/track-order', [TrackOrderController::class, 'track'])->name('track-order.track');
+Route::get('/track-order/{orderNumber}', [TrackOrderController::class, 'trackAuthenticated'])->name('track-order.authenticated');
+
 // Static pages
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/contact', 'pages.contact')->name('contact');
-Route::view('/orders/track', 'pages.track-order')->name('orders.track');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
