@@ -18,7 +18,7 @@
                             <div class="p-6">
                                 <div class="space-y-6">
                                     @foreach($cartItems as $item)
-                                        <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg" data-item-id="{{ $item->id }}">
+                                        <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg bg-white" data-item-id="{{ $item->id }}">
                                             <!-- Product Image -->
                                             <div class="flex-shrink-0">
                                                 @if($item->product->featured_image)
@@ -43,7 +43,7 @@
                                             </div>
                                             
                                             <!-- Quantity Controls -->
-                                            <div class="flex items-center space-x-3">
+                                            <div class="flex items-center space-x-3 flex-shrink-0">
                                                 <div class="flex items-center border border-gray-300 rounded-md">
                                                     <button class="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50" onclick="updateQuantity({{ $item->id }}, -1)">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,12 +67,12 @@
                                             </div>
                                             
                                             <!-- Item Total -->
-                                            <div class="text-right">
+                                            <div class="text-right flex-shrink-0 min-w-0">
                                                 @php
                                                     $itemPrice = $item->product->sale_price ?? $item->product->price;
                                                     $itemTotal = $itemPrice * $item->quantity;
                                                 @endphp
-                                                <p class="text-lg font-semibold text-gray-900 item-total">
+                                                <p class="text-lg font-semibold text-gray-900 item-total whitespace-nowrap">
                                                     ₹{{ number_format($itemTotal, 2) }}
                                                 </p>
                                             </div>
@@ -121,21 +121,21 @@
                                 </div>
                             </div>
 
-                            <button class="w-full mt-6 bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
-                                Proceed to Checkout
-                            </button>
-
                             <!-- Promo Code -->
                             <div class="mt-6 pt-6 border-t border-gray-200">
                                 <h3 class="text-sm font-medium text-gray-900 mb-3">Promo Code</h3>
                                 <div class="flex space-x-2">
-                                    <input type="text" placeholder="Enter code" 
+                                    <input type="text" placeholder="Enter code"
                                            class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                                    <button class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900 text-sm font-medium">
+                                    <button class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 text-sm font-medium">
                                         Apply
                                     </button>
                                 </div>
                             </div>
+
+                            <a href="{{ route('checkout.index') }}" class="w-full mt-6 bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 font-bold text-center block transition-all duration-200">
+                                Proceed to Checkout
+                            </a>
                         </div>
                     </div>
                 </div>
