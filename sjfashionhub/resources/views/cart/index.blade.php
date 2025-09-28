@@ -18,7 +18,10 @@
                             <div class="p-6">
                                 <div class="space-y-6">
                                     @foreach($cartItems as $item)
-                                        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm" data-item-id="{{ $item->id }}">
+                                        @php
+                                            $unitPrice = $item->product->sale_price ?? $item->product->price;
+                                        @endphp
+                                        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm" data-item-id="{{ $item->id }}" data-unit-price="{{ $unitPrice }}">
                                             <div class="grid grid-cols-12 gap-4 items-center">
                                                 <!-- Product Image -->
                                                 <div class="col-span-2">
@@ -51,7 +54,7 @@
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                                                             </svg>
                                                         </button>
-                                                        <span class="px-4 py-1 text-gray-900 font-medium quantity-display bg-gray-50 min-w-[3rem] text-center">{{ $item->quantity }}</span>
+                                                        <span class="px-4 py-1 text-black font-bold quantity-display bg-white border-l border-r border-gray-300 min-w-[3rem] text-center">{{ $item->quantity }}</span>
                                                         <button class="px-3 py-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50" onclick="updateQuantity({{ $item->id }}, 1)">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -164,20 +167,30 @@
     <!-- JavaScript for Cart Functionality -->
     <script>
         function updateQuantity(itemId, change) {
-            const quantityDisplay = document.querySelector(`[data-item-id="${itemId}"] .quantity-display`);
+            const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+            const quantityDisplay = itemElement.querySelector('.quantity-display');
+            const itemTotalElement = itemElement.querySelector('.item-total');
+
             let currentQuantity = parseInt(quantityDisplay.textContent);
             let newQuantity = currentQuantity + change;
-            
+
             if (newQuantity < 1) {
                 if (confirm('Remove this item from cart?')) {
                     removeItem(itemId);
                 }
                 return;
             }
-            
+
             // Update display immediately for better UX
             quantityDisplay.textContent = newQuantity;
-            
+
+            // Get unit price from the data attribute or calculate from current total
+            const unitPrice = parseFloat(itemElement.dataset.unitPrice) || (parseFloat(itemTotalElement.textContent.replace('₹', '').replace(',', '')) / currentQuantity);
+            const newTotal = unitPrice * newQuantity;
+
+            // Update item total display
+            itemTotalElement.textContent = `₹${Math.round(newTotal).toLocaleString()}`;
+
             // Send AJAX request to update quantity
             fetch(`/cart/update/${itemId}`, {
                 method: 'POST',
@@ -194,12 +207,14 @@
                 } else {
                     // Revert on error
                     quantityDisplay.textContent = currentQuantity;
+                    itemTotalElement.textContent = `₹${Math.round(unitPrice * currentQuantity).toLocaleString()}`;
                     alert('Failed to update cart');
                 }
             })
             .catch(error => {
                 // Revert on error
                 quantityDisplay.textContent = currentQuantity;
+                itemTotalElement.textContent = `₹${Math.round(unitPrice * currentQuantity).toLocaleString()}`;
                 alert('Failed to update cart');
             });
         }
@@ -243,8 +258,24 @@
         }
         
         function updateCartTotals() {
-            // This would calculate totals from current cart items
-            // For now, just a placeholder
+            // Calculate subtotal from all item totals
+            let subtotal = 0;
+            document.querySelectorAll('.item-total').forEach(element => {
+                const price = parseFloat(element.textContent.replace('₹', '').replace(',', ''));
+                subtotal += price;
+            });
+
+            // Update subtotal display
+            document.getElementById('subtotal').textContent = `₹${Math.round(subtotal).toLocaleString()}`;
+
+            // Calculate tax (18% GST)
+            const tax = subtotal * 0.18;
+            document.getElementById('tax').textContent = `₹${Math.round(tax).toLocaleString()}`;
+
+            // Calculate total (subtotal + shipping + tax)
+            const shipping = 99;
+            const total = subtotal + shipping + tax;
+            document.getElementById('total').textContent = `₹${Math.round(total).toLocaleString()}`;
         }
     </script>
 </x-layouts.main>
