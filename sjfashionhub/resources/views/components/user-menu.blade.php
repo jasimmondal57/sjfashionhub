@@ -80,7 +80,7 @@
             </svg>
             Login
         </a>
-        <a href="{{ route('register') }}" class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-md border-2 border-blue-700 transition-all duration-200 hover:shadow-lg">
+        <a href="{{ route('register') }}" class="flex items-center bg-black text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 shadow-md border-2 border-black transition-all duration-200 hover:shadow-lg">
             <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
