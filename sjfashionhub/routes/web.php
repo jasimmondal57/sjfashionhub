@@ -435,6 +435,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [\App\Http\Controllers\User\DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::put('/password', [\App\Http\Controllers\User\DashboardController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('orders');
+        Route::get('/orders/{order}', [\App\Http\Controllers\User\DashboardController::class, 'orderDetails'])->name('orders.show');
         Route::get('/wishlist', [\App\Http\Controllers\User\DashboardController::class, 'wishlist'])->name('wishlist');
     });
 });

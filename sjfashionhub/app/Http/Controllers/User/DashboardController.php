@@ -101,6 +101,21 @@ class DashboardController extends Controller
         return view('user.dashboard.orders', compact('orders'));
     }
 
+    /**
+     * Show order details
+     */
+    public function orderDetails(\App\Models\Order $order)
+    {
+        // Ensure the order belongs to the authenticated user
+        if ($order->user_id !== Auth::id()) {
+            abort(404);
+        }
+
+        $order->load('items.product');
+
+        return view('user.dashboard.order-details', compact('order'));
+    }
+
 
 
     /**
