@@ -119,6 +119,34 @@ class DashboardController extends Controller
 
 
     /**
+     * Cancel an order
+     */
+    public function cancelOrder(Request $request, \App\Models\Order $order)
+    {
+        // Ensure the order belongs to the authenticated user
+        if ($order->user_id !== Auth::id()) {
+            abort(404);
+        }
+
+        // Check if order can be cancelled
+        if (!$order->canBeCancelled()) {
+            return back()->with('error', 'This order cannot be cancelled.');
+        }
+
+        $request->validate([
+            'cancellation_reason' => 'required|string|max:255'
+        ]);
+
+        $order->update([
+            'order_status' => 'cancelled',
+            'cancellation_reason' => $request->cancellation_reason,
+            'cancelled_at' => now()
+        ]);
+
+        return back()->with('success', 'Order cancelled successfully.');
+    }
+
+    /**
      * Show user wishlist
      */
     public function wishlist()
@@ -126,7 +154,7 @@ class DashboardController extends Controller
         $user = Auth::user();
         // For now, return empty wishlist - you can implement wishlist model later
         $wishlistItems = collect(); // Replace with: $user->wishlistItems()->with('product')->get();
-        
+
         return view('user.dashboard.wishlist', compact('wishlistItems'));
     }
 }

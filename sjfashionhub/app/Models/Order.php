@@ -68,6 +68,11 @@ class Order extends Model
         return $this->belongsTo(User::class, 'confirmed_by');
     }
 
+    public function returns(): HasMany
+    {
+        return $this->hasMany(ReturnOrder::class);
+    }
+
     // Scopes
     public function scopePending($query)
     {

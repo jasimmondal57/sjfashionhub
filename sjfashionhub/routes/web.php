@@ -441,6 +441,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/password', [\App\Http\Controllers\User\DashboardController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('orders');
         Route::get('/orders/{order}', [\App\Http\Controllers\User\DashboardController::class, 'orderDetails'])->name('orders.show');
+        Route::patch('/orders/{order}/cancel', [\App\Http\Controllers\User\DashboardController::class, 'cancelOrder'])->name('orders.cancel');
+
+        // Return Routes
+        Route::get('/returns', [\App\Http\Controllers\User\ReturnController::class, 'index'])->name('returns.index');
+        Route::get('/orders/{order}/return', [\App\Http\Controllers\User\ReturnController::class, 'create'])->name('returns.create');
+        Route::post('/orders/{order}/return', [\App\Http\Controllers\User\ReturnController::class, 'store'])->name('returns.store');
+        Route::get('/returns/{returnOrder}', [\App\Http\Controllers\User\ReturnController::class, 'show'])->name('returns.show');
+        Route::patch('/returns/{returnOrder}/cancel', [\App\Http\Controllers\User\ReturnController::class, 'cancel'])->name('returns.cancel');
+
         Route::get('/wishlist', [\App\Http\Controllers\User\DashboardController::class, 'wishlist'])->name('wishlist');
     });
 });

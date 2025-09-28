@@ -91,11 +91,19 @@
                         </a>
 
                         <a href="{{ route('user.orders') }}"
-                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.orders*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
                             <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                             </svg>
                             My Orders
+                        </a>
+
+                        <a href="{{ route('user.returns.index') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.returns*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                            <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                            </svg>
+                            My Returns
                         </a>
 
                         <a href="{{ route('user.wishlist') }}"

@@ -44,15 +44,30 @@
                             <a href="{{ route('user.orders.show', $order) }}" class="text-black hover:text-gray-700 text-sm font-medium">
                                 View Details
                             </a>
-                            @if($order->order_status === 'delivered')
-                                <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
-                                    Reorder
-                                </button>
-                            @elseif(in_array($order->order_status, ['in_transit', 'out_for_delivery']))
-                                <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
-                                    Track Order
-                                </button>
-                            @endif
+                            <div class="flex space-x-2">
+                                @if($order->order_status === 'pending')
+                                    <button onclick="cancelOrder('{{ $order->id }}')" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm hover:bg-red-700">
+                                        Cancel Order
+                                    </button>
+                                @elseif(in_array($order->order_status, ['confirmed', 'ready_to_ship', 'in_transit', 'out_for_delivery']))
+                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block">
+                                        Track Order
+                                    </a>
+                                @elseif($order->order_status === 'delivered')
+                                    @php
+                                        $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 0;
+                                        $canReturn = $deliveredDays <= 7; // 7 days return policy
+                                    @endphp
+                                    @if($canReturn)
+                                        <a href="{{ route('user.returns.create', $order) }}" class="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 inline-block">
+                                            Return Order
+                                        </a>
+                                    @endif
+                                    <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
+                                        Reorder
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,4 +93,57 @@
             </div>
         </div>
     @endif
+
+    <!-- Cancel Order Modal -->
+    <div id="cancelOrderModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Cancel Order</h3>
+                <p class="text-sm text-gray-600 mb-4">Are you sure you want to cancel this order? This action cannot be undone.</p>
+
+                <form id="cancelOrderForm" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="mb-4">
+                        <label for="cancellation_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for cancellation</label>
+                        <select name="cancellation_reason" id="cancellation_reason" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
+                            <option value="">Select a reason</option>
+                            <option value="changed_mind">Changed my mind</option>
+                            <option value="found_better_price">Found better price elsewhere</option>
+                            <option value="ordered_by_mistake">Ordered by mistake</option>
+                            <option value="delivery_too_long">Delivery taking too long</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeCancelModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Keep Order
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700">
+                            Cancel Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cancelOrder(orderId) {
+            document.getElementById('cancelOrderForm').action = `/account/orders/${orderId}/cancel`;
+            document.getElementById('cancelOrderModal').classList.remove('hidden');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelOrderModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('cancelOrderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCancelModal();
+            }
+        });
+    </script>
 </x-layouts.user>
