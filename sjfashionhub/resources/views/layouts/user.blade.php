@@ -30,7 +30,7 @@
 
                     <!-- User Menu -->
                     <div class="flex items-center space-x-4">
-                        <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                        <a href="/" class="text-gray-800 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                             🏠 Home
                         </a>
                         
@@ -129,7 +129,7 @@
                 <div class="mb-6">
                     <h1 class="text-2xl font-bold text-gray-900">{{ $title ?? 'Dashboard' }}</h1>
                     @if(isset($subtitle))
-                        <p class="text-gray-600 mt-1">{{ $subtitle }}</p>
+                        <p class="text-gray-700 mt-1">{{ $subtitle }}</p>
                     @endif
                 </div>
 
