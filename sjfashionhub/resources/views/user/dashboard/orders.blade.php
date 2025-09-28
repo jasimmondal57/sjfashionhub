@@ -57,12 +57,24 @@
                                     @php
                                         $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 0;
                                         $canReturn = $deliveredDays <= 7; // 7 days return policy
+                                        $existingReturn = \App\Models\ReturnOrder::where('order_id', $order->id)->first();
                                     @endphp
-                                    @if($canReturn)
+
+                                    <!-- Track Order Button for delivered orders too -->
+                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block">
+                                        Track Order
+                                    </a>
+
+                                    @if($canReturn && !$existingReturn)
                                         <a href="{{ route('user.returns.create', $order) }}" class="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 inline-block">
                                             Return Order
                                         </a>
+                                    @elseif($existingReturn)
+                                        <a href="{{ route('user.returns.show', $existingReturn) }}" class="bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 inline-block">
+                                            View Return
+                                        </a>
                                     @endif
+
                                     <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
                                         Reorder
                                     </button>
