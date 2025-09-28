@@ -160,7 +160,7 @@
                     @endif
 
                     @if(in_array($order->order_status, ['in_transit', 'out_for_delivery']) && $order->tracking_url)
-                        <a href="{{ $order->tracking_url }}" target="_blank" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                        <a href="{{ $order->tracking_url }}" target="_blank" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" style="background-color: #2563eb !important; color: white !important;">
                             Track on Courier Site
                         </a>
                     @endif
@@ -186,7 +186,7 @@
                         @endphp
 
                         <!-- Track Order Button for delivered orders too -->
-                        <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" style="background-color: #2563eb !important; color: white !important; border-color: #2563eb !important;">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -194,14 +194,14 @@
                         </a>
 
                         @if($canReturn && !$existingReturn)
-                            <a href="{{ route('user.returns.create', $order) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700" title="Return eligible items">
+                            <a href="{{ route('user.returns.create', $order) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700" style="background-color: #ea580c !important; color: white !important;" title="Return eligible items">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3"></path>
                                 </svg>
                                 Return Order
                             </a>
                         @elseif($existingReturn)
-                            <a href="{{ route('user.returns.show', $existingReturn) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <a href="{{ route('user.returns.show', $existingReturn) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" style="background-color: #4b5563 !important; color: white !important; border-color: #4b5563 !important;">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
@@ -209,7 +209,7 @@
                             </a>
                         @endif
 
-                        <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-black hover:bg-gray-800">
+                        <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-black hover:bg-gray-800" style="background-color: #000000 !important; color: white !important;">
                             Reorder
                         </button>
                     @endif

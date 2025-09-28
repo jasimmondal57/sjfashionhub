@@ -46,11 +46,11 @@
                             </a>
                             <div class="flex space-x-2">
                                 @if($order->order_status === 'pending')
-                                    <button onclick="cancelOrder('{{ $order->id }}')" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm hover:bg-red-700">
+                                    <button onclick="cancelOrder('{{ $order->id }}')" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm hover:bg-red-700" style="background-color: #dc2626 !important; color: white !important;">
                                         Cancel Order
                                     </button>
                                 @elseif(in_array($order->order_status, ['confirmed', 'ready_to_ship', 'in_transit', 'out_for_delivery']))
-                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block">
+                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block" style="background-color: #2563eb !important; color: white !important;">
                                         Track Order
                                     </a>
                                 @elseif($order->order_status === 'delivered')
@@ -69,21 +69,21 @@
                                     @endphp
 
                                     <!-- Track Order Button for delivered orders too -->
-                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block">
+                                    <a href="{{ route('track-order.authenticated', $order->order_number) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 inline-block" style="background-color: #2563eb !important; color: white !important;">
                                         Track Order
                                     </a>
 
                                     @if($canReturn && !$existingReturn)
-                                        <a href="{{ route('user.returns.create', $order) }}" class="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 inline-block">
+                                        <a href="{{ route('user.returns.create', $order) }}" class="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 inline-block" style="background-color: #ea580c !important; color: white !important;">
                                             Return Order
                                         </a>
                                     @elseif($existingReturn)
-                                        <a href="{{ route('user.returns.show', $existingReturn) }}" class="bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 inline-block">
+                                        <a href="{{ route('user.returns.show', $existingReturn) }}" class="bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 inline-block" style="background-color: #4b5563 !important; color: white !important;">
                                             View Return
                                         </a>
                                     @endif
 
-                                    <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800">
+                                    <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800" style="background-color: #000000 !important; color: white !important;">
                                         Reorder
                                     </button>
                                 @endif
