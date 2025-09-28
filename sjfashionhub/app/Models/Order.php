@@ -179,6 +179,11 @@ class Order extends Model
             $this->confirmed_by = $userId;
         }
 
+        // Update payment status when order is delivered
+        if ($status === 'delivered' && $this->payment_status === 'pending') {
+            $this->payment_status = 'completed';
+        }
+
         $this->save();
     }
 
