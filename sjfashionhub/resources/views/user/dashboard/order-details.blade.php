@@ -168,8 +168,21 @@
                     @if($order->order_status === 'delivered')
                         @php
                             $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 0;
-                            $canReturn = $deliveredDays <= 7; // 7 days return policy
                             $existingReturn = \App\Models\ReturnOrder::where('order_id', $order->id)->first();
+
+                            // Check if any product in the order is eligible for return
+                            $canReturn = false;
+                            $returnEligibleItems = [];
+                            foreach($order->items as $item) {
+                                if($item->product && $item->product->has_return_policy && $deliveredDays <= $item->product->return_days) {
+                                    $canReturn = true;
+                                    $returnEligibleItems[] = [
+                                        'product_name' => $item->product->name,
+                                        'return_days' => $item->product->return_days,
+                                        'days_left' => $item->product->return_days - $deliveredDays
+                                    ];
+                                }
+                            }
                         @endphp
 
                         <!-- Track Order Button for delivered orders too -->
@@ -181,7 +194,7 @@
                         </a>
 
                         @if($canReturn && !$existingReturn)
-                            <a href="{{ route('user.returns.create', $order) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700">
+                            <a href="{{ route('user.returns.create', $order) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700" title="Return eligible items">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3"></path>
                                 </svg>

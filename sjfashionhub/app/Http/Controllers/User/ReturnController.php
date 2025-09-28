@@ -26,10 +26,20 @@ class ReturnController extends Controller
             return redirect()->route('user.orders')->with('error', 'Only delivered orders can be returned.');
         }
 
-        // Check if return period is still valid (7 days)
+        // Check if any product in the order is eligible for return
         $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 999;
-        if ($deliveredDays > 7) {
-            return redirect()->route('user.orders')->with('error', 'Return period has expired. Returns are only allowed within 7 days of delivery.');
+        $order->load('items.product');
+
+        $hasEligibleItems = false;
+        foreach($order->items as $item) {
+            if($item->product && $item->product->has_return_policy && $deliveredDays <= $item->product->return_days) {
+                $hasEligibleItems = true;
+                break;
+            }
+        }
+
+        if (!$hasEligibleItems) {
+            return redirect()->route('user.orders')->with('error', 'No items in this order are eligible for return. Return periods may have expired or products may not have return policy.');
         }
 
         // Check if return request already exists
@@ -37,8 +47,6 @@ class ReturnController extends Controller
         if ($existingReturn) {
             return redirect()->route('user.returns.show', $existingReturn)->with('info', 'Return request already exists for this order.');
         }
-
-        $order->load('items.product');
         
         return view('user.returns.create', compact('order'));
     }

@@ -14,11 +14,24 @@
                 <div class="mb-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Select Items to Return</h3>
                     <div class="space-y-4">
+                        @php
+                            $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 999;
+                        @endphp
+
                         @foreach($order->items as $item)
-                            <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                                <input type="checkbox" name="return_items[]" value="{{ $item->id }}" id="item_{{ $item->id }}" 
-                                       class="h-4 w-4 text-black focus:ring-black border-gray-300 rounded">
-                                
+                            @php
+                                $isEligible = $item->product && $item->product->has_return_policy && $deliveredDays <= $item->product->return_days;
+                                $daysLeft = $item->product ? $item->product->return_days - $deliveredDays : 0;
+                            @endphp
+
+                            <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg {{ !$isEligible ? 'bg-gray-50 opacity-60' : '' }}">
+                                @if($isEligible)
+                                    <input type="checkbox" name="return_items[]" value="{{ $item->id }}" id="item_{{ $item->id }}"
+                                           class="h-4 w-4 text-black focus:ring-black border-gray-300 rounded">
+                                @else
+                                    <input type="checkbox" disabled class="h-4 w-4 text-gray-400 border-gray-300 rounded cursor-not-allowed">
+                                @endif
+
                                 @if($item->product && $item->product->featured_image)
                                     <img class="h-16 w-16 rounded-lg object-cover" src="{{ Storage::url($item->product->featured_image) }}" alt="{{ $item->product_name }}">
                                 @else
@@ -28,10 +41,32 @@
                                         </svg>
                                     </div>
                                 @endif
-                                
+
                                 <div class="flex-1">
-                                    <label for="item_{{ $item->id }}" class="text-sm font-medium text-gray-900 cursor-pointer">{{ $item->product_name }}</label>
+                                    <label for="item_{{ $item->id }}" class="text-sm font-medium text-gray-900 {{ $isEligible ? 'cursor-pointer' : 'cursor-not-allowed' }}">{{ $item->product_name }}</label>
                                     <p class="text-sm text-gray-600">Quantity: {{ $item->quantity }} • ₹{{ number_format($item->total_price, 0) }}</p>
+
+                                    @if($item->product)
+                                        @if($isEligible)
+                                            <p class="text-xs text-green-600 mt-1">
+                                                <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Eligible for return • {{ $daysLeft }} days left ({{ $item->product->return_days }} day policy)
+                                            </p>
+                                        @else
+                                            <p class="text-xs text-red-600 mt-1">
+                                                <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                @if(!$item->product->has_return_policy)
+                                                    No return policy
+                                                @else
+                                                    Return period expired ({{ $item->product->return_days }} day policy)
+                                                @endif
+                                            </p>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

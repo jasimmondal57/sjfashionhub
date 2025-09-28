@@ -56,8 +56,16 @@
                                 @elseif($order->order_status === 'delivered')
                                     @php
                                         $deliveredDays = $order->delivered_at ? $order->delivered_at->diffInDays(now()) : 0;
-                                        $canReturn = $deliveredDays <= 7; // 7 days return policy
                                         $existingReturn = \App\Models\ReturnOrder::where('order_id', $order->id)->first();
+
+                                        // Check if any product in the order is eligible for return
+                                        $canReturn = false;
+                                        foreach($order->items as $item) {
+                                            if($item->product && $item->product->has_return_policy && $deliveredDays <= $item->product->return_days) {
+                                                $canReturn = true;
+                                                break;
+                                            }
+                                        }
                                     @endphp
 
                                     <!-- Track Order Button for delivered orders too -->
