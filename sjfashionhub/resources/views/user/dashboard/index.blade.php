@@ -123,7 +123,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Shopping Cart</h3>
                 <p class="text-gray-600 text-sm mb-4">Review items in your cart and proceed to checkout</p>
-                <a href="{{ route('user.cart') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                <a href="{{ route('cart.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                     View Cart
                 </a>
             </div>
