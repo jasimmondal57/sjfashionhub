@@ -78,8 +78,17 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
+            // Generate unique order number
+            $orderNumber = 'ORD-' . date('Y') . '-' . str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+
+            // Ensure order number is unique
+            while (Order::where('order_number', $orderNumber)->exists()) {
+                $orderNumber = 'ORD-' . date('Y') . '-' . str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+            }
+
             // Create order
             $order = Order::create([
+                'order_number' => $orderNumber,
                 'user_id' => Auth::id(),
                 'order_status' => 'pending',
                 'payment_status' => 'pending',
@@ -111,10 +120,6 @@ class CheckoutController extends Controller
                     'pincode' => $request->pincode,
                 ],
             ]);
-
-            // Generate order number
-            $order->order_number = $order->generateOrderNumber();
-            $order->save();
 
             // Create order items
             foreach ($cartItems as $cartItem) {
