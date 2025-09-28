@@ -74,28 +74,6 @@
                             </div>
                         </div>
 
-                        <!-- Payment Method -->
-                        <div class="mb-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
-                            <div class="space-y-3">
-                                <label class="flex items-center">
-                                    <input type="radio" name="payment_method" value="cod" checked
-                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
-                                    <span class="ml-3 text-sm text-gray-700">Cash on Delivery (COD)</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="payment_method" value="online"
-                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
-                                    <span class="ml-3 text-sm text-gray-700">Online Payment (UPI/Card)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Place Order Button -->
-                        <button type="submit" 
-                                class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors font-medium">
-                            Place Order
-                        </button>
                     </form>
                 </div>
 
@@ -159,6 +137,30 @@
                         </div>
                     </div>
 
+                    <!-- Payment Method -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="radio" name="payment_method" value="cod" checked form="checkout-form"
+                                       class="h-4 w-4 text-black focus:ring-black border-gray-300">
+                                <span class="ml-3 text-sm text-gray-700">Cash on Delivery (COD)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="payment_method" value="online" form="checkout-form"
+                                       class="h-4 w-4 text-black focus:ring-black border-gray-300">
+                                <span class="ml-3 text-sm text-gray-700">Online Payment (UPI/Card)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <button type="submit" form="checkout-form" id="place-order-btn"
+                            class="w-full mt-6 bg-black text-white py-4 px-6 rounded-lg hover:bg-gray-800 transition-all duration-200 font-bold text-lg relative overflow-hidden">
+                        <span class="button-text">Place Order</span>
+                        <span class="success-text hidden">Order Placed! 🚚</span>
+                    </button>
+
                     <!-- Security Notice -->
                     <div class="mt-6 p-4 bg-gray-50 rounded-lg">
                         <div class="flex items-center">
@@ -172,4 +174,90 @@
             </div>
         </div>
     </div>
+
+    <!-- Truck Animation Styles -->
+    <style>
+        .truck-animation {
+            position: fixed;
+            top: 50%;
+            left: -100px;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            z-index: 1000;
+            animation: truckDrive 3s ease-in-out;
+        }
+
+        @keyframes truckDrive {
+            0% {
+                left: -100px;
+            }
+            50% {
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+            }
+            100% {
+                left: 100vw;
+                transform: translateY(-50%);
+            }
+        }
+
+        #place-order-btn.processing {
+            background-color: #4b5563 !important;
+            cursor: not-allowed;
+        }
+
+        #place-order-btn.success {
+            background-color: #10b981 !important;
+        }
+    </style>
+
+    <!-- JavaScript for Place Order Animation -->
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const button = document.getElementById('place-order-btn');
+            const buttonText = button.querySelector('.button-text');
+            const successText = button.querySelector('.success-text');
+
+            // Show processing state
+            button.classList.add('processing');
+            buttonText.textContent = 'Processing...';
+            button.disabled = true;
+
+            // Show truck animation
+            showTruckAnimation();
+
+            // Simulate processing time then submit
+            setTimeout(() => {
+                // Show success state
+                button.classList.remove('processing');
+                button.classList.add('success');
+                buttonText.style.display = 'none';
+                successText.style.display = 'inline';
+
+                // Submit the form after animation
+                setTimeout(() => {
+                    this.submit();
+                }, 1000);
+            }, 2000);
+        });
+
+        function showTruckAnimation() {
+            // Create truck element
+            const truck = document.createElement('div');
+            truck.className = 'truck-animation';
+            truck.innerHTML = '🚚';
+
+            // Add to page
+            document.body.appendChild(truck);
+
+            // Remove after animation
+            setTimeout(() => {
+                if (truck.parentNode) {
+                    truck.parentNode.removeChild(truck);
+                }
+            }, 3000);
+        }
+    </script>
 </x-layouts.main>
