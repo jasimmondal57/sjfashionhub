@@ -296,6 +296,15 @@
                         🚀 Shiprocket Settings
                     </a>
 
+                    <!-- Shipping Settings -->
+                    <a href="{{ route('admin.shipping-settings.index') }}"
+                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('admin.shipping-settings*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        🚚 Shipping Settings
+                    </a>
+
                     <!-- Abandoned Cart Recovery -->
                     <a href="{{ route('admin.abandoned-carts.index') }}"
                        class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('admin.abandoned-carts*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">

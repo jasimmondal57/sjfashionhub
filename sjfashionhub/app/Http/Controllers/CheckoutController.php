@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ShippingSetting;
 
 class CheckoutController extends Controller
 {
@@ -30,7 +31,11 @@ class CheckoutController extends Controller
         
         // Calculate totals
         $subtotal = $cartTotal;
-        $shipping = 99; // Fixed shipping cost
+
+        // Get shipping cost from settings
+        $shippingSettings = ShippingSetting::getSettings();
+        $shipping = $shippingSettings->calculateShipping($cartTotal);
+
         $tax = $cartTotal * 0.18; // 18% GST
         $total = $subtotal + $shipping + $tax;
         
@@ -71,7 +76,11 @@ class CheckoutController extends Controller
         // Calculate totals
         $cartTotal = Cart::getCartTotal();
         $subtotal = $cartTotal;
-        $shipping = 99; // Fixed shipping cost
+
+        // Get shipping cost from settings
+        $shippingSettings = ShippingSetting::getSettings();
+        $shipping = $shippingSettings->calculateShipping($cartTotal);
+
         $tax = $cartTotal * 0.18; // 18% GST
         $total = $subtotal + $shipping + $tax;
 

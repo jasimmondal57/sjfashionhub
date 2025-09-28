@@ -208,6 +208,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('shiprocket-settings/pickup-locations', [App\Http\Controllers\Admin\ShiprocketSettingsController::class, 'getPickupLocations'])->name('shiprocket-settings.pickup-locations');
     Route::delete('shiprocket-settings/reset', [App\Http\Controllers\Admin\ShiprocketSettingsController::class, 'reset'])->name('shiprocket-settings.reset');
 
+    // Shipping Settings
+    Route::get('shipping-settings', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'index'])->name('shipping-settings.index');
+    Route::put('shipping-settings', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'update'])->name('shipping-settings.update');
+    Route::post('shipping-settings/test', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'testCalculation'])->name('shipping-settings.test');
+    Route::get('shipping-settings/reset', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'reset'])->name('shipping-settings.reset');
+    Route::get('shipping-settings/export', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'export'])->name('shipping-settings.export');
+    Route::post('shipping-settings/import', [App\Http\Controllers\Admin\ShippingSettingsController::class, 'import'])->name('shipping-settings.import');
+
     // Abandoned Cart Recovery
     Route::get('abandoned-carts', [App\Http\Controllers\Admin\AbandonedCartController::class, 'index'])->name('abandoned-carts.index');
     Route::get('abandoned-carts/{abandonedCart}', [App\Http\Controllers\Admin\AbandonedCartController::class, 'show'])->name('abandoned-carts.show');
