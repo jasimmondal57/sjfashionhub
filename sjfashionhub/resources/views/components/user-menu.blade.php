@@ -74,7 +74,7 @@
 @else
     <!-- Login/Register Links -->
     <div class="flex items-center space-x-3">
-        <a href="{{ route('login') }}" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 hover:bg-gray-50">
+        <a href="{{ route('login') }}" class="flex items-center text-gray-800 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium border border-gray-300 hover:bg-gray-50 bg-white">
             <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
             </svg>
