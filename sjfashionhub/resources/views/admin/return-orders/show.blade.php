@@ -331,38 +331,38 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
                         <div class="space-y-3">
                             @if($returnOrder->canBeApproved())
-                                <button onclick="showApproveModal({{ $returnOrder->id }})" 
-                                        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                <button onclick="showApproveModal({{ $returnOrder->id }})"
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #16a34a !important; color: white !important;">
                                     <i class="fas fa-check mr-2"></i>Approve Return
                                 </button>
-                                <button onclick="showRejectModal({{ $returnOrder->id }})" 
-                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                <button onclick="showRejectModal({{ $returnOrder->id }})"
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #dc2626 !important; color: white !important;">
                                     <i class="fas fa-times mr-2"></i>Reject Return
                                 </button>
                             @endif
 
                             @if($returnOrder->canInitiateReturn())
-                                <a href="{{ route('admin.return-orders.return-options', $returnOrder) }}" 
-                                   class="block w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium transition-colors text-center">
+                                <a href="{{ route('admin.return-orders.return-options', $returnOrder) }}"
+                                   class="block w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium transition-colors text-center" style="background-color: #9333ea !important; color: white !important;">
                                     <i class="fas fa-undo mr-2"></i>Initiate Return
                                 </a>
                             @endif
 
                             @if($returnOrder->status === 'in_transit')
-                                <button onclick="showReceivedModal({{ $returnOrder->id }})" 
-                                        class="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                <button onclick="showReceivedModal({{ $returnOrder->id }})"
+                                        class="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #ea580c !important; color: white !important;">
                                     <i class="fas fa-inbox mr-2"></i>Mark Received
                                 </button>
                             @endif
 
                             @if($returnOrder->status === 'pending_refund')
-                                <button onclick="showQualityCheckModal({{ $returnOrder->id }})" 
-                                        class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                <button onclick="showQualityCheckModal({{ $returnOrder->id }})"
+                                        class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #ca8a04 !important; color: white !important;">
                                     <i class="fas fa-search mr-2"></i>Quality Check
                                 </button>
                                 @if($returnOrder->canProcessRefund())
-                                    <button onclick="showRefundModal({{ $returnOrder->id }})" 
-                                            class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                    <button onclick="showRefundModal({{ $returnOrder->id }})"
+                                            class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #16a34a !important; color: white !important;">
                                         <i class="fas fa-money-bill mr-2"></i>Process Refund
                                     </button>
                                 @endif
@@ -371,15 +371,15 @@
                             @if($returnOrder->hasShiprocketIntegration())
                                 <form action="{{ route('admin.return-orders.sync-shiprocket', $returnOrder) }}" method="POST">
                                     @csrf
-                                    <button type="submit" 
-                                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                                    <button type="submit"
+                                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #4f46e5 !important; color: white !important;">
                                         <i class="fas fa-sync mr-2"></i>Sync with Shiprocket
                                     </button>
                                 </form>
                             @endif
 
-                            <button onclick="showStatusModal({{ $returnOrder->id }}, '{{ $returnOrder->status }}')" 
-                                    class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                            <button onclick="showStatusModal({{ $returnOrder->id }}, '{{ $returnOrder->status }}')"
+                                    class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium transition-colors" style="background-color: #4b5563 !important; color: white !important;">
                                 <i class="fas fa-edit mr-2"></i>Update Status
                             </button>
                         </div>
