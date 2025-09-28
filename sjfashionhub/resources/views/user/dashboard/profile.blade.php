@@ -1,9 +1,9 @@
 <x-layouts.user title="My Profile" subtitle="Manage your personal information and account settings">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Profile Picture -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="lg:col-span-1 order-1 lg:order-1">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Picture</h3>
                 
                 <div class="text-center">
@@ -44,8 +44,10 @@
         </div>
 
             <!-- Profile Information -->
-            <div class="lg:col-span-3">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="lg:col-span-3 order-2 lg:order-2">
+                <div class="space-y-8">
+                    <!-- Personal Information -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Personal Information</h3>
                 
                 <form method="POST" action="{{ route('user.profile.update') }}">
@@ -71,7 +73,7 @@
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            @if($user->email_verified_at)
+                            @if($user->email_verified_at || $user->login_type === 'google' || $user->login_type === 'facebook')
                                 <p class="mt-1 text-sm text-green-600 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
@@ -120,11 +122,11 @@
                             Update Profile
                         </button>
                     </div>
-                </form>
-            </div>
+                    </form>
+                    </div>
 
-                <!-- Change Password -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-8">
+                    <!-- Change Password -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Change Password</h3>
                 
                 <form method="POST" action="{{ route('user.password.update') }}">
@@ -166,11 +168,11 @@
                             Change Password
                         </button>
                     </div>
-                </form>
-            </div>
+                    </form>
+                    </div>
 
-                <!-- Account Information -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-8">
+                    <!-- Account Information -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Account Information</h3>
                 
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -208,8 +210,9 @@
                             </span>
                         </dd>
                     </div>
-                </dl>
-            </div>
+                    </dl>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
