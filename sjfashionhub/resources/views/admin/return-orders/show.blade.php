@@ -165,7 +165,7 @@
                                 @if($returnOrder->qualityCheckedBy)
                                     <div>
                                         <p class="text-sm font-medium text-gray-700">Checked By:</p>
-                                        <p class="text-sm text-gray-900">{{ $returnOrder->qualityCheckedBy->name }} on {{ $returnOrder->quality_checked_at->format('M d, Y g:i A') }}</p>
+                                        <p class="text-sm text-gray-900">{{ $returnOrder->qualityCheckedBy->name }} on {{ $returnOrder->quality_checked_at ? $returnOrder->quality_checked_at->format('M d, Y g:i A') : 'Unknown date' }}</p>
                                     </div>
                                 @endif
                                 @if($returnOrder->deduction_amount > 0)
@@ -287,7 +287,7 @@
                                 @endif
                                 <div>
                                     <p class="text-sm font-medium text-gray-700">Processed On</p>
-                                    <p class="text-sm text-gray-900">{{ $returnOrder->refund_processed_at->format('M d, Y g:i A') }}</p>
+                                    <p class="text-sm text-gray-900">{{ $returnOrder->refund_processed_at ? $returnOrder->refund_processed_at->format('M d, Y g:i A') : 'Not processed yet' }}</p>
                                 </div>
                                 @if(isset($returnOrder->refund_details['processed_by']))
                                     <div>
