@@ -36,12 +36,15 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update/{itemId}', [CartController::class, 'updateQuantity'])->name('cart.update');
 Route::delete('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/calculate-shipping', [CartController::class, 'calculateShipping'])->name('cart.calculate-shipping');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 
 // Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+
+
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -68,11 +71,7 @@ Route::get('/robots.txt', function () {
     return response('Robots.txt not found', 404);
 })->name('robots');
 
-// Cart routes
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('cart.remove');
+
 
 // Wishlist routes
 Route::middleware('auth')->group(function () {
@@ -114,7 +113,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Bulk Upload Routes
     Route::get('/bulk-upload', [App\Http\Controllers\Admin\BulkUploadController::class, 'index'])->name('bulk-upload.index');
     Route::get('/bulk-upload/sample', [App\Http\Controllers\Admin\BulkUploadController::class, 'downloadSample'])->name('bulk-upload.sample');
+    Route::get('/bulk-upload/current-products', [App\Http\Controllers\Admin\BulkUploadController::class, 'downloadCurrentProducts'])->name('bulk-upload.current-products');
     Route::post('/bulk-upload/excel', [App\Http\Controllers\Admin\BulkUploadController::class, 'uploadExcel'])->name('bulk-upload.excel');
+    Route::post('/bulk-upload/update', [App\Http\Controllers\Admin\BulkUploadController::class, 'bulkUpdateProducts'])->name('bulk-upload.update');
     Route::post('/bulk-upload/shopify', [App\Http\Controllers\Admin\BulkUploadController::class, 'importShopify'])->name('bulk-upload.shopify');
     Route::post('/bulk-upload/woocommerce', [App\Http\Controllers\Admin\BulkUploadController::class, 'importWooCommerce'])->name('bulk-upload.woocommerce');
 
@@ -236,6 +237,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Communication System
     Route::get('communication', [App\Http\Controllers\Admin\CommunicationController::class, 'index'])->name('communication.index');
+    Route::post('communication/preferences', [App\Http\Controllers\Admin\CommunicationController::class, 'updatePreferences'])->name('communication.update-preferences');
     Route::get('communication/email-settings', [App\Http\Controllers\Admin\CommunicationController::class, 'emailSettings'])->name('communication.email-settings');
     Route::post('communication/email-settings', [App\Http\Controllers\Admin\CommunicationController::class, 'updateEmailSettings'])->name('communication.email-settings.update');
     Route::get('communication/sms-settings', [App\Http\Controllers\Admin\CommunicationController::class, 'smsSettings'])->name('communication.sms-settings');
@@ -365,6 +367,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::delete('/avatar', [App\Http\Controllers\Admin\ProfileController::class, 'removeAvatar'])->name('avatar.remove');
     });
 
+    // Pages Management
+    Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
+    Route::get('pages-create-defaults', [App\Http\Controllers\Admin\PageController::class, 'createDefaults'])->name('pages.create-defaults');
+
     // Super Admin Routes (Role-based access)
     Route::prefix('super-admin')->name('super-admin.')->middleware('super_admin')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\SuperAdminController::class, 'index'])->name('index');
@@ -423,9 +429,14 @@ Route::get('/track-order', [TrackOrderController::class, 'index'])->name('track-
 Route::post('/track-order', [TrackOrderController::class, 'track'])->name('track-order.track');
 Route::get('/track-order/{orderNumber}', [TrackOrderController::class, 'trackAuthenticated'])->name('track-order.authenticated');
 
-// Static pages
-Route::view('/about', 'pages.about')->name('about');
-Route::view('/contact', 'pages.contact')->name('contact');
+// Static pages - Named routes for common pages
+Route::get('/about', [App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'about')->name('about');
+Route::get('/contact', [App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'contact')->name('contact');
+
+// Static pages - Dynamic page routing
+Route::get('/{slug}', [App\Http\Controllers\PageController::class, 'show'])
+    ->where('slug', '^(?!admin|api|dashboard|login|register|cart|checkout|products|categories|blog|track-order|about|contact|account).*$')
+    ->name('pages.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -448,6 +459,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [\App\Http\Controllers\User\DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::put('/password', [\App\Http\Controllers\User\DashboardController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('orders');
+
+        // Address Management Routes
+        Route::resource('addresses', \App\Http\Controllers\User\AddressController::class);
+        Route::patch('/addresses/{address}/set-default', [\App\Http\Controllers\User\AddressController::class, 'setDefault'])->name('addresses.set-default');
         Route::get('/orders/{order}', [\App\Http\Controllers\User\DashboardController::class, 'orderDetails'])->name('orders.show');
         Route::patch('/orders/{order}/cancel', [\App\Http\Controllers\User\DashboardController::class, 'cancelOrder'])->name('orders.cancel');
 
@@ -468,6 +483,18 @@ Route::get('register/success', [App\Http\Controllers\Auth\RegisteredUserControll
 
 require __DIR__.'/auth.php';
 
+// Admin Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('admin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'create'])
+        ->name('admin.login');
+    Route::post('admin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'store']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('admin/logout', [App\Http\Controllers\Auth\AdminLoginController::class, 'destroy'])
+        ->name('admin.logout');
+});
+
 // Social Login Routes
 Route::prefix('auth')->group(function () {
     Route::get('{provider}/redirect', [App\Http\Controllers\Auth\SocialLoginController::class, 'redirect'])
@@ -487,3 +514,5 @@ Route::prefix('mobile')->group(function () {
     Route::get('verify', [App\Http\Controllers\Auth\MobileLoginController::class, 'showVerifyForm'])
         ->name('mobile.verify');
 });
+
+require __DIR__.'/auth.php';

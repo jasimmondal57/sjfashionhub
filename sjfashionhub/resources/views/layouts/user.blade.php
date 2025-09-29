@@ -23,7 +23,9 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center">
-                            <x-application-logo class="h-8 w-auto" />
+                            <div class="h-8 w-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-lg flex items-center justify-center">
+                                <span class="text-sm font-bold">SJ</span>
+                            </div>
                             <span class="ml-2 text-xl font-bold text-gray-900">SJ Fashion Hub</span>
                         </a>
                     </div>
@@ -88,6 +90,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                             My Profile
+                        </a>
+
+                        <a href="{{ route('user.addresses.index') }}"
+                           class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('user.addresses*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800' }}">
+                            <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            My Addresses
                         </a>
 
                         <a href="{{ route('user.orders') }}"

@@ -136,6 +136,27 @@ class User extends Authenticatable
         return $this->role === 'super_admin';
     }
 
+    // Relationships
+    public function addresses()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+    public function defaultAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('is_default', true);
+    }
+
+    public function shippingAddresses()
+    {
+        return $this->hasMany(UserAddress::class)->whereIn('type', ['shipping', 'both']);
+    }
+
+    public function billingAddresses()
+    {
+        return $this->hasMany(UserAddress::class)->whereIn('type', ['billing', 'both']);
+    }
+
     public function isProfileComplete()
     {
         $requiredFields = ['name', 'email'];
@@ -198,5 +219,15 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(\App\Models\Order::class);
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(\App\Models\Wishlist::class);
+    }
+
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(\App\Models\Product::class, 'wishlists');
     }
 }

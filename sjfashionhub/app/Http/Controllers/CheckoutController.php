@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ShippingSetting;
+use App\Models\UserAddress;
 
 class CheckoutController extends Controller
 {
@@ -29,24 +30,47 @@ class CheckoutController extends Controller
         $cartTotal = Cart::getCartTotal();
         $cartCount = Cart::getCartCount();
         
-        // Calculate totals
-        $subtotal = $cartTotal;
+        // Calculate totals with inclusive GST (reverse calculation)
+        // Product prices include GST based on their individual tax_rate
+        $total_with_tax = $cartTotal; // This is the final amount for products
+
+        // Calculate tax based on actual product tax rates
+        $tax = 0;
+        $subtotal = 0;
+
+        foreach ($cartItems as $item) {
+            $price = $item->product->sale_price ?? $item->product->price;
+            $itemTotal = $price * $item->quantity;
+            $taxRate = $item->product->tax_rate ?? 5; // Default to 5% if not set
+
+            // Reverse GST calculation: tax portion from inclusive price
+            $itemTax = $itemTotal * ($taxRate / (100 + $taxRate));
+            $itemSubtotal = $itemTotal - $itemTax;
+
+            $tax += $itemTax;
+            $subtotal += $itemSubtotal;
+        }
 
         // Get shipping cost from settings
         $shippingSettings = ShippingSetting::getSettings();
         $shipping = $shippingSettings->calculateShipping($cartTotal);
 
-        $tax = $cartTotal * 0.18; // 18% GST
-        $total = $subtotal + $shipping + $tax;
-        
+        $total = $subtotal + $shipping + $tax; // Final total
+
+        // Get user's saved addresses if authenticated
+        $userAddresses = Auth::check() ? Auth::user()->addresses()->orderBy('is_default', 'desc')->get() : collect();
+        $defaultAddress = Auth::check() ? Auth::user()->defaultAddress : null;
+
         return view('checkout.index', compact(
-            'cartItems', 
-            'cartTotal', 
-            'cartCount', 
-            'subtotal', 
-            'shipping', 
-            'tax', 
-            'total'
+            'cartItems',
+            'cartTotal',
+            'cartCount',
+            'subtotal',
+            'shipping',
+            'tax',
+            'total',
+            'userAddresses',
+            'defaultAddress'
         ));
     }
     
@@ -64,6 +88,8 @@ class CheckoutController extends Controller
             'state' => 'required|string|max:255',
             'pincode' => 'required|string|max:10',
             'payment_method' => 'required|string|in:cod,online',
+            'coupon_code' => 'nullable|string|max:50',
+            'coupon_discount' => 'nullable|numeric|min:0',
         ]);
         
         // Get cart items
@@ -73,16 +99,63 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
-        // Calculate totals
+        // Calculate totals with inclusive GST (reverse calculation)
+        $cartItems = Cart::getCartItems();
         $cartTotal = Cart::getCartTotal();
-        $subtotal = $cartTotal;
+        $total_with_tax = $cartTotal; // Product prices include tax
+
+        // Calculate tax based on actual product tax rates
+        $tax = 0;
+        $subtotal = 0;
+
+        foreach ($cartItems as $item) {
+            $price = $item->product->sale_price ?? $item->product->price;
+            $itemTotal = $price * $item->quantity;
+            $taxRate = $item->product->tax_rate ?? 5; // Default to 5% if not set
+
+            // Reverse GST calculation: tax portion from inclusive price
+            $itemTax = $itemTotal * ($taxRate / (100 + $taxRate));
+            $itemSubtotal = $itemTotal - $itemTax;
+
+            $tax += $itemTax;
+            $subtotal += $itemSubtotal;
+        }
 
         // Get shipping cost from settings
         $shippingSettings = ShippingSetting::getSettings();
         $shipping = $shippingSettings->calculateShipping($cartTotal);
 
-        $tax = $cartTotal * 0.18; // 18% GST
-        $total = $subtotal + $shipping + $tax;
+        $total = $subtotal + $shipping + $tax; // Final total
+
+        // Handle coupon discount
+        $couponCode = null;
+        $couponDiscount = 0;
+        $appliedCoupon = null;
+
+        if ($request->filled('coupon_code') && $request->filled('coupon_discount')) {
+            $couponCode = strtoupper($request->coupon_code);
+            $couponDiscount = (float) $request->coupon_discount;
+
+            // Validate the coupon again for security
+            $appliedCoupon = \App\Models\Coupon::where('code', $couponCode)->first();
+            if ($appliedCoupon && $appliedCoupon->isValid() && $appliedCoupon->canBeUsedBy(Auth::id(), $total)) {
+                $calculatedDiscount = $appliedCoupon->calculateDiscount($total, $shipping);
+
+                // Ensure the discount matches what was calculated on frontend
+                if (abs($calculatedDiscount - $couponDiscount) < 0.01) {
+                    $total -= $couponDiscount;
+                } else {
+                    // Discount mismatch, recalculate
+                    $couponDiscount = $calculatedDiscount;
+                    $total -= $couponDiscount;
+                }
+            } else {
+                // Invalid coupon, reset discount
+                $couponCode = null;
+                $couponDiscount = 0;
+                $appliedCoupon = null;
+            }
+        }
 
         try {
             DB::beginTransaction();
@@ -105,7 +178,8 @@ class CheckoutController extends Controller
                 'subtotal' => $subtotal,
                 'tax_amount' => $tax,
                 'shipping_amount' => $shipping,
-                'discount_amount' => 0,
+                'discount_amount' => $couponDiscount,
+                'coupon_code' => $couponCode,
                 'total_amount' => $total,
                 'currency' => 'INR',
                 'is_cod' => $request->payment_method === 'cod',
@@ -145,6 +219,16 @@ class CheckoutController extends Controller
                 ]);
             }
 
+            // Increment coupon usage if coupon was applied
+            if ($appliedCoupon) {
+                $appliedCoupon->incrementUsage();
+            }
+
+            // Save address to user's address book if authenticated and not already saved
+            if (Auth::check()) {
+                $this->saveUserAddress($request, Auth::id());
+            }
+
             // Clear cart after successful order
             Cart::clearCart();
 
@@ -169,5 +253,43 @@ class CheckoutController extends Controller
     public function success()
     {
         return view('checkout.success');
+    }
+
+    /**
+     * Save user address from checkout form
+     */
+    private function saveUserAddress(Request $request, int $userId)
+    {
+        // Check if this exact address already exists for the user
+        $existingAddress = UserAddress::where('user_id', $userId)
+            ->where('full_name', $request->full_name)
+            ->where('phone', $request->phone)
+            ->where('address_line_1', $request->address)
+            ->where('city', $request->city)
+            ->where('state', $request->state)
+            ->where('pincode', $request->pincode)
+            ->first();
+
+        if (!$existingAddress) {
+            // Create new address
+            $address = UserAddress::create([
+                'user_id' => $userId,
+                'type' => 'both', // Can be used for both shipping and billing
+                'full_name' => $request->full_name,
+                'phone' => $request->phone,
+                'address_line_1' => $request->address,
+                'city' => $request->city,
+                'state' => $request->state,
+                'pincode' => $request->pincode,
+                'country' => 'India',
+                'is_default' => false, // Don't auto-set as default
+            ]);
+
+            // If this is the user's first address, make it default
+            $addressCount = UserAddress::where('user_id', $userId)->count();
+            if ($addressCount === 1) {
+                $address->setAsDefault();
+            }
+        }
     }
 }

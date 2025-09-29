@@ -80,7 +80,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <!-- Update Profile -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="text-center">
@@ -109,6 +109,23 @@
                 <p class="text-gray-600 text-sm mb-4">Track your orders and view order history</p>
                 <a href="{{ route('user.orders') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                     View Orders
+                </a>
+            </div>
+        </div>
+
+        <!-- My Addresses -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-center">
+                <div class="mx-auto h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                    <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">My Addresses</h3>
+                <p class="text-gray-600 text-sm mb-4">Manage your shipping and billing addresses</p>
+                <a href="{{ route('user.addresses.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
+                    Manage Addresses
                 </a>
             </div>
         </div>

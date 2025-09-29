@@ -1,16 +1,98 @@
 <x-layouts.main>
-    <div class="min-h-screen bg-gray-50 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 py-4 md:py-8">
+        <div class="container mx-auto px-4">
             <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
-                <p class="text-gray-600 mt-2">Complete your order</p>
+            <div class="mb-6 md:mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Checkout</h1>
+                <p class="text-gray-600 mt-2 text-sm md:text-base">Complete your order</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 <!-- Checkout Form -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Shipping Information</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+                    @auth
+                        @if($userAddresses->count() > 0)
+                            <!-- Saved Addresses Section -->
+                            <div class="mb-6">
+                                <h2 class="text-lg md:text-xl font-semibold text-gray-900 mb-4">Select Delivery Address</h2>
+
+                                <div class="space-y-3 mb-4">
+                                    @foreach($userAddresses as $address)
+                                        <label class="relative block">
+                                            <input type="radio"
+                                                   name="saved_address"
+                                                   value="{{ $address->id }}"
+                                                   {{ $address->is_default ? 'checked' : '' }}
+                                                   class="sr-only peer address-radio"
+                                                   data-full-name="{{ $address->full_name }}"
+                                                   data-phone="{{ $address->phone }}"
+                                                   data-address="{{ $address->address_line_1 }}"
+                                                   data-city="{{ $address->city }}"
+                                                   data-state="{{ $address->state }}"
+                                                   data-pincode="{{ $address->pincode }}">
+                                            <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-black peer-checked:bg-gray-50 transition-all">
+                                                <div class="flex justify-between items-start">
+                                                    <div>
+                                                        <div class="flex items-center space-x-2 mb-2">
+                                                            <h3 class="font-semibold text-gray-900">{{ $address->full_name }}</h3>
+                                                            @if($address->label)
+                                                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{{ $address->label }}</span>
+                                                            @endif
+                                                            @if($address->is_default)
+                                                                <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Default</span>
+                                                            @endif
+                                                        </div>
+                                                        <p class="text-sm text-gray-600">{{ $address->phone }}</p>
+                                                        <p class="text-sm text-gray-600">
+                                                            {{ $address->address_line_1 }}
+                                                            @if($address->address_line_2), {{ $address->address_line_2 }}@endif
+                                                        </p>
+                                                        <p class="text-sm text-gray-600">{{ $address->city }}, {{ $address->state }} {{ $address->pincode }}</p>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full peer-checked:border-black peer-checked:bg-black flex items-center justify-center">
+                                                            <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    @endforeach
+
+                                    <!-- Add New Address Option -->
+                                    <label class="relative block">
+                                        <input type="radio"
+                                               name="saved_address"
+                                               value="new"
+                                               class="sr-only peer address-radio">
+                                        <div class="p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer peer-checked:border-black peer-checked:bg-gray-50 transition-all">
+                                            <div class="flex items-center justify-center space-x-2 text-gray-600">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                </svg>
+                                                <span class="font-medium">Add New Address</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="flex justify-between items-center">
+                                    <a href="{{ route('user.addresses.index') }}"
+                                       class="text-sm text-blue-600 hover:text-blue-800">
+                                        Manage Addresses
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Address Form (hidden by default if addresses exist) -->
+                            <div id="address-form" class="{{ $userAddresses->count() > 0 ? 'hidden' : '' }}">
+                                <h2 class="text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6">Shipping Information</h2>
+                        @else
+                            <h2 class="text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6">Shipping Information</h2>
+                        @endif
+                    @else
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6">Shipping Information</h2>
+                    @endauth
                     
                     <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
                         @csrf
@@ -83,6 +165,16 @@
                             </div>
                         </div>
 
+                        <!-- Hidden Coupon Fields -->
+                        <input type="hidden" name="coupon_code" id="form-coupon-code" value="">
+                        <input type="hidden" name="coupon_discount" id="form-coupon-discount" value="0">
+
+                    @auth
+                        @if($userAddresses->count() > 0)
+                            </div> <!-- Close address-form div -->
+                        @endif
+                    @endauth
+
                     </form>
                 </div>
 
@@ -122,25 +214,103 @@
                         @endforeach
                     </div>
 
+                    <!-- Promo Code Section -->
+                    <div class="border-t border-gray-200 pt-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium text-gray-900">🎫 Have a Promo Code?</h3>
+                            <span class="text-sm text-green-600 font-medium">Save money with coupons!</span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4" id="coupon-input-section">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text"
+                                       id="coupon-code"
+                                       placeholder="Enter your promo code"
+                                       class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black text-sm font-medium"
+                                       style="text-transform: uppercase;">
+                                <button type="button"
+                                        id="apply-coupon-btn"
+                                        class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 font-medium text-sm transition-all duration-200 whitespace-nowrap">
+                                    Apply Code
+                                </button>
+                            </div>
+
+                            <!-- Available Coupons Hint -->
+                            <div class="mt-2 text-xs text-gray-500">
+                                💡 Try: <span class="font-mono bg-gray-100 px-2 py-1 rounded">NEW10</span> for new customers
+                            </div>
+
+                            <!-- Coupon Status Messages -->
+                            <div id="coupon-message" class="mt-3 hidden">
+                                <div id="coupon-success" class="hidden bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span id="coupon-success-text"></span>
+                                    </div>
+                                </div>
+                                <div id="coupon-error" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span id="coupon-error-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Applied Coupon Display -->
+                            <div id="applied-coupon" class="hidden mt-3 bg-green-50 border border-green-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <div>
+                                            <span class="text-green-800 font-medium" id="applied-coupon-code"></span>
+                                            <p class="text-green-700 text-sm" id="applied-coupon-description"></p>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                            id="remove-coupon-btn"
+                                            class="text-green-600 hover:text-green-800 font-medium text-sm">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Order Totals -->
                     <div class="border-t border-gray-200 pt-4">
                         <div class="space-y-3">
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Subtotal</span>
+                                <span class="text-gray-600">Subtotal (excl. tax)</span>
                                 <span class="text-gray-900 font-medium">₹{{ number_format($subtotal, 2) }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Shipping</span>
-                                <span class="text-gray-900">₹{{ number_format($shipping, 2) }}</span>
+                                <span class="text-gray-600">Tax (GST included)</span>
+                                <span class="text-gray-900">₹{{ number_format($tax, 2) }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Tax (18% GST)</span>
-                                <span class="text-gray-900">₹{{ number_format($tax, 2) }}</span>
+                                <span class="text-gray-600">Shipping</span>
+                                <span class="text-gray-900">
+                                    @if($shipping > 0)
+                                        ₹{{ number_format($shipping, 2) }}
+                                    @else
+                                        <span class="text-green-600 font-medium">FREE</span>
+                                    @endif
+                                </span>
+                            </div>
+                            <!-- Discount Line (Hidden by default) -->
+                            <div id="discount-line" class="hidden flex justify-between">
+                                <span class="text-green-600 font-medium">Discount (<span id="discount-code"></span>)</span>
+                                <span class="text-green-600 font-medium">-₹<span id="discount-amount">0.00</span></span>
                             </div>
                             <div class="border-t border-gray-200 pt-3">
                                 <div class="flex justify-between">
                                     <span class="text-lg font-medium text-gray-900">Total</span>
-                                    <span class="text-lg font-medium text-gray-900">₹{{ number_format($total, 2) }}</span>
+                                    <span class="text-lg font-medium text-gray-900" id="final-total">₹{{ number_format($total, 2) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -438,6 +608,53 @@
     <!-- GSAP Library -->
     <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
 
+    <!-- JavaScript for Address Selection -->
+    <script>
+        // Handle address selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const addressRadios = document.querySelectorAll('.address-radio');
+            const addressForm = document.getElementById('address-form');
+
+            addressRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'new') {
+                        // Show address form for new address
+                        if (addressForm) {
+                            addressForm.classList.remove('hidden');
+                            // Clear form fields
+                            document.getElementById('full_name').value = '{{ Auth::user()->name ?? '' }}';
+                            document.getElementById('email').value = '{{ Auth::user()->email ?? '' }}';
+                            document.getElementById('phone').value = '{{ Auth::user()->phone ?? '' }}';
+                            document.getElementById('address').value = '';
+                            document.getElementById('city').value = '';
+                            document.getElementById('state').value = '';
+                            document.getElementById('pincode').value = '';
+                        }
+                    } else {
+                        // Hide address form and populate with selected address
+                        if (addressForm) {
+                            addressForm.classList.add('hidden');
+                        }
+
+                        // Populate form fields with selected address data
+                        document.getElementById('full_name').value = this.dataset.fullName;
+                        document.getElementById('phone').value = this.dataset.phone;
+                        document.getElementById('address').value = this.dataset.address;
+                        document.getElementById('city').value = this.dataset.city;
+                        document.getElementById('state').value = this.dataset.state;
+                        document.getElementById('pincode').value = this.dataset.pincode;
+                    }
+                });
+            });
+
+            // Auto-populate with default address if available
+            const defaultAddressRadio = document.querySelector('.address-radio:checked');
+            if (defaultAddressRadio && defaultAddressRadio.value !== 'new') {
+                defaultAddressRadio.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+
     <!-- JavaScript for Truck Button Animation -->
     <script>
         document.getElementById('place-order-btn').addEventListener('click', function(e) {
@@ -523,5 +740,156 @@
 
             }
         });
+
+        // Coupon functionality
+        let appliedCoupon = null;
+        let originalTotal = {{ $total }};
+
+        document.getElementById('apply-coupon-btn').addEventListener('click', function() {
+            const couponCode = document.getElementById('coupon-code').value.trim().toUpperCase();
+
+            if (!couponCode) {
+                showCouponError('Please enter a coupon code');
+                return;
+            }
+
+            // Show loading state
+            this.disabled = true;
+            this.textContent = 'Applying...';
+
+            // Make AJAX request to validate coupon
+            fetch('/api/validate-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: couponCode,
+                    order_amount: originalTotal
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Invalid JSON response:', text);
+                        throw new Error('Server returned invalid response');
+                    }
+                });
+            })
+            .then(data => {
+                if (data.valid) {
+                    applyCoupon(data.coupon, data.message);
+                } else {
+                    showCouponError(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Coupon validation error:', error);
+                showCouponError('Failed to validate coupon. Please try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                this.disabled = false;
+                this.textContent = 'Apply Code';
+            });
+        });
+
+        document.getElementById('remove-coupon-btn').addEventListener('click', function() {
+            removeCoupon();
+        });
+
+        // Allow Enter key to apply coupon
+        document.getElementById('coupon-code').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('apply-coupon-btn').click();
+            }
+        });
+
+        function applyCoupon(coupon, message) {
+            appliedCoupon = coupon;
+
+            // Hide coupon input section
+            const couponInputSection = document.getElementById('coupon-input-section');
+            if (couponInputSection) {
+                couponInputSection.style.display = 'none';
+            }
+
+            // Show applied coupon
+            const appliedCouponEl = document.getElementById('applied-coupon');
+            const appliedCouponCodeEl = document.getElementById('applied-coupon-code');
+            const appliedCouponDescEl = document.getElementById('applied-coupon-description');
+
+            if (appliedCouponEl) appliedCouponEl.classList.remove('hidden');
+            if (appliedCouponCodeEl) appliedCouponCodeEl.textContent = coupon.code;
+            if (appliedCouponDescEl) appliedCouponDescEl.textContent = coupon.name;
+
+            // Show discount in totals
+            document.getElementById('discount-line').classList.remove('hidden');
+            document.getElementById('discount-code').textContent = coupon.code;
+            document.getElementById('discount-amount').textContent = coupon.discount_amount.toFixed(2);
+
+            // Update final total
+            const newTotal = originalTotal - coupon.discount_amount;
+            document.getElementById('final-total').textContent = '₹' + newTotal.toFixed(2);
+
+            // Update hidden form fields
+            document.getElementById('form-coupon-code').value = coupon.code;
+            document.getElementById('form-coupon-discount').value = coupon.discount_amount;
+
+            // Show success message
+            showCouponSuccess(message);
+
+            // Clear input
+            document.getElementById('coupon-code').value = '';
+        }
+
+        function removeCoupon() {
+            appliedCoupon = null;
+
+            // Show coupon input section
+            document.getElementById('coupon-input-section').style.display = 'block';
+
+            // Hide applied coupon
+            document.getElementById('applied-coupon').classList.add('hidden');
+
+            // Hide discount in totals
+            document.getElementById('discount-line').classList.add('hidden');
+
+            // Reset final total
+            document.getElementById('final-total').textContent = '₹' + originalTotal.toFixed(2);
+
+            // Clear hidden form fields
+            document.getElementById('form-coupon-code').value = '';
+            document.getElementById('form-coupon-discount').value = '0';
+
+            // Hide messages
+            hideCouponMessages();
+        }
+
+        function showCouponSuccess(message) {
+            hideCouponMessages();
+            document.getElementById('coupon-message').classList.remove('hidden');
+            document.getElementById('coupon-success').classList.remove('hidden');
+            document.getElementById('coupon-success-text').textContent = message;
+        }
+
+        function showCouponError(message) {
+            hideCouponMessages();
+            document.getElementById('coupon-message').classList.remove('hidden');
+            document.getElementById('coupon-error').classList.remove('hidden');
+            document.getElementById('coupon-error-text').textContent = message;
+        }
+
+        function hideCouponMessages() {
+            document.getElementById('coupon-message').classList.add('hidden');
+            document.getElementById('coupon-success').classList.add('hidden');
+            document.getElementById('coupon-error').classList.add('hidden');
+        }
     </script>
 </x-layouts.main>
