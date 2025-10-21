@@ -33,23 +33,25 @@ class MaintenanceMode
             return $next($request);
         }
 
-        // Check if user has valid maintenance password in session
-        if ($settings->password && session('maintenance_verified')) {
-            return $next($request);
-        }
+        // Maintenance mode is enabled - check if user is authorized
 
-        // If no password is set, show maintenance page
-        if (!$settings->password) {
+        // If password is set, check if user has verified it in session
+        if ($settings->password) {
+            if (session('maintenance_verified') === true) {
+                // Password verified, allow access
+                return $next($request);
+            }
+            // Password not verified, show maintenance page with password form
             return response()->view('maintenance', [
                 'settings' => $settings,
-                'requiresPassword' => false,
+                'requiresPassword' => true,
             ], 503);
         }
 
-        // If password is set but not verified, show maintenance page with password form
+        // No password set, show maintenance page without password form
         return response()->view('maintenance', [
             'settings' => $settings,
-            'requiresPassword' => true,
+            'requiresPassword' => false,
         ], 503);
     }
 }
