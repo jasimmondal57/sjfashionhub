@@ -161,18 +161,9 @@
                                                 <a href="{{ route('admin.contacts.show', $contact) }}"
                                                    class="text-blue-600 hover:text-blue-900">View</a>
                                                 @if($contact->status !== 'resolved')
-                                                    <form action="{{ route('admin.contacts.mark-resolved', $contact) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="text-green-600 hover:text-green-900">Resolve</button>
-                                                    </form>
+                                                    <button type="button" onclick="markAsResolved({{ $contact->id }})" class="text-green-600 hover:text-green-900">Resolve</button>
                                                 @endif
-                                                <form action="{{ route('admin.contacts.destroy', $contact) }}" method="POST" class="inline"
-                                                      onsubmit="return confirm('Are you sure you want to delete this contact message?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
-                                                </form>
+                                                <button type="button" onclick="deleteContact({{ $contact->id }})" class="text-red-600 hover:text-red-900">Delete</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -198,6 +189,17 @@
             @endif
         </div>
     </div>
+
+    <!-- Hidden forms for individual actions -->
+    <form id="deleteContactForm" action="" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    <form id="resolveContactForm" action="" method="POST" style="display: none;">
+        @csrf
+        @method('PATCH')
+    </form>
 
     <script>
         function toggleSelectAll() {
@@ -233,6 +235,20 @@
             if (confirm(`Are you sure you want to delete ${contactCheckboxes.length} contact message(s)?`)) {
                 document.getElementById('bulkDeleteForm').submit();
             }
+        }
+
+        function deleteContact(contactId) {
+            if (confirm('Are you sure you want to delete this contact message?')) {
+                const form = document.getElementById('deleteContactForm');
+                form.action = '{{ route("admin.contacts.destroy", ":id") }}'.replace(':id', contactId);
+                form.submit();
+            }
+        }
+
+        function markAsResolved(contactId) {
+            const form = document.getElementById('resolveContactForm');
+            form.action = '{{ route("admin.contacts.mark-resolved", ":id") }}'.replace(':id', contactId);
+            form.submit();
         }
     </script>
 </x-layouts.admin>
