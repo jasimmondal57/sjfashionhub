@@ -1,9 +1,7 @@
-@extends('layouts.admin')
+<x-layouts.admin>
+    <x-slot name="title">Maintenance Mode</x-slot>
 
-@section('title', 'Maintenance Mode')
-
-@section('content')
-<div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-800 mb-2">Maintenance Mode</h1>
@@ -228,5 +226,4 @@
     }
     .float { animation: float 3s ease-in-out infinite; }
 </style>
-@endsection
-
+</x-layouts.admin>
