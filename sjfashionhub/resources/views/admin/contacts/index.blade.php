@@ -86,8 +86,17 @@
                         Delete Page Messages
                     </button>
                 </form>
+                <form action="{{ route('admin.contacts.delete-all-pages') }}" method="POST" class="inline"
+                      onsubmit="return confirm('⚠️ WARNING: This will delete ALL messages across all pages (respecting current filters). Are you sure?');">
+                    @csrf
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <button type="submit" class="px-4 py-2 bg-yellow-700 text-white rounded-lg hover:bg-yellow-800">
+                        Delete All Pages
+                    </button>
+                </form>
                 <form action="{{ route('admin.contacts.delete-all-messages') }}" method="POST" class="inline"
-                      onsubmit="return confirm('⚠️ WARNING: This will delete ALL contact messages permanently. Are you absolutely sure?');">
+                      onsubmit="return confirm('⚠️ WARNING: This will delete ALL contact messages permanently (ignoring filters). Are you absolutely sure?');">
                     @csrf
                     <button type="submit" class="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900">
                         Delete All Messages

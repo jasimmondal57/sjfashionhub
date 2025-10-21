@@ -165,7 +165,38 @@ class ContactController extends Controller
     }
 
     /**
-     * Delete all contact messages
+     * Delete all messages across all pages (respecting filters)
+     */
+    public function deleteAllPages(Request $request)
+    {
+        $query = Contact::query();
+
+        // Apply same filters as index
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%")
+                  ->orWhere('message', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Delete all messages matching the filters
+        $count = $query->delete();
+
+        return redirect()->route('admin.contacts.index')
+                        ->with('success', "Successfully deleted {$count} contact message(s) across all pages.");
+    }
+
+    /**
+     * Delete all contact messages (ignoring filters)
      */
     public function deleteAllMessages()
     {

@@ -561,6 +561,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Custom routes must be defined BEFORE resource route to take precedence
     Route::post('contacts/bulk-delete', [App\Http\Controllers\Admin\ContactController::class, 'bulkDelete'])->name('contacts.bulk-delete');
     Route::post('contacts/delete-page-messages', [App\Http\Controllers\Admin\ContactController::class, 'deletePageMessages'])->name('contacts.delete-page-messages');
+    Route::post('contacts/delete-all-pages', [App\Http\Controllers\Admin\ContactController::class, 'deleteAllPages'])->name('contacts.delete-all-pages');
     Route::post('contacts/delete-all-messages', [App\Http\Controllers\Admin\ContactController::class, 'deleteAllMessages'])->name('contacts.delete-all-messages');
 
     Route::resource('contacts', App\Http\Controllers\Admin\ContactController::class)->except(['create', 'store', 'edit']);
