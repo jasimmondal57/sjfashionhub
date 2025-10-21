@@ -182,12 +182,23 @@ class ContactController extends Controller
     private function isSpam($request)
     {
         $spamKeywords = [
-            'viagra', 'cialis', 'casino', 'lottery', 'bitcoin', 'crypto',
-            'forex', 'trading', 'click here', 'buy now', 'limited offer',
-            'act now', 'urgent', 'xxx', 'adult', 'porn', 'sex',
-            'weight loss', 'diet pills', 'cheap', 'free money',
-            'work from home', 'make money fast', 'guaranteed',
-            'http://', 'https://', 'www.', '.com', '.net', '.org',
+            // Pharmaceutical
+            'viagra', 'cialis', 'weight loss', 'diet pills', 'pharmacy',
+            // Gambling & Lottery
+            'casino', 'lottery', 'jackpot', 'prize', 'win money', 'giveaway',
+            'конкурс', 'лотерея', 'выигра', 'приз', 'бесплатно',
+            // Crypto & Finance
+            'bitcoin', 'crypto', 'forex', 'trading', 'investment',
+            // Scams
+            'click here', 'buy now', 'limited offer', 'act now', 'urgent',
+            'xxx', 'adult', 'porn', 'sex', 'cheap', 'free money',
+            'work from home', 'make money fast', 'guaranteed', 'earn money',
+            // URLs (any URL is suspicious in contact form)
+            'http://', 'https://', 'www.', '.com', '.net', '.org', '.ru',
+            '.io', '.co', '.info', '.biz', '.xyz', '.top', '.click',
+            // Russian spam patterns
+            'поздравляем', 'выбраны', 'участие', 'акции', 'бесплатные',
+            'переходи', 'ссылке', 'wilberries', 'ozon', 'aliexpress',
         ];
 
         $content = strtolower($request->subject . ' ' . $request->message);
@@ -200,15 +211,15 @@ class ContactController extends Controller
             }
         }
 
-        // Check for excessive URLs
-        $urlCount = preg_match_all('/https?:\/\//', $content);
-        if ($urlCount > 2) {
+        // Check for ANY URL (very strict - contact forms shouldn't have URLs)
+        $urlCount = preg_match_all('/https?:\/\/|www\.|\.com|\.net|\.org|\.ru|\.io/', $content);
+        if ($urlCount >= 1) {
             return true;
         }
 
         // Check for excessive links in message
         $linkCount = preg_match_all('/\[.*?\]\(.*?\)/', $content);
-        if ($linkCount > 2) {
+        if ($linkCount >= 1) {
             return true;
         }
 
@@ -231,6 +242,22 @@ class ContactController extends Controller
             if (count($capsWords) / count($words) > 0.5) {
                 return true; // More than 50% all caps
             }
+        }
+
+        // Check for emoji/special characters (common in spam)
+        if (preg_match('/[\x{1F300}-\x{1F9FF}]/u', $content)) {
+            return true; // Contains emoji
+        }
+
+        // Check for excessive punctuation
+        $punctCount = preg_match_all('/[!?*•★✓✗]/i', $content);
+        if ($punctCount > 5) {
+            return true;
+        }
+
+        // Check for suspicious patterns like "..." at start
+        if (preg_match('/^\.{2,}/', trim($content))) {
+            return true;
         }
 
         return false;
