@@ -569,6 +569,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('contacts/{contact}/mark-in-progress', [App\Http\Controllers\Admin\ContactController::class, 'markAsInProgress'])->name('contacts.mark-in-progress');
     Route::post('contacts/{contact}/reply', [App\Http\Controllers\Admin\ContactController::class, 'reply'])->name('contacts.reply');
 
+    // Maintenance Mode Management
+    Route::prefix('maintenance')->name('maintenance.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('index');
+        Route::post('/toggle', [App\Http\Controllers\Admin\MaintenanceController::class, 'toggle'])->name('toggle');
+        Route::put('/update', [App\Http\Controllers\Admin\MaintenanceController::class, 'update'])->name('update');
+        Route::post('/clear-password', [App\Http\Controllers\Admin\MaintenanceController::class, 'clearPassword'])->name('clear-password');
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');
@@ -587,6 +595,10 @@ Route::prefix('blog')->name('blog.')->group(function () {
 Route::get('/track-order', [TrackOrderController::class, 'index'])->name('track-order.index');
 Route::post('/track-order', [TrackOrderController::class, 'track'])->name('track-order.track');
 Route::get('/track-order/{orderNumber}', [TrackOrderController::class, 'trackAuthenticated'])->name('track-order.authenticated');
+
+// Maintenance Mode Routes
+Route::get('/maintenance', [App\Http\Controllers\MaintenanceController::class, 'show'])->name('maintenance.show');
+Route::post('/maintenance/verify', [App\Http\Controllers\MaintenanceController::class, 'verify'])->name('maintenance.verify');
 
 // Static pages - Named routes for common pages
 Route::get('/about', [App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'about')->name('about');
