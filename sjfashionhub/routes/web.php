@@ -558,13 +558,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
 
     // Contact Management
+    // Custom routes must be defined BEFORE resource route to take precedence
+    Route::post('contacts/bulk-delete', [App\Http\Controllers\Admin\ContactController::class, 'bulkDelete'])->name('contacts.bulk-delete');
+    Route::post('contacts/delete-page-messages', [App\Http\Controllers\Admin\ContactController::class, 'deletePageMessages'])->name('contacts.delete-page-messages');
+    Route::post('contacts/delete-all-messages', [App\Http\Controllers\Admin\ContactController::class, 'deleteAllMessages'])->name('contacts.delete-all-messages');
+
     Route::resource('contacts', App\Http\Controllers\Admin\ContactController::class)->except(['create', 'store', 'edit']);
     Route::patch('contacts/{contact}/mark-resolved', [App\Http\Controllers\Admin\ContactController::class, 'markAsResolved'])->name('contacts.mark-resolved');
     Route::patch('contacts/{contact}/mark-in-progress', [App\Http\Controllers\Admin\ContactController::class, 'markAsInProgress'])->name('contacts.mark-in-progress');
     Route::post('contacts/{contact}/reply', [App\Http\Controllers\Admin\ContactController::class, 'reply'])->name('contacts.reply');
-    Route::post('contacts/bulk-delete', [App\Http\Controllers\Admin\ContactController::class, 'bulkDelete'])->name('contacts.bulk-delete');
-    Route::post('contacts/delete-page-messages', [App\Http\Controllers\Admin\ContactController::class, 'deletePageMessages'])->name('contacts.delete-page-messages');
-    Route::post('contacts/delete-all-messages', [App\Http\Controllers\Admin\ContactController::class, 'deleteAllMessages'])->name('contacts.delete-all-messages');
 
     // Settings
     Route::get('/settings', function () {
