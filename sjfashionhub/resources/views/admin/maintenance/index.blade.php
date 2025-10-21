@@ -194,8 +194,8 @@
                 >
                     Save Settings
                 </button>
-                <a 
-                    href="{{ route('admin.index') }}" 
+                <a
+                    href="{{ route('admin.dashboard') }}"
                     class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition"
                 >
                     Cancel
