@@ -591,7 +591,7 @@ Route::get('/track-order/{orderNumber}', [TrackOrderController::class, 'trackAut
 // Static pages - Named routes for common pages
 Route::get('/about', [App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'about')->name('about');
 Route::get('/contact', [App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'contact')->name('contact');
-Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->middleware('throttle:5,60')->name('contact.store');
 
 // Static pages - Dynamic page routing
 Route::get('/{slug}', [App\Http\Controllers\PageController::class, 'show'])
