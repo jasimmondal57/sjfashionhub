@@ -120,7 +120,7 @@ class ContactController extends Controller
     }
 
     /**
-     * Delete all messages on current page
+     * Delete all messages on current page only
      */
     public function deletePageMessages(Request $request)
     {
@@ -143,7 +143,22 @@ class ContactController extends Controller
             });
         }
 
-        $count = $query->delete();
+        // Get the current page number
+        $page = $request->get('page', 1);
+        $perPage = 15; // Must match the pagination in index()
+
+        // Calculate offset for current page
+        $offset = ($page - 1) * $perPage;
+
+        // Get only the IDs for the current page
+        $ids = $query->orderBy('id', 'desc')
+                     ->offset($offset)
+                     ->limit($perPage)
+                     ->pluck('id')
+                     ->toArray();
+
+        // Delete only the messages on current page
+        $count = Contact::whereIn('id', $ids)->delete();
 
         return redirect()->route('admin.contacts.index')
                         ->with('success', "Successfully deleted {$count} contact message(s) from this page.");

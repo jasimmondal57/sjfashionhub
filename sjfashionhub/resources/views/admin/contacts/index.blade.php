@@ -81,6 +81,7 @@
                     @csrf
                     <input type="hidden" name="status" value="{{ request('status') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="page" value="{{ $contacts->currentPage() }}">
                     <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
                         Delete Page Messages
                     </button>
