@@ -205,16 +205,20 @@
         </section>
 
         @if(\App\Models\RecaptchaSetting::isEnabled())
-        <!-- reCAPTCHA Script -->
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <!-- reCAPTCHA Execution Script -->
         <script>
-            document.getElementById('contactForm').addEventListener('submit', function(e) {
-                e.preventDefault();
+            document.addEventListener('DOMContentLoaded', function() {
+                const contactForm = document.getElementById('contactForm');
+                if (contactForm) {
+                    contactForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
 
-                grecaptcha.execute('{{ \App\Models\RecaptchaSetting::getSiteKey() }}', {action: 'submit'}).then(function(token) {
-                    document.getElementById('g-recaptcha-response').value = token;
-                    document.getElementById('contactForm').submit();
-                });
+                        grecaptcha.execute('{{ \App\Models\RecaptchaSetting::getSiteKey() }}', {action: 'submit'}).then(function(token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            contactForm.submit();
+                        });
+                    });
+                }
             });
         </script>
         @endif
