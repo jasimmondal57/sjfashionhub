@@ -482,19 +482,55 @@
                     <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">Get In Touch</h3>
                     <ul class="space-y-2 text-sm">
                         @if($footerSettings->contact_info && (($footerSettings->contact_info['phone'] ?? null) || ($footerSettings->contact_info['email'] ?? null) || ($footerSettings->contact_info['address'] ?? null)))
-                            @if($footerSettings->contact_info['phone'] ?? null)
-                            <li class="opacity-80">{{ $footerSettings->contact_info['phone'] }}</li>
-                            @endif
                             @if($footerSettings->contact_info['email'] ?? null)
-                            <li class="opacity-80">{{ $footerSettings->contact_info['email'] }}</li>
+                            <li class="opacity-80">
+                                <strong>Email:</strong><br>
+                                <a href="mailto:{{ $footerSettings->contact_info['email'] }}" class="hover:opacity-100 transition-opacity">
+                                    {{ $footerSettings->contact_info['email'] }}
+                                </a>
+                            </li>
+                            @endif
+                            @if($footerSettings->contact_info['phone'] ?? null)
+                            <li class="opacity-80">
+                                <strong>Mobile:</strong><br>
+                                <a href="tel:{{ str_replace(' ', '', $footerSettings->contact_info['phone']) }}" class="hover:opacity-100 transition-opacity">
+                                    {{ $footerSettings->contact_info['phone'] }}
+                                </a>
+                            </li>
                             @endif
                             @if($footerSettings->contact_info['address'] ?? null)
-                            <li class="opacity-80">{{ $footerSettings->contact_info['address'] }}</li>
+                            <li class="opacity-80">
+                                <strong>Address:</strong><br>
+                                {{ $footerSettings->contact_info['address'] }}
+                            </li>
+                            @endif
+                            @if($footerSettings->contact_info['gstin'] ?? null)
+                            <li class="opacity-80">
+                                <strong>GSTIN:</strong><br>
+                                {{ $footerSettings->contact_info['gstin'] }}
+                            </li>
                             @endif
                         @else
-                            <li class="opacity-80">+1 (555) 123-4567</li>
-                            <li class="opacity-80">info@sjfashionhub.com</li>
-                            <li class="opacity-80">123 Fashion Street, Style City, SC 12345</li>
+                            <li class="opacity-80">
+                                <strong>Email:</strong><br>
+                                <a href="mailto:contact@sjfashionhub.com" class="hover:opacity-100 transition-opacity">
+                                    contact@sjfashionhub.com
+                                </a>
+                            </li>
+                            <li class="opacity-80">
+                                <strong>Mobile:</strong><br>
+                                <a href="tel:+917063474409" class="hover:opacity-100 transition-opacity">
+                                    +91 7063474409
+                                </a>
+                            </li>
+                            <li class="opacity-80">
+                                <strong>Address:</strong><br>
+                                Near Masjid, Nazrulpally, Bhubandanga, Bolpur, Pin: 731204, West Bengal, India
+                            </li>
+                            <li class="opacity-80">
+                                <strong>GSTIN:</strong><br>
+                                19DFEPM6450N1ZU
+                            </li>
                         @endif
                     </ul>
                 </div>
