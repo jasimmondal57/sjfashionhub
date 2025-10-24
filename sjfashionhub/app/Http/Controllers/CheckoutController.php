@@ -288,16 +288,6 @@ class CheckoutController extends Controller
             } else {
                 // For COD, clear cart and show success page
                 Cart::clearCart();
-
-                // Check if this is an AJAX request
-                if (request()->expectsJson() || request()->header('X-Requested-With') === 'XMLHttpRequest') {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Order placed successfully!',
-                        'redirect_url' => route('checkout.success', ['order' => $order->id])
-                    ]);
-                }
-
                 return redirect()->route('checkout.success', ['order' => $order->id])->with('success', 'Order placed successfully!');
             }
 
