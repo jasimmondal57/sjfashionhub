@@ -381,8 +381,34 @@
 
 <script>
 function testConnection(platform) {
-    // This would implement connection testing
-    alert(`Testing ${platform} connection... (Feature coming soon)`);
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '⏳ Testing...';
+    button.disabled = true;
+
+    fetch(`{{ route('admin.social-media.test-connection', '') }}/${platform}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Connection successful!\n\n' + (data.message || 'Platform is properly configured'));
+        } else {
+            alert('❌ Connection failed:\n\n' + (data.message || data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        alert('❌ Error testing connection:\n\n' + error.message);
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
 }
 </script>
 

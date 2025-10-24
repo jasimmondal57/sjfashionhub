@@ -536,6 +536,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/', [App\Http\Controllers\Admin\SocialMediaController::class, 'index'])->name('index');
         Route::get('/config', [App\Http\Controllers\Admin\SocialMediaController::class, 'config'])->name('config');
         Route::put('/config/{platform}', [App\Http\Controllers\Admin\SocialMediaController::class, 'updateConfig'])->name('config.update');
+        Route::post('/test-connection/{platform}', [App\Http\Controllers\Admin\SocialMediaController::class, 'testConnection'])->name('test-connection');
 
         // Product posting routes
         Route::post('/products/{product}/post-all', [App\Http\Controllers\Admin\SocialMediaController::class, 'postToAll'])->name('products.post-all');

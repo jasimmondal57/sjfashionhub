@@ -344,4 +344,50 @@ class SocialMediaController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Test connection to a social media platform
+     */
+    public function testConnection($platform)
+    {
+        try {
+            $config = SocialMediaConfig::where('platform', $platform)->first();
+
+            if (!$config) {
+                return response()->json([
+                    'success' => false,
+                    'message' => ucfirst($platform) . ' is not configured yet.'
+                ], 400);
+            }
+
+            if (!$config->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => ucfirst($platform) . ' is not active. Please activate it first.'
+                ], 400);
+            }
+
+            // Test the connection using the service
+            $result = $this->socialMediaService->testConnection($config);
+
+            if ($result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'message' => ucfirst($platform) . ' connection is working properly! ✅',
+                    'data' => $result['data'] ?? null
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $result['error'] ?? 'Connection test failed'
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error testing connection: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
