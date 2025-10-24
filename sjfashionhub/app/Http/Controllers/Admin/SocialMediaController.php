@@ -95,11 +95,24 @@ class SocialMediaController extends Controller
             ]
         );
 
-        $config->update([
+        // Get credentials and filter out empty values
+        $credentials = $request->input('credentials', []);
+        $credentials = array_filter($credentials, function($value) {
+            return !empty($value);
+        });
+
+        // Only update credentials if there are non-empty values
+        $updateData = [
             'is_active' => $request->boolean('is_active'),
-            'credentials' => $request->input('credentials', []),
             'settings' => $request->input('settings', []),
-        ]);
+        ];
+
+        // Only update credentials if we have values, otherwise keep existing
+        if (!empty($credentials)) {
+            $updateData['credentials'] = $credentials;
+        }
+
+        $config->update($updateData);
 
         return redirect()->back()->with('success', ucfirst($platform) . ' configuration updated successfully!');
     }
