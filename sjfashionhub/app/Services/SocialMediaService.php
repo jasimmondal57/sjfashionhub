@@ -12,7 +12,7 @@ class SocialMediaService
     /**
      * Post to a specific social media platform
      */
-    public function postToplatform(SocialMediaPost $post, SocialMediaConfig $config): array
+    public function postToPlatform(SocialMediaPost $post, SocialMediaConfig $config): array
     {
         try {
             switch ($config->platform) {

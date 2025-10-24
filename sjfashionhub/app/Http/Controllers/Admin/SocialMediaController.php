@@ -155,7 +155,7 @@ class SocialMediaController extends Controller
             ]);
 
             // Post to platform
-            $result = $this->socialMediaService->postToplatform($post, $config);
+            $result = $this->socialMediaService->postToPlatform($post, $config);
 
             if ($result['success']) {
                 $post->update([
@@ -234,7 +234,7 @@ class SocialMediaController extends Controller
                     ]);
 
                     // Post to platform
-                    $result = $this->socialMediaService->postToplatform($post, $config);
+                    $result = $this->socialMediaService->postToPlatform($post, $config);
 
                     if ($result['success']) {
                         $post->update([
