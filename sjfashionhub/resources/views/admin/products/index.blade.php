@@ -260,7 +260,7 @@
 
                                     <!-- Social Media Posting -->
                                     <div class="relative inline-block text-left">
-                                        <button onclick="toggleSocialDropdown({{ $product->id }})" class="text-green-600 hover:text-green-900 flex items-center">
+                                        <button type="button" onclick="event.stopPropagation(); toggleSocialDropdown({{ $product->id }})" class="text-green-600 hover:text-green-900 flex items-center">
                                             📱 Share
                                             <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -269,41 +269,41 @@
 
                                         <div id="social-dropdown-{{ $product->id }}" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50">
                                             <div class="py-1">
-                                                <button onclick="postToAllPlatforms({{ $product->id }})"
+                                                <button type="button" onclick="event.stopPropagation(); postToAllPlatforms({{ $product->id }})"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     🚀 Post to All Platforms
                                                 </button>
                                                 <hr class="my-1">
-                                                <button onclick="postToSingle({{ $product->id }}, 'instagram')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'instagram')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     📷 Instagram
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'facebook')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'facebook')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     📘 Facebook
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'twitter')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'twitter')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     🐦 Twitter/X
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'linkedin')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'linkedin')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     💼 LinkedIn
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'pinterest')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'pinterest')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     📌 Pinterest
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'tiktok')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'tiktok')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     🎵 TikTok
                                                 </button>
-                                                <button onclick="postToSingle({{ $product->id }}, 'threads')"
+                                                <button type="button" onclick="event.stopPropagation(); postToSingle({{ $product->id }}, 'threads')"
                                                         class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center">
                                                     🧵 Threads
                                                 </button>
                                                 <hr class="my-1">
-                                                <button onclick="viewProductPosts({{ $product->id }})"
+                                                <button type="button" onclick="event.stopPropagation(); viewProductPosts({{ $product->id }})"
                                                         class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center">
                                                     📊 View Posts History
                                                 </button>
@@ -344,7 +344,7 @@
         @endif
     </div>
 
-    @push('scripts')
+    <x-slot name="scripts">
     <script>
         function deleteProduct(productId) {
             if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
@@ -362,6 +362,8 @@
 
         // Social Media Functions
         function toggleSocialDropdown(productId) {
+            console.log('toggleSocialDropdown called with productId:', productId);
+
             // Close all other dropdowns
             document.querySelectorAll('[id^="social-dropdown-"]').forEach(dropdown => {
                 if (dropdown.id !== `social-dropdown-${productId}`) {
@@ -371,7 +373,12 @@
 
             // Toggle current dropdown
             const dropdown = document.getElementById(`social-dropdown-${productId}`);
-            dropdown.classList.toggle('hidden');
+            if (dropdown) {
+                console.log('Found dropdown:', dropdown.id);
+                dropdown.classList.toggle('hidden');
+            } else {
+                console.error('Dropdown not found for productId:', productId);
+            }
         }
 
         // Close dropdowns when clicking outside
@@ -385,13 +392,18 @@
         });
 
         function postToAllPlatforms(productId) {
+            console.log('postToAllPlatforms called with productId:', productId);
+
             if (!confirm('Post this product to all active social media platforms?')) {
                 return;
             }
 
             showLoadingMessage('Posting to all platforms...');
 
-            fetch(`/admin/social-media/products/${productId}/post-all`, {
+            const url = `/admin/social-media/products/${productId}/post-all`;
+            console.log('Fetching URL:', url);
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -426,20 +438,37 @@
         }
 
         function postToSingle(productId, platform) {
+            console.log('postToSingle called with productId:', productId, 'platform:', platform);
+
             if (!confirm(`Post this product to ${platform}?`)) {
                 return;
             }
 
             showLoadingMessage(`Posting to ${platform}...`);
 
-            fetch(`/admin/social-media/products/${productId}/post/${platform}`, {
+            const url = `/admin/social-media/products/${productId}/post/${platform}`;
+            console.log('Fetching URL:', url);
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                if (!response.ok) {
+                    console.error('HTTP error! status:', response.status);
+                    return response.text().then(text => {
+                        console.error('Response body:', text);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 hideLoadingMessage();
 
@@ -647,5 +676,5 @@
             console.log('Updated selected count to:', checkedCount);
         }
     </script>
-    @endpush
+    </x-slot>
 </x-layouts.admin>

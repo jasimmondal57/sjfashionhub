@@ -122,6 +122,8 @@ class SocialMediaController extends Controller
      */
     public function postToSingle(Request $request, Product $product, $platform)
     {
+        \Log::info('postToSingle called', ['product_id' => $product->id, 'platform' => $platform]);
+
         try {
             $config = SocialMediaConfig::forPlatform($platform)->active()->first();
 
@@ -195,6 +197,8 @@ class SocialMediaController extends Controller
      */
     public function postToAll(Request $request, Product $product)
     {
+        \Log::info('postToAll called', ['product_id' => $product->id]);
+
         try {
             $activeConfigs = SocialMediaConfig::active()->get();
 
