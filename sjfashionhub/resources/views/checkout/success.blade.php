@@ -97,14 +97,14 @@
             // Wait a moment for fbq to be loaded
             setTimeout(function() {
                 if (typeof trackMetaPixelPurchase !== 'undefined') {
-                    const items = @json($order->items->map(function($item) {
+                    const items = {!! json_encode($order->items->map(function($item) {
                         return [
                             'id' => $item->product_id,
                             'product_id' => $item->product_id,
                             'quantity' => $item->quantity,
                             'price' => $item->price
                         ];
-                    })->toArray());
+                    })->toArray()) !!};
 
                     trackMetaPixelPurchase(
                         {{ $order->id }},
