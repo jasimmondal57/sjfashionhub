@@ -668,14 +668,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 if (typeof trackMetaPixelInitiateCheckout !== 'undefined') {
-                    const items = @json($cartItems->map(function($item) {
+                    const items = {!! json_encode($cartItems->map(function($item) {
                         return [
                             'id' => $item->product_id,
                             'product_id' => $item->product_id,
                             'quantity' => $item->quantity,
                             'price' => $item->product->sale_price ?? $item->product->price
                         ];
-                    })->toArray());
+                    })->toArray()) !!};
 
                     trackMetaPixelInitiateCheckout(
                         {{ $total }},
