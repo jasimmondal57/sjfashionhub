@@ -701,6 +701,45 @@
 
                     button.classList.add('animation');
 
+                    // Submit form immediately in background (don't wait for animation)
+                    const form = document.getElementById('checkout-form');
+                    const formData = new FormData(form);
+
+                    // Disable button to prevent multiple submissions
+                    button.disabled = true;
+
+                    // Submit form via fetch to get the response
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    })
+                    .then(data => {
+                        if (data.success && data.redirect_url) {
+                            // Store the redirect URL to use after animation
+                            window.checkoutRedirectUrl = data.redirect_url;
+                            console.log('✅ Order submitted successfully. Redirect URL:', data.redirect_url);
+                        } else {
+                            throw new Error(data.message || 'Order submission failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Order submission error:', error);
+                        button.classList.remove('animation');
+                        button.disabled = false;
+                        alert('Error placing order: ' + error.message + '. Please try again.');
+                    });
+
                     gsap.to(button, {
                         '--box-s': 1,
                         '--box-o': 1,
@@ -741,10 +780,16 @@
                             gsap.timeline({
                                 onComplete() {
                                     button.classList.add('done');
-                                    // Submit the form after animation completes
+
+                                    // After animation completes, redirect to success page
                                     setTimeout(() => {
-                                        document.getElementById('checkout-form').submit();
-                                    }, 1000);
+                                        if (window.checkoutRedirectUrl) {
+                                            window.location.href = window.checkoutRedirectUrl;
+                                        } else {
+                                            // Fallback: submit form normally if fetch didn't work
+                                            document.getElementById('checkout-form').submit();
+                                        }
+                                    }, 500);
                                 }
                             }).to(truck, {
                                 x: 0,
