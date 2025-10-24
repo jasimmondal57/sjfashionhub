@@ -372,29 +372,124 @@
     </div>
 
     <!-- Loading Popup Modal -->
-    <div id="checkout-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center">
-            <!-- Spinner -->
+    <div id="checkout-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
+            <!-- Animated Checkmark Icon -->
             <div class="mb-6 flex justify-center">
-                <div class="relative w-16 h-16">
-                    <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-                    <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-black border-r-black animate-spin"></div>
+                <div class="relative w-20 h-20">
+                    <!-- Outer rotating circle -->
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 animate-spin-slow"></div>
+
+                    <!-- Inner pulsing circle -->
+                    <div class="absolute inset-2 rounded-full border-2 border-black animate-pulse"></div>
+
+                    <!-- Checkmark icon -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <svg class="w-10 h-10 text-black animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
 
-            <!-- Loading Text -->
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Processing Your Order</h3>
-            <p class="text-gray-600 text-sm">Please wait while we confirm your order...</p>
+            <!-- Animated Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 mb-2 animate-fade-in" style="animation-delay: 0.2s;">Processing Your Order</h3>
+            <p class="text-gray-600 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we confirm your order...</p>
 
-            <!-- Progress Bar -->
+            <!-- Animated Dots -->
+            <div class="mt-4 flex justify-center space-x-1">
+                <span class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+                <span class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+                <span class="w-2 h-2 bg-black rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+            </div>
+
+            <!-- Animated Progress Bar -->
             <div class="mt-6 w-full bg-gray-200 rounded-full h-1 overflow-hidden">
-                <div class="bg-black h-full animate-pulse" style="width: 100%;"></div>
+                <div class="bg-black h-full animate-progress-bar" style="width: 100%;"></div>
             </div>
         </div>
     </div>
 
     <!-- Truck Button Animation Styles -->
     <style>
+        /* Loading Popup Animations */
+        @keyframes popup-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes progress-bar {
+            0% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        .animate-popup-in {
+            animation: popup-in 0.4s ease-out;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 1.5s ease-in-out infinite;
+        }
+
+        .animate-progress-bar {
+            animation: progress-bar 1.5s ease-in-out infinite;
+        }
+
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
+
         .truck-button {
             --color: #fff;
             --background: #000000;
