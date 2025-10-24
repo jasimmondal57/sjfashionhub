@@ -49,7 +49,7 @@
             @endif
 
             <!-- Settings Form -->
-            <form action="{{ route('admin.shipping-settings.update') }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.shipping-settings.update') }}" method="POST" class="space-y-6" onsubmit="logFormData(event)">
                 @csrf
                 @method('PUT')
 
@@ -65,7 +65,7 @@
                                 <label for="shipping_method" class="block text-sm font-medium text-gray-700 mb-2">
                                     Shipping Method
                                 </label>
-                                <select name="shipping_method" id="shipping_method" 
+                                <select name="shipping_method" id="shipping_method"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="flat_rate" {{ $settings->shipping_method === 'flat_rate' ? 'selected' : '' }}>
                                         Flat Rate
@@ -80,6 +80,10 @@
                                         Free Shipping
                                     </option>
                                 </select>
+                                <!-- Debug info for shipping method -->
+                                <p class="text-xs text-red-600 font-mono mt-1">
+                                    Current DB Value: "{{ $settings->shipping_method }}"
+                                </p>
                             </div>
                             <div>
                                 <label for="flat_rate" class="block text-sm font-medium text-gray-700 mb-2">
@@ -122,22 +126,41 @@
                     <div class="p-6 space-y-6">
                         <div class="flex items-center">
                             <input type="checkbox" name="free_shipping_enabled" id="free_shipping_enabled" value="1"
-                                   {{ $settings->free_shipping_enabled ? 'checked' : '' }}
+                                   @if($settings->free_shipping_enabled) checked @endif
                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <label for="free_shipping_enabled" class="ml-2 block text-sm text-gray-700">
                                 Enable Free Shipping Above Threshold
                             </label>
+                            <!-- Debug info -->
+                            <span class="ml-4 text-xs text-red-600 font-mono">
+                                DB: {{ $settings->free_shipping_enabled ? 'TRUE' : 'FALSE' }} |
+                                Raw: {{ $settings->getAttributes()['free_shipping_enabled'] ?? 'NULL' }} |
+                                Checkbox: {{ $settings->free_shipping_enabled ? 'CHECKED' : 'UNCHECKED' }}
+                            </span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="free_shipping_threshold" class="block text-sm font-medium text-gray-700 mb-2">
                                     Free Shipping Threshold (₹)
                                 </label>
-                                <input type="number" name="free_shipping_threshold" id="free_shipping_threshold" 
-                                       value="{{ old('free_shipping_threshold', $settings->free_shipping_threshold) }}" 
+                                <input type="number" name="free_shipping_threshold" id="free_shipping_threshold"
+                                       value="{{ old('free_shipping_threshold', $settings->free_shipping_threshold) }}"
                                        step="0.01" min="0"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <p class="text-xs text-gray-500 mt-1">Orders above this amount get free shipping</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Quick Actions</label>
+                                <div class="space-y-2">
+                                    <button type="button" onclick="enableFreeShipping()"
+                                            class="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm">
+                                        ✅ Enable Free Shipping (₹500+)
+                                    </button>
+                                    <button type="button" onclick="disableFreeShipping()"
+                                            class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm">
+                                        ❌ Disable Free Shipping
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -498,6 +521,46 @@
     </div>
 
     <script>
+        // Force checkbox state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const freeShippingCheckbox = document.getElementById('free_shipping_enabled');
+            const dbValue = {{ $settings->free_shipping_enabled ? 'true' : 'false' }};
+
+            // Force the checkbox to match database state
+            freeShippingCheckbox.checked = dbValue;
+
+            console.log('Free shipping DB value:', dbValue);
+            console.log('Checkbox checked:', freeShippingCheckbox.checked);
+        });
+
+        // Quick action functions
+        function enableFreeShipping() {
+            document.getElementById('free_shipping_enabled').checked = true;
+            document.getElementById('free_shipping_threshold').value = 500;
+            alert('Free shipping enabled! Don\'t forget to save the settings.');
+        }
+
+        function disableFreeShipping() {
+            document.getElementById('free_shipping_enabled').checked = false;
+            alert('Free shipping disabled! Don\'t forget to save the settings.');
+        }
+
+        // Log form data before submission
+        function logFormData(event) {
+            const formData = new FormData(event.target);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            console.log('Form submission data:', data);
+            console.log('Shipping method selected:', document.getElementById('shipping_method').value);
+            console.log('Free shipping checkbox checked:', document.getElementById('free_shipping_enabled').checked);
+
+            // Don't prevent form submission, just log
+            return true;
+        }
+
         // Show/hide sections based on shipping method
         document.getElementById('shipping_method').addEventListener('change', function() {
             const method = this.value;

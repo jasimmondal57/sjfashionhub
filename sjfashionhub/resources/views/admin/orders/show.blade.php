@@ -29,9 +29,9 @@
                         <div class="space-y-4">
                             @foreach($order->items as $item)
                                 <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                                    @if($item->product->image)
-                                        <img src="{{ asset('storage/' . $item->product->image) }}" 
-                                             alt="{{ $item->product->name }}" 
+                                    @if($item->product && $item->product->main_image)
+                                        <img src="{{ $item->product->main_image }}"
+                                             alt="{{ $item->product->name }}"
                                              class="w-16 h-16 object-cover rounded-lg">
                                     @else
                                         <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -41,9 +41,13 @@
                                     <div class="flex-1">
                                         <h4 class="font-medium text-gray-900">{{ $item->product->name }}</h4>
                                         <p class="text-sm text-gray-600">SKU: {{ $item->product->sku ?? 'N/A' }}</p>
-                                        @if($item->variant_details)
-                                            <p class="text-sm text-gray-600">
-                                                Variant: {{ collect($item->variant_details)->map(fn($value, $key) => "$key: $value")->join(', ') }}
+                                        @if($item->productVariant)
+                                            <p class="text-sm text-blue-600 font-medium">
+                                                Size: {{ $item->productVariant->option1_value }}
+                                            </p>
+                                        @elseif($item->variant_details && isset($item->variant_details['size']))
+                                            <p class="text-sm text-blue-600 font-medium">
+                                                Size: {{ $item->variant_details['size'] }}
                                             </p>
                                         @endif
                                     </div>
@@ -117,14 +121,22 @@
                                     </div>
                                 @endif
                             </div>
-                            @if($order->tracking_url)
-                                <div class="mt-4">
-                                    <a href="{{ $order->tracking_url }}" target="_blank" 
+                            <div class="mt-4 flex gap-3">
+                                @if($order->tracking_url)
+                                    <a href="{{ $order->tracking_url }}" target="_blank"
                                        class="inline-flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-sm font-medium">
                                         <i class="fas fa-external-link-alt mr-2"></i>Track Package
                                     </a>
-                                </div>
-                            @endif
+                                @endif
+
+                                @if(($order->shiprocket_shipment_id || $order->shiprocket_order_id) && $order->awb_number)
+                                    <a href="{{ route('admin.orders.download-shiprocket-label', $order) }}"
+                                       target="_blank"
+                                       class="inline-flex items-center px-3 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors text-sm font-medium">
+                                        <i class="fas fa-download mr-2"></i>Download Label
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -392,6 +404,17 @@
             document.getElementById('statusModal').classList.add('hidden');
             document.getElementById('notes').value = '';
         }
+
+        // Auto-download label if available
+        @if(session('auto_download') && session('label_url'))
+            window.addEventListener('load', function() {
+                const labelUrl = "{{ session('label_url') }}";
+                if (labelUrl) {
+                    // Open label in new tab for download
+                    window.open(labelUrl, '_blank');
+                }
+            });
+        @endif
 
         // Close modal when clicking outside
         window.onclick = function(event) {

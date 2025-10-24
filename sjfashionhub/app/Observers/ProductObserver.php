@@ -4,6 +4,9 @@ namespace App\Observers;
 
 use App\Models\Product;
 use App\Services\SeoService;
+use App\Services\EmailNotificationService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class ProductObserver
 {
@@ -20,6 +23,7 @@ class ProductObserver
     public function created(Product $product): void
     {
         $this->generateSeoContent($product);
+        $this->checkStockLevel($product);
     }
 
     /**
@@ -30,6 +34,17 @@ class ProductObserver
         // Only regenerate SEO if core product data changed
         if ($this->shouldRegenerateSeo($product)) {
             $this->generateSeoContent($product);
+        }
+
+        // Check if stock quantity changed
+        if ($product->isDirty('stock_quantity')) {
+            $oldStock = $product->getOriginal('stock_quantity');
+            $newStock = $product->stock_quantity;
+
+            Log::info("Product stock changed from {$oldStock} to {$newStock} for product: {$product->name} (SKU: {$product->sku})");
+
+            // Check stock level after update
+            $this->checkStockLevel($product);
         }
     }
 
@@ -78,5 +93,42 @@ class ProductObserver
         }
 
         return false;
+    }
+
+    /**
+     * Check stock level and send alert if needed
+     */
+    private function checkStockLevel(Product $product): void
+    {
+        try {
+            // Only check if stock management is enabled for this product
+            if (!$product->manage_stock) {
+                return;
+            }
+
+            $threshold = $product->low_stock_threshold ?? 10; // Default threshold of 10
+
+            // Check if stock is below threshold
+            if ($product->stock_quantity <= $threshold) {
+                // Use cache to prevent spam emails (send alert only once per hour per product)
+                $cacheKey = "low_stock_alert_sent_{$product->id}";
+
+                if (!Cache::has($cacheKey)) {
+                    // Send low stock alert
+                    EmailNotificationService::sendLowStockAlert($product);
+
+                    // Cache for 1 hour to prevent spam
+                    Cache::put($cacheKey, true, 3600);
+
+                    Log::info("Low stock alert sent for product: {$product->name} (SKU: {$product->sku}) - Stock: {$product->stock_quantity}, Threshold: {$threshold}");
+                }
+            } else {
+                // Clear cache if stock is above threshold (so alert can be sent again if it drops)
+                $cacheKey = "low_stock_alert_sent_{$product->id}";
+                Cache::forget($cacheKey);
+            }
+        } catch (\Exception $e) {
+            Log::error("Failed to check stock level for product {$product->sku}: " . $e->getMessage());
+        }
     }
 }

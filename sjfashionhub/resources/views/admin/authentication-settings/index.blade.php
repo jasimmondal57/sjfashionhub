@@ -67,10 +67,12 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Redirect URI</label>
                             <input type="url" name="redirect_uri"
-                                   value="{{ str_replace('localhost', 'sjfashionhub.in', str_replace('http://', 'https://', $provider->redirect_uri)) }}"
+                                   value="https://sjfashionhub.com/social-auth/{{ $provider->provider }}/callback"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                   placeholder="https://sjfashionhub.in/auth/{{ $provider->provider }}/callback">
+                                   placeholder="https://sjfashionhub.com/social-auth/{{ $provider->provider }}/callback"
+                                   readonly>
                             <p class="mt-1 text-sm text-gray-500">Use this URL in your {{ ucfirst($provider->provider) }} OAuth app configuration</p>
+                            <button type="button" onclick="copyToClipboard(this.previousElementSibling.previousElementSibling.value)" class="mt-2 text-xs text-indigo-600 hover:text-indigo-800">📋 Copy URL</button>
                         </div>
 
                         <div class="flex space-x-3">
@@ -151,6 +153,14 @@
 </div>
 
 <script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Callback URL copied to clipboard!');
+    }).catch(() => {
+        alert('❌ Failed to copy. Please copy manually.');
+    });
+}
+
 async function toggleStatus(type, identifier) {
     try {
         const response = await fetch('{{ route("admin.auth-settings.toggle") }}', {
@@ -163,7 +173,7 @@ async function toggleStatus(type, identifier) {
         });
 
         const data = await response.json();
-        
+
         if (data.success) {
             // Reload page to update UI
             location.reload();

@@ -28,7 +28,7 @@ class BlogAiController extends Controller
     public function index()
     {
         $products = Product::where('is_active', true)
-                          ->with('category')
+                          ->with(['category', 'blogPosts'])
                           ->latest()
                           ->paginate(12);
 

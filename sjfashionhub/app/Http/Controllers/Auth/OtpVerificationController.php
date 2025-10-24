@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\UserOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -114,6 +116,9 @@ class OtpVerificationController extends Controller
 
         // Log in user
         Auth::login($user);
+
+        // Fire login event for tracking
+        Event::dispatch(new Login('otp', $user, false));
 
         // Clear session data
         Session::forget(['otp_identifier', 'otp_type', 'otp_purpose', 'otp_method']);

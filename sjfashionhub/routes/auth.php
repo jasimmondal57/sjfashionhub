@@ -43,6 +43,23 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.email');
 
+    // Enhanced OTP-based password reset routes
+    Route::get('forgot-password/verify-otp', [PasswordResetLinkController::class, 'showVerifyOtp'])
+        ->name('password.verify-otp');
+
+    Route::post('forgot-password/verify-otp', [PasswordResetLinkController::class, 'verifyOtp'])
+        ->name('password.verify-otp.submit');
+
+    Route::post('forgot-password/resend-otp', [PasswordResetLinkController::class, 'resendOtp'])
+        ->name('password.resend-otp');
+
+    Route::get('reset-password-new/{token}', [PasswordResetLinkController::class, 'showResetForm'])
+        ->name('password.reset.form');
+
+    Route::post('reset-password-new', [PasswordResetLinkController::class, 'resetPassword'])
+        ->name('password.reset.submit');
+
+    // Legacy password reset routes (keep for backward compatibility)
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
         ->name('password.reset');
 

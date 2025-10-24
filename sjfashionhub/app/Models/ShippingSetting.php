@@ -183,11 +183,55 @@ class ShippingSetting extends Model
             return $this->flat_rate;
         }
 
-        // Simple zone detection (can be enhanced)
-        $zone = $this->detectShippingZone($destination);
-        
+        // Check if destination is array or has required fields
+        if (!is_array($destination)) {
+            return $this->flat_rate;
+        }
+
+        $country = $destination['country'] ?? 'India';
+        $state = $destination['state'] ?? null;
+
+        // Check if it's international shipping
+        if (strtolower($country) !== 'india') {
+            return $this->calculateInternationalShipping($country);
+        }
+
+        // Domestic (India) - state-based shipping
+        return $this->calculateDomesticShipping($state);
+    }
+
+    /**
+     * Calculate domestic (India) state-based shipping
+     */
+    private function calculateDomesticShipping($state)
+    {
+        if (!$state || empty($this->location_rates)) {
+            return $this->flat_rate;
+        }
+
+        // Normalize state name for comparison
+        $state = trim(strtolower($state));
+
+        // Check for exact state match in location_rates
         foreach ($this->location_rates as $rate) {
-            if ($rate['zone'] === $zone) {
+            if (!isset($rate['type']) || $rate['type'] !== 'domestic') {
+                continue;
+            }
+
+            // Check if this rate applies to the state
+            if (isset($rate['states']) && is_array($rate['states'])) {
+                foreach ($rate['states'] as $rateState) {
+                    if (strtolower(trim($rateState)) === $state) {
+                        return $rate['rate'];
+                    }
+                }
+            }
+        }
+
+        // If no specific state found, look for "Rest of India" zone
+        foreach ($this->location_rates as $rate) {
+            if (isset($rate['type']) && $rate['type'] === 'domestic' &&
+                isset($rate['zone_name']) && strtolower($rate['zone_name']) === 'rest of india') {
                 return $rate['rate'];
             }
         }
@@ -196,13 +240,48 @@ class ShippingSetting extends Model
     }
 
     /**
-     * Detect shipping zone based on destination
+     * Calculate international shipping
+     */
+    private function calculateInternationalShipping($country)
+    {
+        if (!$this->international_shipping_enabled) {
+            return 0; // International shipping not enabled
+        }
+
+        if (empty($this->location_rates)) {
+            return $this->international_shipping_rate;
+        }
+
+        // Normalize country name
+        $country = trim(strtolower($country));
+
+        // Check for specific country rate
+        foreach ($this->location_rates as $rate) {
+            if (!isset($rate['type']) || $rate['type'] !== 'international') {
+                continue;
+            }
+
+            if (isset($rate['countries']) && is_array($rate['countries'])) {
+                foreach ($rate['countries'] as $rateCountry) {
+                    if (strtolower(trim($rateCountry)) === $country) {
+                        return $rate['rate'];
+                    }
+                }
+            }
+        }
+
+        // Return default international rate
+        return $this->international_shipping_rate;
+    }
+
+    /**
+     * Detect shipping zone based on destination (legacy method)
      */
     private function detectShippingZone($destination)
     {
         // Simple implementation - can be enhanced with proper zone mapping
         $metroCities = ['mumbai', 'delhi', 'bangalore', 'chennai', 'kolkata', 'hyderabad', 'pune', 'ahmedabad'];
-        
+
         if (is_array($destination) && isset($destination['city'])) {
             $city = strtolower($destination['city']);
             return in_array($city, $metroCities) ? 'metro' : 'non_metro';

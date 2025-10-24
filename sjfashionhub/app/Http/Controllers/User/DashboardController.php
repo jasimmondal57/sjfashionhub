@@ -17,7 +17,16 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('user.dashboard.index', compact('user'));
+
+        // Get dashboard statistics
+        $stats = [
+            'total_orders' => $user->orders()->count(),
+            'cart_items' => $user->carts()->count(),
+            'wishlist_items' => $user->wishlists()->count(),
+            'total_spent' => $user->orders()->where('payment_status', 'completed')->sum('total_amount'),
+        ];
+
+        return view('user.dashboard.index', compact('user', 'stats'));
     }
 
     /**
@@ -96,7 +105,7 @@ class DashboardController extends Controller
     public function orders()
     {
         $user = Auth::user();
-        $orders = $user->orders()->with('items.product')->latest()->paginate(10);
+        $orders = $user->orders()->with(['items.product', 'items.productVariant'])->latest()->paginate(10);
 
         return view('user.dashboard.orders', compact('orders'));
     }
@@ -111,7 +120,7 @@ class DashboardController extends Controller
             abort(404);
         }
 
-        $order->load('items.product');
+        $order->load(['items.product', 'items.productVariant']);
 
         return view('user.dashboard.order-details', compact('order'));
     }
@@ -152,8 +161,7 @@ class DashboardController extends Controller
     public function wishlist()
     {
         $user = Auth::user();
-        // For now, return empty wishlist - you can implement wishlist model later
-        $wishlistItems = collect(); // Replace with: $user->wishlistItems()->with('product')->get();
+        $wishlistItems = $user->wishlists()->with('product')->latest()->paginate(12);
 
         return view('user.dashboard.wishlist', compact('wishlistItems'));
     }

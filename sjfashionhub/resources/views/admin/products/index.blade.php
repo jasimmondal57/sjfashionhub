@@ -146,7 +146,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <label class="flex items-center">
-                        <input type="checkbox" id="select-all" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        <input type="checkbox" id="select-all" onclick="toggleAllProducts(this)" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                         <span class="ml-2 text-sm text-gray-700">Select All</span>
                     </label>
 
@@ -179,7 +179,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <input type="checkbox" id="select-all-table" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <input type="checkbox" id="select-all-table" onclick="toggleAllProducts(this)" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
@@ -199,8 +199,8 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mr-3 overflow-hidden">
-                                        @if($product->images && count($product->images) > 0)
-                                            <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                        @if($product->main_image)
+                                            <img src="{{ $product->main_image }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                         @else
                                             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -512,26 +512,38 @@
             }, 5000);
         }
 
-        // Bulk action functionality
+        // Bulk action functionality with debugging
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing bulk actions...');
+
             const selectAllCheckboxes = document.querySelectorAll('#select-all, #select-all-table');
             const productCheckboxes = document.querySelectorAll('.product-checkbox');
             const selectedCountElement = document.getElementById('selected-count');
 
+            console.log('Found select all checkboxes:', selectAllCheckboxes.length);
+            console.log('Found product checkboxes:', productCheckboxes.length);
+            console.log('Found selected count element:', selectedCountElement);
+
             // Select all functionality
-            selectAllCheckboxes.forEach(checkbox => {
+            selectAllCheckboxes.forEach((checkbox, index) => {
+                console.log(`Adding event listener to select all checkbox ${index}`);
                 checkbox.addEventListener('change', function() {
-                    productCheckboxes.forEach(productCheckbox => {
+                    console.log(`Select all checkbox ${index} changed to:`, this.checked);
+
+                    productCheckboxes.forEach((productCheckbox, pIndex) => {
                         productCheckbox.checked = this.checked;
+                        console.log(`Set product checkbox ${pIndex} to:`, this.checked);
                     });
+
                     updateSelectedCount();
                     syncSelectAllCheckboxes();
                 });
             });
 
             // Individual checkbox functionality
-            productCheckboxes.forEach(checkbox => {
+            productCheckboxes.forEach((checkbox, index) => {
                 checkbox.addEventListener('change', function() {
+                    console.log(`Product checkbox ${index} changed to:`, this.checked);
                     updateSelectedCount();
                     syncSelectAllCheckboxes();
                 });
@@ -539,8 +551,11 @@
 
             function updateSelectedCount() {
                 const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
+                const count = checkedBoxes.length;
+                console.log('Updating selected count to:', count);
+
                 if (selectedCountElement) {
-                    selectedCountElement.textContent = checkedBoxes.length;
+                    selectedCountElement.textContent = count;
                 }
             }
 
@@ -548,13 +563,26 @@
                 const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
                 const allChecked = checkedBoxes.length === productCheckboxes.length && productCheckboxes.length > 0;
 
-                selectAllCheckboxes.forEach(checkbox => {
+                console.log('Syncing select all checkboxes. All checked:', allChecked);
+
+                selectAllCheckboxes.forEach((checkbox, index) => {
                     checkbox.checked = allChecked;
+                    console.log(`Set select all checkbox ${index} to:`, allChecked);
                 });
             }
 
             // Initialize count
             updateSelectedCount();
+
+            // Test function for debugging
+            window.testSelectAll = function() {
+                console.log('Testing select all functionality...');
+                const selectAll = document.getElementById('select-all');
+                if (selectAll) {
+                    selectAll.checked = !selectAll.checked;
+                    selectAll.dispatchEvent(new Event('change'));
+                }
+            };
         });
 
         function confirmBulkAction() {
@@ -585,6 +613,38 @@
             }
 
             return confirm(message);
+        }
+
+        // Fallback function for direct onclick handling
+        function toggleAllProducts(selectAllCheckbox) {
+            console.log('toggleAllProducts called with checked:', selectAllCheckbox.checked);
+
+            const productCheckboxes = document.querySelectorAll('.product-checkbox');
+            const selectedCountElement = document.getElementById('selected-count');
+
+            console.log('Found product checkboxes for toggle:', productCheckboxes.length);
+
+            // Toggle all product checkboxes
+            productCheckboxes.forEach((checkbox, index) => {
+                checkbox.checked = selectAllCheckbox.checked;
+                console.log(`Toggled product checkbox ${index} to:`, checkbox.checked);
+            });
+
+            // Update count
+            const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+            if (selectedCountElement) {
+                selectedCountElement.textContent = checkedCount;
+            }
+
+            // Sync other select all checkboxes
+            const allSelectAllCheckboxes = document.querySelectorAll('#select-all, #select-all-table');
+            allSelectAllCheckboxes.forEach(checkbox => {
+                if (checkbox !== selectAllCheckbox) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                }
+            });
+
+            console.log('Updated selected count to:', checkedCount);
         }
     </script>
     @endpush

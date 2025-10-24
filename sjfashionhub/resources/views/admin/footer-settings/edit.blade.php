@@ -40,13 +40,15 @@
                         
                         <div class="space-y-4">
                             <div>
-                                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
-                                <input type="text" name="company_name" id="company_name" value="{{ old('company_name', $footerSetting->company_name) }}" 
+                                <label for="business_name" class="block text-sm font-medium text-gray-700 mb-2">Business Name *</label>
+                                <input type="text" name="business_name" id="business_name" value="{{ old('business_name', $footerSetting->business_name ?? 'SJ Fashion Hub') }}"
+                                       placeholder="SJ Fashion Hub"
                                        class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                        required>
-                                @error('company_name')
+                                @error('business_name')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                                 @enderror
+                                <p class="mt-1 text-sm text-gray-500">Your main business name</p>
                             </div>
 
                             <div>
@@ -148,13 +150,14 @@
                             </div>
 
                             <div>
-                                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">Developer/Designer Company Name</label>
                                 <input type="text" name="company_name" id="company_name" value="{{ old('company_name', $footerSetting->company_name ?? 'JM Software') }}"
                                        placeholder="JM Software"
                                        class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 @error('company_name')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                                 @enderror
+                                <p class="mt-1 text-sm text-gray-500">This will appear as "Designed By [Company Name]"</p>
                             </div>
 
                             <div>

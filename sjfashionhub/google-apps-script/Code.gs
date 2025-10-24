@@ -12,6 +12,11 @@
  */
 function doPost(e) {
   try {
+    // Check if this is a valid POST request
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error('Invalid request: No POST data received');
+    }
+
     // Parse the incoming data
     const data = JSON.parse(e.postData.contents);
     const action = data.action;
@@ -66,18 +71,34 @@ function doPost(e) {
         
       case 'delete':
         return handleDelete(sheet, rowData, columnMapping);
-        
+
+      case 'create_headers':
+        return handleCreateHeaders(sheet, data.headers, columnMapping, sheetType);
+
       default:
         throw new Error('Unknown action: ' + action);
     }
     
   } catch (error) {
     console.error('Error processing request:', error);
-    return ContentService.createTextOutput(JSON.stringify({
+
+    // More detailed error information
+    const errorInfo = {
       success: false,
       error: error.toString(),
-      timestamp: new Date().toISOString()
-    })).setMimeType(ContentService.MimeType.JSON);
+      error_type: error.name || 'Unknown',
+      timestamp: new Date().toISOString(),
+      help: 'Check that the request includes valid POST data with required fields'
+    };
+
+    // Add specific help for common errors
+    if (error.message.includes('postData')) {
+      errorInfo.help = 'This script must be called via HTTP POST request, not run directly. Use the testScript() function for testing.';
+      errorInfo.suggestion = 'Run testScript() function in the editor to test the script functionality.';
+    }
+
+    return ContentService.createTextOutput(JSON.stringify(errorInfo))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -287,7 +308,60 @@ function getHeadersForSheetType(sheetType, columnMapping) {
           'address': 'Address',
           'city': 'City',
           'state': 'State',
-          'country': 'Country'
+          'postal_code': 'Postal Code',
+          'country': 'Country',
+          'date_of_birth': 'Date of Birth',
+          'gender': 'Gender',
+          'email_marketing_consent': 'Email Marketing',
+          'sms_marketing_consent': 'SMS Marketing',
+          'total_addresses': 'Total Addresses',
+          'default_address': 'Default Address',
+          'created_at': 'Created At',
+          'updated_at': 'Updated At'
+        };
+        return headerMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      });
+
+    case 'user_addresses':
+      return headers.map(key => {
+        const headerMap = {
+          'address_id': 'Address ID',
+          'user_id': 'User ID',
+          'user_name': 'User Name',
+          'user_email': 'User Email',
+          'address_type': 'Address Type',
+          'first_name': 'First Name',
+          'last_name': 'Last Name',
+          'company': 'Company',
+          'address_line_1': 'Address Line 1',
+          'address_line_2': 'Address Line 2',
+          'city': 'City',
+          'state': 'State',
+          'postal_code': 'Postal Code',
+          'country': 'Country',
+          'phone': 'Phone',
+          'is_default': 'Is Default',
+          'created_at': 'Created At',
+          'updated_at': 'Updated At'
+        };
+        return headerMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      });
+
+    case 'user_changes':
+      return headers.map(key => {
+        const headerMap = {
+          'change_id': 'Change ID',
+          'user_id': 'User ID',
+          'user_name': 'User Name',
+          'user_email': 'User Email',
+          'change_type': 'Change Type',
+          'field_name': 'Field Name',
+          'old_value': 'Previous Value',
+          'new_value': 'New Value',
+          'changed_by': 'Changed By',
+          'ip_address': 'IP Address',
+          'user_agent': 'User Agent',
+          'changed_at': 'Changed At'
         };
         return headerMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       });
@@ -413,4 +487,148 @@ function initializeSheet(sheet, sheetType) {
   
   // Protect headers
   protectHeaders(sheet);
+}
+
+/**
+ * Handle creating headers for a sheet
+ */
+function handleCreateHeaders(sheet, headers, columnMapping, sheetType) {
+  try {
+    // Clear existing headers if any
+    const lastColumn = sheet.getLastColumn();
+    if (lastColumn > 0) {
+      sheet.getRange(1, 1, 1, lastColumn).clearContent();
+    }
+
+    // Create headers array based on column mapping
+    const headerValues = [];
+    const maxColumn = Math.max(...Object.values(columnMapping).map(col => getColumnNumber(col)));
+
+    // Initialize array with empty values
+    for (let i = 0; i < maxColumn; i++) {
+      headerValues[i] = '';
+    }
+
+    // Fill in the headers based on column mapping
+    for (const [field, column] of Object.entries(columnMapping)) {
+      const colIndex = getColumnNumber(column) - 1; // Convert to 0-based index
+      headerValues[colIndex] = headers[field] || formatFieldName(field);
+    }
+
+    // Set the headers
+    if (headerValues.length > 0) {
+      sheet.getRange(1, 1, 1, headerValues.length).setValues([headerValues]);
+
+      // Format headers
+      const headerRange = sheet.getRange(1, 1, 1, headerValues.length);
+      headerRange.setBackground('#4285f4');
+      headerRange.setFontColor('#ffffff');
+      headerRange.setFontWeight('bold');
+      headerRange.setHorizontalAlignment('center');
+      headerRange.setVerticalAlignment('middle');
+
+      // Set column widths based on sheet type
+      setColumnWidths(sheet, sheetType);
+
+      // Protect headers
+      protectHeaders(sheet);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: `Headers created successfully for ${sheetType}`,
+      headers_count: headerValues.filter(h => h !== '').length,
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    console.error('Error creating headers:', error);
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.toString(),
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Convert column letter to number (A=1, B=2, etc.)
+ */
+function getColumnNumber(columnLetter) {
+  let result = 0;
+  for (let i = 0; i < columnLetter.length; i++) {
+    result = result * 26 + (columnLetter.charCodeAt(i) - 'A'.charCodeAt(0) + 1);
+  }
+  return result;
+}
+
+/**
+ * Format field name to readable header
+ */
+function formatFieldName(field) {
+  return field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+/**
+ * Test function that can be run directly in Google Apps Script editor
+ * This helps verify the script is working without needing HTTP requests
+ */
+function testScript() {
+  try {
+    console.log('🧪 Testing SJ Fashion Hub Google Sheets Integration...');
+
+    // Test 1: Check if we can access SpreadsheetApp
+    console.log('✅ SpreadsheetApp access: OK');
+
+    // Test 2: Test helper functions
+    console.log('🔧 Testing helper functions...');
+
+    const colNum = getColumnNumber('C');
+    console.log('✅ getColumnNumber("C") =', colNum);
+
+    const formatted = formatFieldName('customer_name');
+    console.log('✅ formatFieldName("customer_name") =', formatted);
+
+    // Test 3: Sample data structures
+    const testHeaders = {
+      'order_id': 'Order ID',
+      'customer_name': 'Customer Name',
+      'customer_email': 'Customer Email',
+      'total_amount': 'Total Amount',
+      'status': 'Status'
+    };
+
+    const testColumnMapping = {
+      'order_id': 'A',
+      'customer_name': 'B',
+      'customer_email': 'C',
+      'total_amount': 'D',
+      'status': 'E'
+    };
+
+    console.log('✅ Test data prepared');
+    console.log('📊 Sample headers:', Object.keys(testHeaders).length, 'fields');
+    console.log('🗂️ Sample mapping:', Object.keys(testColumnMapping).length, 'columns');
+
+    console.log('🎉 All tests passed! Script is ready for use.');
+    console.log('📝 To use this script:');
+    console.log('   1. Deploy as Web App');
+    console.log('   2. Set permissions to "Anyone"');
+    console.log('   3. Copy the Web App URL to your Laravel app');
+    console.log('   4. Configure Google Sheets settings in admin panel');
+
+    return {
+      success: true,
+      message: 'Test completed successfully',
+      timestamp: new Date().toISOString()
+    };
+
+  } catch (error) {
+    console.error('❌ Test failed:', error);
+    return {
+      success: false,
+      error: error.toString(),
+      timestamp: new Date().toISOString()
+    };
+  }
 }

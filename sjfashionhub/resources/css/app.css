@@ -14,7 +14,14 @@
     }
 
     h1, h2, h3, h4, h5, h6 {
-        @apply font-medium text-black;
+        @apply font-medium text-gray-900;
+    }
+
+    /* Mobile-first responsive text sizing */
+    @media (max-width: 640px) {
+        html {
+            font-size: 14px;
+        }
     }
 }
 
@@ -25,15 +32,15 @@
     }
 
     .btn-primary {
-        @apply bg-black text-white hover:bg-gray-800 focus:ring-black;
+        @apply bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-900 shadow-sm;
     }
 
     .btn-secondary {
-        @apply bg-white text-black border border-black hover:bg-black hover:text-white focus:ring-black;
+        @apply bg-white text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-900 shadow-sm;
     }
 
     .btn-outline {
-        @apply bg-transparent text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white focus:ring-black;
+        @apply bg-transparent text-gray-900 border border-gray-300 hover:border-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-900;
     }
 
     .btn-danger {
@@ -46,6 +53,17 @@
 
     .btn-lg {
         @apply px-6 py-3 text-base;
+    }
+
+    /* Mobile button adjustments */
+    @media (max-width: 640px) {
+        .btn {
+            @apply px-3 py-2 text-sm;
+        }
+
+        .btn-lg {
+            @apply px-4 py-2.5 text-base;
+        }
     }
 
     /* Card Components */
@@ -76,16 +94,16 @@
 
     /* Navigation */
     .nav-link {
-        @apply text-gray-700 hover:text-black transition-colors duration-200 font-medium;
+        @apply text-gray-700 hover:text-gray-900 transition-colors duration-200 font-medium;
     }
 
     .nav-link-active {
-        @apply text-black font-semibold;
+        @apply text-gray-900 font-semibold border-b-2 border-gray-900;
     }
 
     /* Form Elements */
     .form-input {
-        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent;
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent;
     }
 
     .form-select {
@@ -94,7 +112,7 @@
 
     /* Header Styles */
     .header-top {
-        @apply bg-black text-white text-sm py-2;
+        @apply bg-gray-900 text-white text-sm py-2;
     }
 
     .header-main {
@@ -167,6 +185,65 @@
     @media (min-width: 1024px) {
         .admin-content {
             margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+        }
+    }
+
+    /* Mobile-specific improvements */
+    @media (max-width: 768px) {
+        .container-custom {
+            @apply px-3;
+        }
+
+        .product-card {
+            @apply shadow-sm;
+        }
+
+        .product-image {
+            @apply h-48;
+        }
+
+        /* Improve touch targets */
+        .btn, .nav-link, button, a {
+            min-height: 44px;
+            @apply flex items-center justify-center;
+        }
+
+        /* Better spacing for mobile */
+        .grid {
+            @apply gap-3;
+        }
+
+        /* Mobile typography */
+        h1 {
+            @apply text-2xl;
+        }
+
+        h2 {
+            @apply text-xl;
+        }
+
+        h3 {
+            @apply text-lg;
+        }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .btn-primary {
+            @apply border-2 border-white;
+        }
+
+        .btn-secondary {
+            @apply border-2;
         }
     }
 }

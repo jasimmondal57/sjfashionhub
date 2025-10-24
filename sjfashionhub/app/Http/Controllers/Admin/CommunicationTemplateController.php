@@ -259,10 +259,26 @@ class CommunicationTemplateController extends Controller
         $newTemplate = $template->replicate();
         $newTemplate->name = $template->name . ' (Copy)';
         $newTemplate->is_default = false;
+
+        // Make event unique by appending _copy and a counter if needed
+        $baseEvent = $template->event . '_copy';
+        $event = $baseEvent;
+        $counter = 1;
+
+        while (CommunicationTemplate::where('type', $newTemplate->type)
+            ->where('category', $newTemplate->category)
+            ->where('event', $event)
+            ->where('language', $newTemplate->language)
+            ->exists()) {
+            $event = $baseEvent . '_' . $counter;
+            $counter++;
+        }
+
+        $newTemplate->event = $event;
         $newTemplate->save();
 
         return redirect()->route('admin.communication-templates.edit', $newTemplate)
-            ->with('success', 'Template duplicated successfully!');
+            ->with('success', 'Template duplicated successfully! Please update the event name before using.');
     }
 
     /**

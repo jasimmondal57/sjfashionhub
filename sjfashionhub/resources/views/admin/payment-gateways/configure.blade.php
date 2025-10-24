@@ -111,9 +111,16 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Secret Key *</label>
-                            <input type="password" name="secret_key" 
-                                   class="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                            <input type="password" name="secret_key"
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                    placeholder="Enter secret key" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Webhook Secret</label>
+                            <input type="text" name="webhook_secret"
+                                   value="{{ old('webhook_secret', $credentials['webhook_secret'] ?? '') }}"
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                   placeholder="Webhook secret for payment verification">
                         </div>
                     </div>
                 @elseif($paymentGateway->name === 'payu')

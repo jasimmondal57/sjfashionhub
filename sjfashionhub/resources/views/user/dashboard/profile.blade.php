@@ -8,7 +8,7 @@
                     
                     <div class="text-center">
                         @if($user->avatar)
-                            <img class="mx-auto h-32 w-32 rounded-full object-cover border-4 border-gray-200" src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}">
+                            <img class="mx-auto h-32 w-32 rounded-full object-cover border-4 border-gray-200" src="{{ $user->avatar_url }}" alt="{{ $user->name }}">
                         @else
                             <div class="mx-auto h-32 w-32 rounded-full bg-black flex items-center justify-center border-4 border-gray-200">
                                 <span class="text-4xl font-bold text-white">{{ substr($user->name, 0, 1) }}</span>

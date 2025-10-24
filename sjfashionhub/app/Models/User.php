@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+// use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable; // , HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +34,10 @@ class User extends Authenticatable
         'postal_code',
         'country',
         'last_login_at',
+        'last_login_ip',
+        'last_login_location',
+        'last_login_country',
+        'last_login_user_agent',
         'email_marketing_consent',
         'sms_marketing_consent',
         'notes',
@@ -117,6 +122,12 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar) {
+            // Check if avatar is already a full URL (from social login)
+            if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+                return $this->avatar;
+            }
+
+            // Otherwise, it's a local file path
             return asset('storage/' . $this->avatar);
         }
 
@@ -219,6 +230,11 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(\App\Models\Order::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(\App\Models\Cart::class);
     }
 
     public function wishlists()

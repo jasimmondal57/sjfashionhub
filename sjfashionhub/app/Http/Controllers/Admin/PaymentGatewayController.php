@@ -243,6 +243,7 @@ class PaymentGatewayController extends Controller
             'cashfree' => [
                 'app_id' => 'required|string',
                 'secret_key' => 'required|string',
+                'webhook_secret' => 'nullable|string',
             ],
             'payu' => [
                 'merchant_key' => 'required|string',
@@ -269,7 +270,7 @@ class PaymentGatewayController extends Controller
     {
         $credentialFields = [
             'razorpay' => ['key_id', 'key_secret', 'webhook_secret'],
-            'cashfree' => ['app_id', 'secret_key'],
+            'cashfree' => ['app_id', 'secret_key', 'webhook_secret'],
             'payu' => ['merchant_key', 'merchant_salt'],
             'paytm' => ['merchant_id', 'merchant_key'],
             'paypal' => ['client_id', 'client_secret'],

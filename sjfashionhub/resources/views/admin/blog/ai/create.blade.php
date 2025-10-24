@@ -30,8 +30,15 @@
                     @if($product)
                         <!-- Selected Product -->
                         <div class="border border-gray-200 rounded-lg p-4 mb-4">
-                            @if($product->images && count($product->images) > 0)
-                                <img src="{{ asset('storage/' . $product->images[0]['image_path']) }}" alt="{{ $product->name }}"
+                            @if($product->main_image)
+                                @php
+                                    $imageUrl = $product->main_image;
+                                    // If it's a full URL, use it directly; otherwise prepend storage path
+                                    if (!str_starts_with($imageUrl, 'http://') && !str_starts_with($imageUrl, 'https://')) {
+                                        $imageUrl = asset('storage/' . $imageUrl);
+                                    }
+                                @endphp
+                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}"
                                      class="w-full h-32 object-cover rounded-lg mb-3"
                                      onerror="this.style.display='none'">
                             @endif
@@ -125,6 +132,9 @@
                                         </svg>
                                         <span id="generate-text">🚀 Auto-Generate (Best Type)</span>
                                     </button>
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        ⏱️ Generation may take 1-2 minutes. Please be patient while AI creates your content.
+                                    </p>
                                 </div>
                             </div>
 
@@ -475,15 +485,37 @@
                 }
             }, 1000);
 
-            // Use simple GET request (no CSRF needed)
+            // Use simple GET request with timeout handling (no CSRF needed)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+                clearInterval(progressInterval);
+                progressText.textContent = 'Generation is taking longer than expected. Please check your blog list in a few minutes.';
+                progressBar.style.width = '100%';
+                progressBar.classList.add('bg-yellow-500');
+
+                // Show warning message
+                setTimeout(() => {
+                    alert('Blog generation is taking longer than expected but may still be processing in the background. Please check your blog list in a few minutes.');
+                    // Reset button state
+                    generateBtn.disabled = false;
+                    generateText.textContent = 'Generate Complete Blog Post';
+                    progressDiv.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                    progressBar.classList.remove('bg-yellow-500');
+                }, 2000);
+            }, 120000); // 2 minutes timeout
+
             fetch('{{ route("admin.blog.ai.auto-generate", $product->id ?? 0) }}', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                signal: controller.signal
             })
             .then(response => {
+                clearTimeout(timeoutId);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -546,9 +578,18 @@
                 }, 1000);
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 clearInterval(progressInterval);
                 console.error('Error:', error);
-                alert('An error occurred while generating content: ' + error.message);
+
+                if (error.name === 'AbortError') {
+                    // Don't show error for timeout - already handled above
+                    return;
+                } else {
+                    progressText.textContent = 'Error occurred during generation';
+                    progressBar.classList.add('bg-red-500');
+                    alert('An error occurred while generating content: ' + error.message);
+                }
             })
             .finally(() => {
                 setTimeout(() => {
@@ -666,20 +707,27 @@
             const productId = '{{ $product->id ?? "" }}';
             if (!productId) return;
 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+
             fetch('{{ route("admin.blog.ai.generate-titles") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ product_id: productId })
+                body: JSON.stringify({ product_id: productId }),
+                signal: controller.signal
             })
-            .then(response => response.json())
+            .then(response => {
+                clearTimeout(timeoutId);
+                return response.json();
+            })
             .then(data => {
                 if (data.success && data.titles.length > 0) {
                     const container = document.getElementById('title-suggestions');
                     container.innerHTML = '';
-                    
+
                     data.titles.forEach(title => {
                         const titleElement = document.createElement('div');
                         titleElement.className = 'p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100';
@@ -694,8 +742,13 @@
                 }
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 console.error('Error:', error);
-                alert('Error generating title suggestions.');
+                if (error.name === 'AbortError') {
+                    alert('Title generation timed out. Please try again.');
+                } else {
+                    alert('Error generating title suggestions: ' + error.message);
+                }
             });
         }
 

@@ -124,10 +124,10 @@
                     @if($products->count() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         @foreach($products as $product)
-                        <div class="product-card group">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                             <div class="relative">
                                 <a href="{{ route('products.show', $product) }}">
-                                    <div class="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center overflow-hidden">
+                                    <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                                         @if($product->main_image)
                                             <img src="{{ $product->main_image }}" alt="{{ $product->name }}" 
                                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -151,8 +151,13 @@
                                 
                                 <!-- Quick Actions -->
                                 <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <button class="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 mb-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <button onclick="toggleWishlistCard({{ $product->id }}, this, event)"
+                                            class="wishlist-btn-card p-2 bg-white rounded-full shadow-md hover:bg-gray-50 mb-2 transition-colors"
+                                            data-product-id="{{ $product->id }}"
+                                            data-in-wishlist="{{ Auth::check() && Auth::user()->wishlists()->where('product_id', $product->id)->exists() ? 'true' : 'false' }}">
+                                        <svg class="w-4 h-4 wishlist-icon-card {{ Auth::check() && Auth::user()->wishlists()->where('product_id', $product->id)->exists() ? 'text-red-500' : 'text-gray-600' }}"
+                                             fill="{{ Auth::check() && Auth::user()->wishlists()->where('product_id', $product->id)->exists() ? 'currentColor' : 'none' }}"
+                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                         </svg>
                                     </button>
@@ -186,7 +191,7 @@
                                 </div>
                                 @endif
 
-                                <div class="flex items-center justify-between">
+                                <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center space-x-2">
                                         @if($product->is_on_sale)
                                         <span class="text-lg font-semibold text-black">{{ $product->formatted_sale_price }}</span>
@@ -195,7 +200,17 @@
                                         <span class="text-lg font-semibold text-black">{{ $product->formatted_price }}</span>
                                         @endif
                                     </div>
-                                    <button class="btn btn-sm btn-primary">Add to Cart</button>
+                                </div>
+                                <!-- Action Buttons -->
+                                <div class="flex space-x-2">
+                                    <button onclick="addToCartWithAnimation({{ $product->id }}, this)" class="cart-button flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #111827 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#374151'" onmouseout="this.style.backgroundColor='#111827'">
+                                        <span class="button-text">Add to Cart</span>
+                                        <span class="loading-text" style="display: none;">Adding...</span>
+                                        <span class="success-text" style="display: none;">Added! ✓</span>
+                                    </button>
+                                    <button onclick="buyNow({{ $product->id }})" class="flex-1 text-xs py-2 px-3 rounded transition-colors" style="background-color: #4f46e5 !important; color: white !important; border: none !important;" onmouseover="this.style.backgroundColor='#4338ca'" onmouseout="this.style.backgroundColor='#4f46e5'">
+                                        Buy Now
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -221,4 +236,151 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Add to cart with animation
+        function addToCartWithAnimation(productId, button) {
+            const buttonText = button.querySelector('.button-text');
+            const loadingText = button.querySelector('.loading-text');
+            const successText = button.querySelector('.success-text');
+
+            // Show loading state
+            buttonText.style.display = 'none';
+            loadingText.style.display = 'inline';
+            button.disabled = true;
+
+            // Make AJAX request to add to cart
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    loadingText.style.display = 'none';
+                    successText.style.display = 'inline';
+
+                    // Update cart count if element exists
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount && data.cart_count) {
+                        cartCount.textContent = data.cart_count;
+                        cartCount.style.display = data.cart_count > 0 ? 'inline' : 'none';
+                    }
+
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        successText.style.display = 'none';
+                        buttonText.style.display = 'inline';
+                        button.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add to cart. Please try again.');
+
+                // Reset button
+                loadingText.style.display = 'none';
+                buttonText.style.display = 'inline';
+                button.disabled = false;
+            });
+        }
+
+        // Buy now function
+        function buyNow(productId) {
+            // Add to cart first, then redirect to checkout
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to checkout
+                    window.location.href = '/checkout';
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to process order. Please try again.');
+            });
+        }
+
+        // Toggle Wishlist for Product Cards
+        async function toggleWishlistCard(productId, button, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            @guest
+                window.location.href = '{{ route("login") }}';
+                return;
+            @endguest
+
+            try {
+                const response = await fetch('{{ route("wishlist.toggle") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const icon = button.querySelector('.wishlist-icon-card');
+
+                    if (data.in_wishlist) {
+                        icon.setAttribute('fill', 'currentColor');
+                        icon.classList.add('text-red-500');
+                        icon.classList.remove('text-gray-600');
+                    } else {
+                        icon.setAttribute('fill', 'none');
+                        icon.classList.remove('text-red-500');
+                        icon.classList.add('text-gray-600');
+                    }
+
+                    // Show notification
+                    showNotificationCard(data.message, 'success');
+                } else {
+                    showNotificationCard(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotificationCard('Failed to update wishlist', 'error');
+            }
+        }
+
+        // Show notification for cards
+        function showNotificationCard(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
 </x-layouts.main>

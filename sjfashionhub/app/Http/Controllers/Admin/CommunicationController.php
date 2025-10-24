@@ -8,6 +8,7 @@ use App\Models\CommunicationTemplate;
 use App\Models\CommunicationLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Crypt;
 
 class CommunicationController extends Controller
 {
@@ -23,13 +24,35 @@ class CommunicationController extends Controller
             ->limit(10)
             ->get();
 
+        // Get provider settings and check if configured
+        $emailSettings = CommunicationSetting::getProviderSettings('email')->toArray();
+        $smsSettings = CommunicationSetting::getProviderSettings('sms')->toArray();
+        $whatsappSettings = CommunicationSetting::getProviderSettings('whatsapp')->toArray();
+
+        // Check if providers are configured (check if key exists AND has a non-empty value)
+        $emailSettings['active_service'] = (isset($emailSettings['host']) && !empty($emailSettings['host'])) ||
+                                           (isset($emailSettings['api_key']) && !empty($emailSettings['api_key']));
+
+        $smsSettings['active_service'] = (isset($smsSettings['api_key']) && !empty($smsSettings['api_key'])) ||
+                                         (isset($smsSettings['auth_key']) && !empty($smsSettings['auth_key']));
+
+        $whatsappSettings['active_service'] = (isset($whatsappSettings['api_key']) && !empty($whatsappSettings['api_key'])) ||
+                                              (isset($whatsappSettings['access_token']) && !empty($whatsappSettings['access_token'])) ||
+                                              (isset($whatsappSettings['phone_number']) && !empty($whatsappSettings['phone_number']));
+
         $providers = [
-            'email' => CommunicationSetting::getProviderSettings('email'),
-            'sms' => CommunicationSetting::getProviderSettings('sms'),
-            'whatsapp' => CommunicationSetting::getProviderSettings('whatsapp')
+            'email' => $emailSettings,
+            'sms' => $smsSettings,
+            'whatsapp' => $whatsappSettings
         ];
 
-        return view('admin.communication.index', compact('stats', 'recentLogs', 'providers'));
+        // Get current notification preferences
+        $preferences = CommunicationSetting::where('provider', 'system')
+            ->where('service', 'preferences')
+            ->pluck('value', 'key')
+            ->toArray();
+
+        return view('admin.communication.index', compact('stats', 'recentLogs', 'providers', 'preferences'));
     }
 
     /**
@@ -194,14 +217,25 @@ class CommunicationController extends Controller
 
         // Save settings for the service
         foreach ($validatedData as $key => $value) {
-            if (!empty($value)) {
+            // Always save api_key if provided (even if updating existing)
+            // For other fields, only save if not empty
+            if ($key === 'api_key' || !empty($value)) {
+                $isEncrypted = in_array($key, ['api_key', 'account_sid']);
+
+                // Prepare the value (encrypt if needed)
+                $finalValue = $isEncrypted ? Crypt::encryptString($value) : $value;
+
                 CommunicationSetting::updateOrCreate([
                     'provider' => 'whatsapp',
                     'service' => $service,
                     'key' => $key,
                 ], [
-                    'value' => $value,
-                    'is_encrypted' => in_array($key, ['api_key']),
+                    'value' => $finalValue,
+                    'type' => 'string',
+                    'category' => 'api',
+                    'description' => ucfirst(str_replace('_', ' ', $key)),
+                    'is_encrypted' => $isEncrypted,
+                    'is_active' => true,
                 ]);
             }
         }
@@ -341,6 +375,93 @@ class CommunicationController extends Controller
                 'success' => false,
                 'message' => 'Failed to send test message: ' . $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Update notification preferences
+     */
+    public function updatePreferences(Request $request)
+    {
+        try {
+            $preferences = [
+                // Email preferences
+                'email_welcome' => $request->boolean('email_welcome'),
+                'email_order_placed' => $request->boolean('email_order_placed'),
+                'email_order_confirmed' => $request->boolean('email_order_confirmed'),
+                'email_ready_to_ship' => $request->boolean('email_ready_to_ship'),
+                'email_order_shipped' => $request->boolean('email_order_shipped'),
+                'email_out_for_delivery' => $request->boolean('email_out_for_delivery'),
+                'email_order_delivered' => $request->boolean('email_order_delivered'),
+                'email_order_cancelled' => $request->boolean('email_order_cancelled'),
+                'email_order_rto' => $request->boolean('email_order_rto'),
+                'email_return_request' => $request->boolean('email_return_request'),
+                'email_return_approved' => $request->boolean('email_return_approved'),
+                'email_return_rejected' => $request->boolean('email_return_rejected'),
+                'email_return_in_transit' => $request->boolean('email_return_in_transit'),
+                'email_return_received' => $request->boolean('email_return_received'),
+                'email_return_refund_processed' => $request->boolean('email_return_refund_processed'),
+                'email_admin_alerts' => $request->boolean('email_admin_alerts'),
+
+                // SMS preferences
+                'sms_welcome' => $request->boolean('sms_welcome'),
+                'sms_order_placed' => $request->boolean('sms_order_placed'),
+                'sms_order_confirmed' => $request->boolean('sms_order_confirmed'),
+                'sms_ready_to_ship' => $request->boolean('sms_ready_to_ship'),
+                'sms_order_shipped' => $request->boolean('sms_order_shipped'),
+                'sms_out_for_delivery' => $request->boolean('sms_out_for_delivery'),
+                'sms_order_delivered' => $request->boolean('sms_order_delivered'),
+                'sms_order_cancelled' => $request->boolean('sms_order_cancelled'),
+                'sms_order_rto' => $request->boolean('sms_order_rto'),
+                'sms_return_request' => $request->boolean('sms_return_request'),
+                'sms_return_approved' => $request->boolean('sms_return_approved'),
+                'sms_return_rejected' => $request->boolean('sms_return_rejected'),
+                'sms_return_in_transit' => $request->boolean('sms_return_in_transit'),
+                'sms_return_received' => $request->boolean('sms_return_received'),
+                'sms_return_refund_processed' => $request->boolean('sms_return_refund_processed'),
+
+                // WhatsApp preferences
+                'whatsapp_welcome' => $request->boolean('whatsapp_welcome'),
+                'whatsapp_order_placed' => $request->boolean('whatsapp_order_placed'),
+                'whatsapp_order_confirmed' => $request->boolean('whatsapp_order_confirmed'),
+                'whatsapp_ready_to_ship' => $request->boolean('whatsapp_ready_to_ship'),
+                'whatsapp_order_shipped' => $request->boolean('whatsapp_order_shipped'),
+                'whatsapp_out_for_delivery' => $request->boolean('whatsapp_out_for_delivery'),
+                'whatsapp_order_delivered' => $request->boolean('whatsapp_order_delivered'),
+                'whatsapp_order_cancelled' => $request->boolean('whatsapp_order_cancelled'),
+                'whatsapp_order_rto' => $request->boolean('whatsapp_order_rto'),
+                'whatsapp_return_request' => $request->boolean('whatsapp_return_request'),
+                'whatsapp_return_approved' => $request->boolean('whatsapp_return_approved'),
+                'whatsapp_return_rejected' => $request->boolean('whatsapp_return_rejected'),
+                'whatsapp_return_in_transit' => $request->boolean('whatsapp_return_in_transit'),
+                'whatsapp_return_received' => $request->boolean('whatsapp_return_received'),
+                'whatsapp_return_refund_processed' => $request->boolean('whatsapp_return_refund_processed'),
+            ];
+
+            // Store preferences in communication settings
+            foreach ($preferences as $key => $value) {
+                CommunicationSetting::updateOrCreate(
+                    [
+                        'provider' => 'system',
+                        'service' => 'preferences',
+                        'key' => $key
+                    ],
+                    [
+                        'value' => $value ? '1' : '0',
+                        'type' => 'boolean',
+                        'category' => 'notification_preferences',
+                        'description' => 'Notification preference for ' . str_replace('_', ' ', $key),
+                        'is_active' => true
+                    ]
+                );
+            }
+
+            return redirect()->route('admin.communication.index')
+                ->with('success', 'Notification preferences updated successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.communication.index')
+                ->with('error', 'Failed to update preferences: ' . $e->getMessage());
         }
     }
 }

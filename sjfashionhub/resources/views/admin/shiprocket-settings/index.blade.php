@@ -239,16 +239,87 @@
                 <!-- Webhook Configuration -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">🔗 Webhook Configuration</h3>
+                    <p class="text-sm text-gray-600 mb-4">Configure this webhook URL in your Shiprocket dashboard to receive real-time shipping updates</p>
+
                     <div class="grid grid-cols-1 gap-6">
+                        <!-- Webhook URL to provide to Shiprocket -->
                         <div>
-                            <label for="shiprocket_webhook_url" class="block text-sm font-medium text-gray-700 mb-2">
-                                Webhook URL (Optional)
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Your Webhook URL
+                                <span class="text-xs text-gray-500 font-normal">(Copy this to Shiprocket dashboard)</span>
                             </label>
-                            <input type="url" name="shiprocket_webhook_url" id="shiprocket_webhook_url"
-                                   value="{{ old('shiprocket_webhook_url', $settings['webhook']['shiprocket_webhook_url'] ?? '') }}"
-                                   placeholder="https://yourdomain.com/webhook/shiprocket"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <p class="text-gray-500 text-xs mt-1">URL to receive shipping status updates from Shiprocket</p>
+                            <div class="flex items-center space-x-2">
+                                <input type="text"
+                                       id="webhook-url-display"
+                                       value="{{ url('/webhook/shipping-updates') }}"
+                                       readonly
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-mono text-sm">
+                                <button type="button"
+                                        onclick="copyWebhookUrl()"
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors whitespace-nowrap">
+                                    <i class="fas fa-copy mr-1"></i> Copy
+                                </button>
+                            </div>
+                            <p class="text-gray-500 text-xs mt-1">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Add this URL in Shiprocket Dashboard → Settings → Webhooks
+                            </p>
+                            <p class="text-orange-600 text-xs mt-1">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>Important:</strong> Shiprocket does not allow URLs containing "shiprocket", "kartrocket", "sr", or "kr"
+                            </p>
+                        </div>
+
+                        <!-- Webhook Token -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Webhook Token
+                                <span class="text-xs text-gray-500 font-normal">(For authentication)</span>
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input type="text"
+                                       id="webhook-token-display"
+                                       value="{{ $settings['webhook']['shiprocket_webhook_token'] ?? Str::random(32) }}"
+                                       readonly
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-mono text-sm">
+                                <button type="button"
+                                        onclick="copyWebhookToken()"
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors whitespace-nowrap">
+                                    <i class="fas fa-copy mr-1"></i> Copy
+                                </button>
+                                <button type="button"
+                                        onclick="regenerateToken()"
+                                        class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-medium transition-colors whitespace-nowrap">
+                                    <i class="fas fa-sync-alt mr-1"></i> Regenerate
+                                </button>
+                            </div>
+                            <input type="hidden"
+                                   name="shiprocket_webhook_token"
+                                   id="webhook-token-hidden"
+                                   value="{{ $settings['webhook']['shiprocket_webhook_token'] ?? Str::random(32) }}">
+                            <p class="text-gray-500 text-xs mt-1">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                Use this token to authenticate webhook requests from Shiprocket
+                            </p>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h4 class="text-sm font-semibold text-blue-900 mb-2">
+                                <i class="fas fa-book mr-1"></i> Setup Instructions:
+                            </h4>
+                            <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                                <li>Copy the Webhook URL above</li>
+                                <li>Copy the Webhook Token above</li>
+                                <li>Login to your Shiprocket dashboard</li>
+                                <li>Go to Settings → API → Webhooks</li>
+                                <li>Click "Add Webhook"</li>
+                                <li>Paste the URL in the "URL" field</li>
+                                <li>Paste the Token in the "Token" field</li>
+                                <li>Note: Shiprocket will send the token in HTTP header: <code class="bg-blue-100 px-1 rounded">x-api-key</code></li>
+                                <li>Select events to track (Delivered, In Transit, etc.)</li>
+                                <li>Click "Save" to activate the webhook</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
@@ -503,6 +574,62 @@
                     notification.remove();
                 }
             }, 5000);
+        }
+
+        // Copy webhook URL
+        function copyWebhookUrl() {
+            const input = document.getElementById('webhook-url-display');
+            input.select();
+            input.setSelectionRange(0, 99999); // For mobile devices
+
+            navigator.clipboard.writeText(input.value).then(() => {
+                showNotification('Webhook URL copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                showNotification('Webhook URL copied to clipboard!', 'success');
+            });
+        }
+
+        // Copy webhook token
+        function copyWebhookToken() {
+            const input = document.getElementById('webhook-token-display');
+            input.select();
+            input.setSelectionRange(0, 99999); // For mobile devices
+
+            navigator.clipboard.writeText(input.value).then(() => {
+                showNotification('Webhook token copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                showNotification('Webhook token copied to clipboard!', 'success');
+            });
+        }
+
+        // Regenerate webhook token
+        function regenerateToken() {
+            if (!confirm('Are you sure you want to regenerate the webhook token? This will invalidate the current token.')) {
+                return;
+            }
+
+            // Generate a new random token
+            const newToken = generateRandomToken(32);
+
+            // Update both display and hidden inputs
+            document.getElementById('webhook-token-display').value = newToken;
+            document.getElementById('webhook-token-hidden').value = newToken;
+
+            showNotification('New webhook token generated! Remember to save the settings.', 'success');
+        }
+
+        // Generate random token
+        function generateRandomToken(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let token = '';
+            for (let i = 0; i < length; i++) {
+                token += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return token;
         }
 
         // Close modals when clicking outside

@@ -3,7 +3,7 @@
     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg p-6 text-white mb-6">
         <div class="flex items-center">
             @if($user->avatar)
-                <img class="h-16 w-16 rounded-full object-cover border-4 border-white" src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}">
+                <img class="h-16 w-16 rounded-full object-cover border-4 border-white" src="{{ $user->avatar_url }}" alt="{{ $user->name }}">
             @else
                 <div class="h-16 w-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center border-4 border-white">
                     <span class="text-2xl font-bold">{{ substr($user->name, 0, 1) }}</span>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Orders</p>
-                    <p class="text-2xl font-semibold text-gray-900">0</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ $stats['total_orders'] }}</p>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Cart Items</p>
-                    <p class="text-2xl font-semibold text-gray-900">0</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ $stats['cart_items'] }}</p>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Wishlist</p>
-                    <p class="text-2xl font-semibold text-gray-900">0</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ $stats['wishlist_items'] }}</p>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Account Status</p>
-                    <p class="text-lg font-semibold text-green-600">Verified</p>
+                    <p class="text-lg font-semibold text-green-600">{{ ucfirst($user->status) }}</p>
                 </div>
             </div>
         </div>

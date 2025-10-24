@@ -20,7 +20,7 @@ class ReturnOrderController extends Controller
         $tab = $request->get('tab', 'pending');
 
         // Get return orders based on tab
-        $query = ReturnOrder::with(['order', 'user', 'processedBy']);
+        $query = ReturnOrder::with(['order.items.product', 'order.items.productVariant', 'user', 'processedBy']);
 
         switch ($tab) {
             case 'pending':
@@ -81,7 +81,7 @@ class ReturnOrderController extends Controller
      */
     public function show(ReturnOrder $returnOrder)
     {
-        $returnOrder->load(['order.items.product', 'user', 'processedBy', 'qualityCheckedBy']);
+        $returnOrder->load(['order.items.product', 'order.items.productVariant', 'user', 'processedBy', 'qualityCheckedBy']);
         return view('admin.return-orders.show', compact('returnOrder'));
     }
 

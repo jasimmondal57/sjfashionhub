@@ -28,10 +28,44 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Return Items</h3>
                         <div class="space-y-4">
                             @foreach($returnOrder->return_items as $item)
+                                @php
+                                    // Try to get image from return_items first, then fallback to order_item's product
+                                    $productImage = null;
+                                    $variantSize = null;
+                                    $sku = $item['sku'] ?? null;
+
+                                    if (isset($item['main_image'])) {
+                                        $productImage = $item['main_image'];
+                                    } elseif (isset($item['image'])) {
+                                        $productImage = asset('storage/' . $item['image']);
+                                    } else {
+                                        // Fallback: get from order_item's product
+                                        $orderItem = $returnOrder->order->items()->find($item['order_item_id']);
+                                        if ($orderItem && $orderItem->product) {
+                                            $productImage = $orderItem->product->main_image;
+                                            $sku = $sku ?? $orderItem->product_sku;
+                                        }
+                                    }
+
+                                    // Check for variant details
+                                    if (isset($item['variant_details']['size'])) {
+                                        $variantSize = $item['variant_details']['size'];
+                                    } else {
+                                        // Fallback: get from order_item
+                                        $orderItem = $orderItem ?? $returnOrder->order->items()->find($item['order_item_id']);
+                                        if ($orderItem) {
+                                            if ($orderItem->productVariant) {
+                                                $variantSize = $orderItem->productVariant->option1_value;
+                                            } elseif ($orderItem->variant_details && isset($orderItem->variant_details['size'])) {
+                                                $variantSize = $orderItem->variant_details['size'];
+                                            }
+                                        }
+                                    }
+                                @endphp
                                 <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                                    @if(isset($item['image']))
-                                        <img src="{{ asset('storage/' . $item['image']) }}" 
-                                             alt="{{ $item['name'] }}" 
+                                    @if($productImage)
+                                        <img src="{{ $productImage }}"
+                                             alt="{{ $item['product_name'] }}"
                                              class="w-16 h-16 object-cover rounded-lg">
                                     @else
                                         <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -40,8 +74,12 @@
                                     @endif
                                     <div class="flex-1">
                                         <h4 class="font-medium text-gray-900">{{ $item['product_name'] }}</h4>
-                                        <p class="text-sm text-gray-600">SKU: {{ $item['sku'] ?? 'N/A' }}</p>
-                                        @if(isset($item['variant_details']))
+                                        <p class="text-sm text-gray-600">SKU: {{ $sku ?? 'N/A' }}</p>
+                                        @if($variantSize)
+                                            <p class="text-sm text-blue-600 font-medium">
+                                                Size: {{ $variantSize }}
+                                            </p>
+                                        @elseif(isset($item['variant_details']))
                                             <p class="text-sm text-gray-600">
                                                 Variant: {{ collect($item['variant_details'])->map(fn($value, $key) => "$key: $value")->join(', ') }}
                                             </p>

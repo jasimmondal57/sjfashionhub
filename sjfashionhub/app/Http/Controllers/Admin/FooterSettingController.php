@@ -102,7 +102,8 @@ class FooterSettingController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required|string|max:255',
+            'business_name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
             'company_description' => 'nullable|string',
             'contact_info.phone' => 'nullable|string|max:255',
             'contact_info.email' => 'nullable|email|max:255',
@@ -119,7 +120,6 @@ class FooterSettingController extends Controller
             'additional_title' => 'nullable|string|max:255',
             'made_in_text' => 'nullable|string|max:255',
             'designed_by_text' => 'nullable|string|max:255',
-            'company_name' => 'nullable|string|max:255',
             'company_url' => 'nullable|url|max:255',
 
             'quick_links' => 'nullable|array',
@@ -259,6 +259,7 @@ class FooterSettingController extends Controller
         }
 
         $footerSetting->update([
+            'business_name' => $request->business_name,
             'company_name' => $request->company_name,
             'company_description' => $request->company_description,
             'contact_info' => $request->contact_info,
@@ -281,7 +282,6 @@ class FooterSettingController extends Controller
             'categories_title' => $request->categories_title ?? 'Categories',
             'made_in_text' => $request->made_in_text ?? 'Made with ❤️ in India',
             'designed_by_text' => $request->designed_by_text ?? 'Designed By',
-            'company_name' => $request->company_name ?? 'JM Software',
             'company_url' => $request->company_url ?? 'https://jmsoftware.shop/',
         ]);
 

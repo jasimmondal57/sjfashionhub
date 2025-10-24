@@ -9,6 +9,8 @@ use App\Services\SmsService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -103,22 +105,37 @@ class MobileLoginController extends Controller
             ]);
         }
 
-        // Find or create user
-        $user = User::where('phone', $phone)->first();
+        // Normalize phone number for searching (remove all non-digits)
+        $normalizedPhone = preg_replace('/[^0-9]/', '', $phone);
+
+        // Try to find user with different phone number formats
+        $user = User::where(function($query) use ($phone, $normalizedPhone) {
+            $query->where('phone', $phone)
+                  ->orWhere('phone', $normalizedPhone)
+                  ->orWhere('phone', '+91' . $normalizedPhone)
+                  ->orWhere('phone', '91' . $normalizedPhone);
+
+            // If phone starts with country code, also try without it
+            if (strlen($normalizedPhone) > 10) {
+                $withoutCountryCode = substr($normalizedPhone, -10);
+                $query->orWhere('phone', $withoutCountryCode);
+            }
+        })->first();
 
         if (!$user) {
-            // Create new user with phone number
+            // Create new user with phone number (store in normalized format)
             $user = User::create([
-                'name' => 'User ' . substr($phone, -4), // Default name
-                'email' => $phone . '@mobile.local', // Temporary email
-                'phone' => $phone,
+                'name' => 'User ' . substr($normalizedPhone, -4), // Default name
+                'email' => $normalizedPhone . '@mobile.local', // Temporary email
+                'phone' => $normalizedPhone, // Store normalized phone (digits only)
                 'phone_verified_at' => now(),
                 'login_type' => 'phone',
                 'password' => Hash::make(Str::random(24)), // Random password
             ]);
         } else {
-            // Update phone verification
+            // Update phone verification and normalize phone format
             $user->update([
+                'phone' => $normalizedPhone, // Update to normalized format
                 'phone_verified_at' => now(),
                 'login_type' => 'phone'
             ]);
@@ -126,6 +143,9 @@ class MobileLoginController extends Controller
 
         // Login user
         Auth::login($user);
+
+        // Fire login event for tracking
+        Event::dispatch(new Login('mobile', $user, false));
 
         return response()->json([
             'success' => true,

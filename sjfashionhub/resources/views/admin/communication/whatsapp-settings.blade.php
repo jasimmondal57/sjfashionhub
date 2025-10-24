@@ -76,19 +76,47 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
-                        <input type="url" name="webhook_url"
-                               value="{{ old('webhook_url', isset($settings['whatsapp_business']) ? ($settings['whatsapp_business']->where('key', 'webhook_url')->first()->value ?? '') : '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
-                               placeholder="https://yoursite.com/webhook/whatsapp">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Webhook URL
+                            <span class="text-xs text-gray-500">(Copy this to Meta Developer Console)</span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="url" name="webhook_url" id="webhook_url_business"
+                                   value="{{ route('webhook.whatsapp.verify') }}"
+                                   class="flex-1 border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                   readonly>
+                            <button type="button" onclick="copyToClipboard('webhook_url_business')"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                📋 Copy
+                            </button>
+                        </div>
+                        <p class="text-xs text-green-600 mt-1">✅ Webhook endpoint is configured and ready</p>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Webhook Verify Token</label>
-                        <input type="text" name="webhook_verify_token"
-                               value="{{ old('webhook_verify_token', isset($settings['whatsapp_business']) ? ($settings['whatsapp_business']->where('key', 'webhook_verify_token')->first()->value ?? '') : '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
-                               placeholder="your_verify_token">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Webhook Verify Token
+                            <span class="text-xs text-gray-500">(Copy this to Meta Developer Console)</span>
+                        </label>
+                        @php
+                            $currentToken = isset($settings['whatsapp_business']) ? ($settings['whatsapp_business']->where('key', 'webhook_verify_token')->first()->value ?? '') : '';
+                            $verifyToken = $currentToken ?: 'sjfashion_' . bin2hex(random_bytes(16));
+                        @endphp
+                        <div class="flex gap-2">
+                            <input type="text" name="webhook_verify_token" id="webhook_verify_token"
+                                   value="{{ old('webhook_verify_token', $verifyToken) }}"
+                                   class="flex-1 border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                   readonly>
+                            <button type="button" onclick="copyToClipboard('webhook_verify_token')"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                📋 Copy
+                            </button>
+                            <button type="button" onclick="generateNewToken()"
+                                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                                🔄 Generate New
+                            </button>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-1">💡 Use this exact token in Meta Developer Console webhook settings</p>
                     </div>
                     
                     <div>
@@ -310,6 +338,52 @@ function testConnection(service) {
         button.innerHTML = originalText;
         button.disabled = false;
     });
+}
+
+// Copy to clipboard function
+function copyToClipboard(elementId) {
+    const input = document.getElementById(elementId);
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+
+    navigator.clipboard.writeText(input.value).then(() => {
+        // Show success message
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '✅ Copied!';
+        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        button.classList.add('bg-green-600');
+
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('bg-green-600');
+            button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }, 2000);
+    }).catch(err => {
+        alert('Failed to copy: ' + err);
+    });
+}
+
+// Generate new verify token
+function generateNewToken() {
+    const input = document.getElementById('webhook_verify_token');
+    const randomBytes = new Uint8Array(16);
+    crypto.getRandomValues(randomBytes);
+    const token = 'sjfashion_' + Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+    input.value = token;
+
+    // Show notification
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '✅ Generated!';
+    button.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+    button.classList.add('bg-green-600');
+
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('bg-green-600');
+        button.classList.add('bg-gray-600', 'hover:bg-gray-700');
+    }, 2000);
 }
 </script>
 </x-layouts.admin>

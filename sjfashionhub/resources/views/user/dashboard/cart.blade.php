@@ -11,7 +11,7 @@
                         <div class="space-y-6">
                             @foreach($cartItems as $item)
                                 <div class="flex items-center space-x-4">
-                                    <img class="h-20 w-20 rounded-lg object-cover" src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}">
+                                    <img class="h-20 w-20 rounded-lg object-cover" src="{{ $item->product->main_image }}" alt="{{ $item->product->name }}">
                                     <div class="flex-1">
                                         <h4 class="text-lg font-medium text-gray-900">{{ $item->product->name }}</h4>
                                         <p class="text-sm text-gray-600">{{ $item->product->description }}</p>

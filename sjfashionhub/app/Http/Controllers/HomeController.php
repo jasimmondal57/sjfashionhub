@@ -8,18 +8,18 @@ use App\Models\Category;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get featured products
         $featuredProducts = Product::where('is_featured', true)
             ->where('is_active', true)
-            ->with('category')
+            ->with(['category', 'activeVariants'])
             ->take(8)
             ->get();
 
         // Get latest products
         $latestProducts = Product::where('is_active', true)
-            ->with('category')
+            ->with(['category', 'activeVariants'])
             ->latest()
             ->take(8)
             ->get();

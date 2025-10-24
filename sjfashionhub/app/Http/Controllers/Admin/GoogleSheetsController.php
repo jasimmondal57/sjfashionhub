@@ -37,7 +37,7 @@ class GoogleSheetsController extends Controller
      */
     public function configure($sheetType)
     {
-        $validTypes = ['orders', 'returns', 'users', 'newsletters'];
+        $validTypes = ['orders', 'returns', 'users', 'newsletters', 'user_addresses', 'user_changes'];
 
         if (!in_array($sheetType, $validTypes)) {
             return redirect()->route('admin.google-sheets.index')
@@ -164,26 +164,29 @@ class GoogleSheetsController extends Controller
     {
         switch ($sheetType) {
             case 'orders':
-                return Order::with(['user', 'orderItems.product'])
+                return Order::with(['user', 'items'])
                     ->latest()
                     ->limit($limit)
                     ->get()
                     ->map(function ($order) {
+                        $billingAddress = is_array($order->billing_address) ? $order->billing_address : [];
+                        $shippingAddress = is_array($order->shipping_address) ? $order->shipping_address : [];
+
                         return [
                             'order_id' => $order->id,
-                            'customer_name' => $order->user?->name ?? $order->billing_first_name . ' ' . $order->billing_last_name,
-                            'customer_email' => $order->user?->email ?? $order->billing_email,
-                            'customer_phone' => $order->user?->phone ?? $order->billing_phone,
+                            'customer_name' => $order->user?->name ?? ($billingAddress['first_name'] ?? '') . ' ' . ($billingAddress['last_name'] ?? ''),
+                            'customer_email' => $order->user?->email ?? ($billingAddress['email'] ?? ''),
+                            'customer_phone' => $order->user?->phone ?? ($billingAddress['phone'] ?? ''),
                             'total_amount' => $order->total_amount,
                             'status' => $order->status,
                             'payment_status' => $order->payment_status,
-                            'shipping_address' => $order->shipping_address_line_1 . ', ' . $order->shipping_city,
+                            'shipping_address' => ($shippingAddress['address_line_1'] ?? '') . ', ' . ($shippingAddress['city'] ?? ''),
                             'order_date' => $order->created_at->format('Y-m-d H:i:s'),
                             'updated_at' => $order->updated_at->format('Y-m-d H:i:s'),
-                            'items_count' => $order->orderItems->count(),
-                            'shipping_method' => $order->shipping_method,
-                            'tracking_number' => $order->tracking_number,
-                            'notes' => $order->notes,
+                            'items_count' => $order->items->count(),
+                            'shipping_method' => $order->manual_courier_name ?? 'Standard',
+                            'tracking_number' => $order->awb_number ?? $order->manual_tracking_id ?? '',
+                            'notes' => $order->notes ?? '',
                         ];
                     })->toArray();
 
@@ -211,12 +214,14 @@ class GoogleSheetsController extends Controller
                     })->toArray();
 
             case 'users':
-                return User::withCount('orders')
+                return User::withCount(['orders', 'addresses'])
                     ->withSum('orders', 'total_amount')
+                    ->with('addresses')
                     ->latest()
                     ->limit($limit)
                     ->get()
                     ->map(function ($user) {
+                        $defaultAddress = $user->addresses->where('is_default', true)->first();
                         return [
                             'user_id' => $user->id,
                             'name' => $user->name,
@@ -231,13 +236,225 @@ class GoogleSheetsController extends Controller
                             'address' => $user->address,
                             'city' => $user->city,
                             'state' => $user->state,
+                            'postal_code' => $user->postal_code,
                             'country' => $user->country,
+                            'date_of_birth' => $user->date_of_birth?->format('Y-m-d'),
+                            'gender' => $user->gender,
+                            'email_marketing_consent' => $user->email_marketing_consent ? 'Yes' : 'No',
+                            'sms_marketing_consent' => $user->sms_marketing_consent ? 'Yes' : 'No',
+                            'total_addresses' => $user->addresses_count,
+                            'default_address' => $defaultAddress ?
+                                $defaultAddress->address_line_1 . ', ' . $defaultAddress->city . ', ' . $defaultAddress->state :
+                                'None',
+                            'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                            'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
+                        ];
+                    })->toArray();
+
+            case 'user_addresses':
+                return \App\Models\UserAddress::with('user')
+                    ->latest()
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($address) {
+                        return [
+                            'address_id' => $address->id,
+                            'user_id' => $address->user_id,
+                            'user_name' => $address->user->name,
+                            'user_email' => $address->user->email,
+                            'address_type' => $address->address_type,
+                            'first_name' => $address->first_name,
+                            'last_name' => $address->last_name,
+                            'company' => $address->company,
+                            'address_line_1' => $address->address_line_1,
+                            'address_line_2' => $address->address_line_2,
+                            'city' => $address->city,
+                            'state' => $address->state,
+                            'postal_code' => $address->postal_code,
+                            'country' => $address->country,
+                            'phone' => $address->phone,
+                            'is_default' => $address->is_default ? 'Yes' : 'No',
+                            'created_at' => $address->created_at->format('Y-m-d H:i:s'),
+                            'updated_at' => $address->updated_at->format('Y-m-d H:i:s'),
+                        ];
+                    })->toArray();
+
+            case 'user_changes':
+                return \App\Models\UserChangeLog::with(['user', 'changedBy'])
+                    ->latest('changed_at')
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($change) {
+                        return [
+                            'change_id' => $change->id,
+                            'user_id' => $change->user_id,
+                            'user_name' => $change->user->name ?? 'Unknown',
+                            'user_email' => $change->user->email ?? 'Unknown',
+                            'change_type' => $change->change_type,
+                            'field_name' => $change->field_name,
+                            'old_value' => $change->formatted_old_value,
+                            'new_value' => $change->formatted_new_value,
+                            'changed_by' => $change->changedBy->name ?? 'System',
+                            'ip_address' => $change->ip_address,
+                            'user_agent' => $change->user_agent,
+                            'changed_at' => $change->changed_at->format('Y-m-d H:i:s'),
+                        ];
+                    })->toArray();
+
+            case 'newsletters':
+                return \App\Models\NewsletterSubscriber::latest()
+                    ->limit($limit)
+                    ->get()
+                    ->map(function ($subscriber) {
+                        return [
+                            'subscriber_id' => $subscriber->id,
+                            'email' => $subscriber->email,
+                            'name' => $subscriber->name ?? '',
+                            'status' => $subscriber->status,
+                            'subscribed_at' => $subscriber->subscribed_at?->format('Y-m-d H:i:s') ?? '',
+                            'unsubscribed_at' => $subscriber->unsubscribed_at?->format('Y-m-d H:i:s') ?? '',
+                            'source' => $subscriber->source ?? '',
+                            'ip_address' => $subscriber->ip_address ?? '',
+                            'user_agent' => $subscriber->user_agent ?? '',
+                            'preferences' => is_array($subscriber->preferences) ? json_encode($subscriber->preferences) : '',
+                            'created_at' => $subscriber->created_at->format('Y-m-d H:i:s'),
+                            'updated_at' => $subscriber->updated_at->format('Y-m-d H:i:s'),
                         ];
                     })->toArray();
 
             default:
                 return [];
         }
+    }
+
+    /**
+     * Create headers for a sheet
+     */
+    public function createHeaders(Request $request)
+    {
+        $request->validate([
+            'sheet_type' => 'required|in:orders,returns,users,newsletters,user_addresses,user_changes'
+        ]);
+
+        $sheetType = $request->sheet_type;
+        $setting = GoogleSheetsSetting::where('sheet_type', $sheetType)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$setting) {
+            return response()->json([
+                'success' => false,
+                'message' => "No active Google Sheets setting found for {$sheetType}. Please configure the sheet first."
+            ], 404);
+        }
+
+        // Check if web app URL is configured
+        if (empty($setting->web_app_url)) {
+            return response()->json([
+                'success' => false,
+                'message' => "Web App URL not configured for {$sheetType} sheet. Please configure the Google Apps Script Web App URL first.",
+                'help' => "Go to Google Sheets configuration and add the Web App URL from your deployed Google Apps Script."
+            ], 400);
+        }
+
+        try {
+            // Get column mapping for the sheet type
+            $columnMapping = GoogleSheetsSetting::getDefaultColumnMapping($sheetType);
+
+            if (empty($columnMapping)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "No column mapping found for {$sheetType}"
+                ], 400);
+            }
+
+            // Create headers array
+            $headers = [];
+            foreach ($columnMapping as $field => $column) {
+                $headers[$field] = $this->formatHeaderName($field);
+            }
+
+            // Sync headers to Google Sheets
+            $result = $setting->syncHeaders($headers);
+
+            if ($result) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Headers created successfully for {$sheetType} sheet",
+                    'headers' => $headers
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Failed to create headers for {$sheetType} sheet"
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error("Failed to create headers for {$sheetType}: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => "Error creating headers: " . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Format field name to header name
+     */
+    private function formatHeaderName($field)
+    {
+        // Custom header names for specific fields
+        $customHeaders = [
+            'order_id' => 'Order ID',
+            'customer_name' => 'Customer Name',
+            'customer_email' => 'Customer Email',
+            'customer_phone' => 'Customer Phone',
+            'total_amount' => 'Total Amount',
+            'payment_status' => 'Payment Status',
+            'shipping_address' => 'Shipping Address',
+            'order_date' => 'Order Date',
+            'items_count' => 'Items Count',
+            'shipping_method' => 'Shipping Method',
+            'tracking_number' => 'Tracking Number',
+            'return_id' => 'Return ID',
+            'return_reason' => 'Return Reason',
+            'return_status' => 'Return Status',
+            'return_amount' => 'Return Amount',
+            'user_id' => 'User ID',
+            'user_name' => 'User Name',
+            'user_email' => 'User Email',
+            'address_id' => 'Address ID',
+            'address_type' => 'Address Type',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'address_line_1' => 'Address Line 1',
+            'address_line_2' => 'Address Line 2',
+            'postal_code' => 'Postal Code',
+            'is_default' => 'Is Default',
+            'change_id' => 'Change ID',
+            'change_type' => 'Change Type',
+            'field_name' => 'Field Name',
+            'old_value' => 'Old Value',
+            'new_value' => 'New Value',
+            'changed_by' => 'Changed By',
+            'ip_address' => 'IP Address',
+            'user_agent' => 'User Agent',
+            'changed_at' => 'Changed At',
+            'subscriber_id' => 'Subscriber ID',
+            'subscribed_at' => 'Subscribed At',
+            'unsubscribed_at' => 'Unsubscribed At',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+
+        if (isset($customHeaders[$field])) {
+            return $customHeaders[$field];
+        }
+
+        // Default formatting: replace underscores with spaces and title case
+        return ucwords(str_replace('_', ' ', $field));
     }
 
     /**
@@ -523,6 +740,7 @@ class GoogleSheetsController extends Controller
     private function transformUsersData($users)
     {
         return $users->map(function ($user) {
+            $defaultAddress = $user->addresses->where('is_default', true)->first();
             return [
                 'user_id' => $user->id,
                 'name' => $user->name,
@@ -537,7 +755,18 @@ class GoogleSheetsController extends Controller
                 'address' => $user->address ?? '',
                 'city' => $user->city ?? '',
                 'state' => $user->state ?? '',
+                'postal_code' => $user->postal_code ?? '',
                 'country' => $user->country ?? '',
+                'date_of_birth' => $user->date_of_birth?->format('Y-m-d') ?? '',
+                'gender' => ucfirst($user->gender ?? ''),
+                'email_marketing_consent' => $user->email_marketing_consent ? 'Yes' : 'No',
+                'sms_marketing_consent' => $user->sms_marketing_consent ? 'Yes' : 'No',
+                'total_addresses' => $user->addresses_count ?? 0,
+                'default_address' => $defaultAddress ?
+                    $defaultAddress->address_line_1 . ', ' . $defaultAddress->city . ', ' . $defaultAddress->state :
+                    'None',
+                'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
             ];
         })->toArray();
     }

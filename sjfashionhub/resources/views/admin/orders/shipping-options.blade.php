@@ -32,7 +32,7 @@
                         <div class="text-sm text-gray-600">
                             <p>{{ $order->shipping_address['address'] ?? 'N/A' }}</p>
                             <p>{{ $order->shipping_address['city'] ?? 'N/A' }}, {{ $order->shipping_address['state'] ?? 'N/A' }}</p>
-                            <p>{{ $order->shipping_address['postal_code'] ?? 'N/A' }}, {{ $order->shipping_address['country'] ?? 'India' }}</p>
+                            <p>{{ $order->shipping_address['pincode'] ?? $order->shipping_address['postal_code'] ?? 'N/A' }}, {{ $order->shipping_address['country'] ?? 'India' }}</p>
                         </div>
                     </div>
                 </div>
@@ -127,74 +127,109 @@
 
     <!-- Shiprocket Modal -->
     <div id="shiprocketModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+        <div class="relative top-10 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Create Shiprocket Shipping Label</h3>
-                <form action="{{ route('admin.orders.create-shiprocket-label', $order) }}" method="POST">
-                    @csrf
+
+                <!-- Step 1: Enter Package Details -->
+                <div id="packageDetailsSection">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-medium text-blue-900 mb-2">
+                            <i class="fas fa-box mr-2"></i>Step 1: Enter Package Details
+                        </h4>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="courier_company_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                Select Courier *
-                            </label>
-                            <select name="courier_company_id" id="courier_company_id" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Choose Courier</option>
-                                @foreach($courierRates as $courier)
-                                    <option value="{{ $courier['courier_company_id'] }}" 
-                                            data-rate="{{ $courier['rate'] }}" 
-                                            data-days="{{ $courier['estimated_delivery_days'] }}">
-                                        {{ $courier['courier_name'] }} - ₹{{ number_format($courier['rate'], 2) }} ({{ $courier['estimated_delivery_days'] }} days)
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
                         <div>
                             <label for="package_weight" class="block text-sm font-medium text-gray-700 mb-2">
                                 Package Weight (kg) *
                             </label>
-                            <input type="number" name="package_weight" id="package_weight" step="0.1" min="0.1" required
-                                   placeholder="0.5"
+                            <input type="number" id="package_weight" step="0.1" min="0.1" required
+                                   value="0.5"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
+                        <div></div>
                     </div>
+
                     <div class="grid grid-cols-3 gap-4 mb-4">
                         <div>
                             <label for="package_length" class="block text-sm font-medium text-gray-700 mb-2">
                                 Length (cm) *
                             </label>
-                            <input type="number" name="package_length" id="package_length" min="1" required
-                                   placeholder="20"
+                            <input type="number" id="package_length" min="1" required
+                                   value="20"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="package_breadth" class="block text-sm font-medium text-gray-700 mb-2">
                                 Breadth (cm) *
                             </label>
-                            <input type="number" name="package_breadth" id="package_breadth" min="1" required
-                                   placeholder="15"
+                            <input type="number" id="package_breadth" min="1" required
+                                   value="15"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="package_height" class="block text-sm font-medium text-gray-700 mb-2">
                                 Height (cm) *
                             </label>
-                            <input type="number" name="package_height" id="package_height" min="1" required
-                                   placeholder="10"
+                            <input type="number" id="package_height" min="1" required
+                                   value="10"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
+
                     <div class="flex items-center justify-end space-x-3">
-                        <button type="button" onclick="hideShiprocketModal()" 
+                        <button type="button" onclick="hideShiprocketModal()"
                                 class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md font-medium transition-colors">
                             Cancel
                         </button>
-                        <button type="submit" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
-                            <i class="fas fa-rocket mr-2"></i>Create Label
+                        <button type="button" onclick="getAvailableCouriers()" id="getCouriersBtn"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                            <i class="fas fa-search mr-2"></i>Get Available Couriers
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- Step 2: Select Courier (Hidden initially) -->
+                <div id="courierSelectionSection" class="hidden">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                        <h4 class="text-sm font-medium text-green-900 mb-2">
+                            <i class="fas fa-truck mr-2"></i>Step 2: Select Courier
+                        </h4>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="couriersLoading" class="hidden text-center py-8">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <p class="text-gray-600 mt-4">Fetching available couriers...</p>
+                    </div>
+
+                    <!-- Couriers List -->
+                    <div id="couriersList" class="space-y-3 mb-4 max-h-96 overflow-y-auto">
+                        <!-- Couriers will be loaded here dynamically -->
+                    </div>
+
+                    <!-- Create Label Form -->
+                    <form id="createLabelForm" action="{{ route('admin.orders.create-shiprocket-label', $order) }}" method="POST" class="hidden">
+                        @csrf
+                        <input type="hidden" name="courier_company_id" id="selected_courier_id">
+                        <input type="hidden" name="package_weight" id="final_package_weight">
+                        <input type="hidden" name="package_length" id="final_package_length">
+                        <input type="hidden" name="package_breadth" id="final_package_breadth">
+                        <input type="hidden" name="package_height" id="final_package_height">
+
+                        <div class="flex items-center justify-end space-x-3 mt-4">
+                            <button type="button" onclick="backToPackageDetails()"
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md font-medium transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>Back
+                            </button>
+                            <button type="submit" id="createLabelBtn"
+                                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                                <i class="fas fa-check mr-2"></i>Create Label
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -286,6 +321,9 @@
     <script>
         function showShiprocketModal() {
             document.getElementById('shiprocketModal').classList.remove('hidden');
+            // Reset to step 1
+            document.getElementById('packageDetailsSection').classList.remove('hidden');
+            document.getElementById('courierSelectionSection').classList.add('hidden');
         }
 
         function hideShiprocketModal() {
@@ -300,11 +338,139 @@
             document.getElementById('manualModal').classList.add('hidden');
         }
 
+        function backToPackageDetails() {
+            document.getElementById('packageDetailsSection').classList.remove('hidden');
+            document.getElementById('courierSelectionSection').classList.add('hidden');
+        }
+
+        async function getAvailableCouriers() {
+            const weight = document.getElementById('package_weight').value;
+            const length = document.getElementById('package_length').value;
+            const breadth = document.getElementById('package_breadth').value;
+            const height = document.getElementById('package_height').value;
+
+            if (!weight || !length || !breadth || !height) {
+                alert('Please fill in all package details');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('packageDetailsSection').classList.add('hidden');
+            document.getElementById('courierSelectionSection').classList.remove('hidden');
+            document.getElementById('couriersLoading').classList.remove('hidden');
+            document.getElementById('couriersList').innerHTML = '';
+
+            try {
+                const response = await fetch('{{ route("admin.orders.get-courier-rates", $order) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        weight: weight,
+                        length: length,
+                        breadth: breadth,
+                        height: height
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById('couriersLoading').classList.add('hidden');
+
+                if (data.success && data.couriers && data.couriers.length > 0) {
+                    displayCouriers(data.couriers);
+                } else {
+                    document.getElementById('couriersList').innerHTML = `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl mb-2"></i>
+                            <p class="text-red-800">${data.message || 'No couriers available for this delivery'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('couriersLoading').classList.add('hidden');
+                document.getElementById('couriersList').innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl mb-2"></i>
+                        <p class="text-red-800">Failed to fetch courier rates. Please try again.</p>
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+
+        function displayCouriers(couriers) {
+            const couriersList = document.getElementById('couriersList');
+            couriersList.innerHTML = '';
+
+            couriers.forEach(courier => {
+                const courierCard = document.createElement('div');
+                courierCard.className = 'border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all';
+                courierCard.onclick = () => selectCourier(courier);
+
+                courierCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h5 class="font-bold text-gray-900 text-lg">${courier.courier_name}</h5>
+                            <div class="mt-2 space-y-1">
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-clock mr-2 text-blue-600"></i>
+                                    <strong>Estimated Delivery:</strong> ${courier.estimated_delivery_days || 'N/A'}
+                                </p>
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-calendar mr-2 text-green-600"></i>
+                                    <strong>Pickup:</strong> ${courier.pickup_availability || 'Available'}
+                                </p>
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-truck mr-2 text-purple-600"></i>
+                                    <strong>Type:</strong> ${courier.courier_type || 'Standard'}
+                                </p>
+                                ${courier.cod == 1 ? '<p class="text-sm text-green-600"><i class="fas fa-money-bill mr-2"></i>COD Available</p>' : ''}
+                            </div>
+                        </div>
+                        <div class="text-right ml-4">
+                            <p class="text-2xl font-bold text-blue-600">₹${parseFloat(courier.rate).toFixed(2)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${courier.freight_charge ? 'Freight: ₹' + courier.freight_charge : ''}</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                            <i class="fas fa-check mr-2"></i>Select This Courier
+                        </button>
+                    </div>
+                `;
+
+                couriersList.appendChild(courierCard);
+            });
+        }
+
+        function selectCourier(courier) {
+            // Store selected courier data
+            document.getElementById('selected_courier_id').value = courier.courier_company_id;
+            document.getElementById('final_package_weight').value = document.getElementById('package_weight').value;
+            document.getElementById('final_package_length').value = document.getElementById('package_length').value;
+            document.getElementById('final_package_breadth').value = document.getElementById('package_breadth').value;
+            document.getElementById('final_package_height').value = document.getElementById('package_height').value;
+
+            // Highlight selected courier
+            const allCards = document.querySelectorAll('#couriersList > div');
+            allCards.forEach(card => {
+                card.classList.remove('border-green-500', 'bg-green-50');
+                card.classList.add('border-gray-200');
+            });
+            event.currentTarget.classList.remove('border-gray-200');
+            event.currentTarget.classList.add('border-green-500', 'bg-green-50');
+
+            // Show create label button
+            document.getElementById('createLabelForm').classList.remove('hidden');
+        }
+
         // Close modals when clicking outside
         window.onclick = function(event) {
             const shiprocketModal = document.getElementById('shiprocketModal');
             const manualModal = document.getElementById('manualModal');
-            
+
             if (event.target === shiprocketModal) {
                 hideShiprocketModal();
             }

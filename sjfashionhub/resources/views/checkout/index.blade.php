@@ -1,4 +1,12 @@
 <x-layouts.main>
+    <!-- Facebook Pixel InitiateCheckout Event -->
+    <x-tracking.facebook-pixel-events
+        event="InitiateCheckout"
+        :cartTotal="$total"
+        :cartItemCount="$cartCount"
+        :cartItems="$cartItems"
+    />
+
     <div class="min-h-screen bg-gray-50 py-4 md:py-8">
         <div class="container mx-auto px-4">
             <!-- Header -->
@@ -187,9 +195,9 @@
                         @foreach($cartItems as $item)
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    @if($item->product->featured_image)
-                                        <img class="h-16 w-16 rounded-lg object-cover" 
-                                             src="{{ Storage::url($item->product->featured_image) }}" 
+                                    @if($item->product->main_image)
+                                        <img class="h-16 w-16 rounded-lg object-cover"
+                                             src="{{ $item->product->main_image }}"
                                              alt="{{ $item->product->name }}">
                                     @else
                                         <div class="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center">
@@ -201,6 +209,9 @@
                                 </div>
                                 <div class="flex-1">
                                     <h3 class="text-sm font-medium text-gray-900">{{ $item->product->name }}</h3>
+                                    @if($item->productVariant)
+                                        <p class="text-xs text-blue-600 font-medium">Size: {{ $item->productVariant->option1_value }}</p>
+                                    @endif
                                     <p class="text-sm text-gray-600">Qty: {{ $item->quantity }}</p>
                                 </div>
                                 <div class="text-sm font-medium text-gray-900">
@@ -325,11 +336,7 @@
                                        class="h-4 w-4 text-black focus:ring-black border-gray-300">
                                 <span class="ml-3 text-sm text-gray-700">Cash on Delivery (COD)</span>
                             </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="payment_method" value="online" form="checkout-form"
-                                       class="h-4 w-4 text-black focus:ring-black border-gray-300">
-                                <span class="ml-3 text-sm text-gray-700">Online Payment (UPI/Card)</span>
-                            </label>
+                            <!-- Online payment option temporarily removed -->
                         </div>
                     </div>
 

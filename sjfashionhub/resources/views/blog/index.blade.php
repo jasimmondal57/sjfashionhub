@@ -38,8 +38,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     @foreach($featuredPosts as $post)
                         <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                            @if($post->featured_image)
-                                <img src="{{ asset('storage/' . $post->featured_image) }}" 
+                            @if($post->featured_image_url)
+                                <img src="{{ $post->featured_image_url }}"
                                      alt="{{ $post->title }}"
                                      class="w-full h-48 object-cover">
                             @else
@@ -105,8 +105,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                             @foreach($posts as $post)
                                 <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                    @if($post->featured_image)
-                                        <img src="{{ asset('storage/' . $post->featured_image) }}" 
+                                    @if($post->featured_image_url)
+                                        <img src="{{ $post->featured_image_url }}"
                                              alt="{{ $post->title }}"
                                              class="w-full h-48 object-cover">
                                     @else

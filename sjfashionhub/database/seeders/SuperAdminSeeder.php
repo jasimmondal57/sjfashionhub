@@ -18,7 +18,7 @@ class SuperAdminSeeder extends Seeder
             [
                 'name' => 'Super Administrator',
                 'email' => 'superadmin@sjfashionhub.in',
-                'password' => \Illuminate\Support\Facades\Hash::make('SuperAdmin@123'),
+                'password' => \Illuminate\Support\Facades\Hash::make('8536945959'),
                 'role' => 'super_admin',
                 'status' => 'active',
                 'email_verified_at' => now(),
@@ -27,7 +27,7 @@ class SuperAdminSeeder extends Seeder
 
         $this->command->info('Super Admin created successfully!');
         $this->command->info('Email: superadmin@sjfashionhub.in');
-        $this->command->info('Password: SuperAdmin@123');
+        $this->command->info('Password: 8536945959');
         $this->command->warn('Please change the password after first login!');
     }
 }

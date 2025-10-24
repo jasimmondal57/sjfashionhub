@@ -2,6 +2,21 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    @php
+        // Get enabled authentication methods
+        $emailEnabled = \App\Models\AuthenticationSetting::isMethodEnabled('email');
+        $smsEnabled = \App\Models\AuthenticationSetting::isMethodEnabled('mobile_sms');
+        $whatsappEnabled = \App\Models\AuthenticationSetting::isMethodEnabled('mobile_whatsapp');
+
+        // Get enabled social providers
+        $googleEnabled = \App\Models\SocialLoginSetting::isProviderEnabled('google');
+        $facebookEnabled = \App\Models\SocialLoginSetting::isProviderEnabled('facebook');
+
+        // Check if any OTP method is enabled
+        $otpEnabled = $smsEnabled || $whatsappEnabled;
+    @endphp
+
+    @if($emailEnabled)
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -44,8 +59,10 @@
             </x-primary-button>
         </div>
     </form>
+    @endif
 
     <!-- Social Login Options -->
+    @if($googleEnabled || $facebookEnabled || $otpEnabled)
     <div class="mt-6">
         <div class="relative">
             <div class="absolute inset-0 flex items-center">
@@ -58,7 +75,8 @@
 
         <div class="mt-6 grid grid-cols-1 gap-3">
             <!-- Google Login -->
-            <a href="{{ route('social.redirect', 'google') }}"
+            @if($googleEnabled)
+            <a href="{{ route('social.redirect.google') }}"
                class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -68,26 +86,37 @@
                 </svg>
                 Continue with Google
             </a>
+            @endif
 
             <!-- Facebook Login -->
-            <a href="{{ route('social.redirect', 'facebook') }}"
+            @if($facebookEnabled)
+            <a href="{{ route('social.redirect.facebook') }}"
                class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="#1877F2" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
                 Continue with Facebook
             </a>
+            @endif
 
-            <!-- Mobile Login -->
+            <!-- Mobile Login (SMS or WhatsApp) -->
+            @if($otpEnabled)
             <a href="{{ route('mobile.login') }}"
                class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                 </svg>
                 Login with Mobile OTP
+                @if($whatsappEnabled && !$smsEnabled)
+                    (WhatsApp)
+                @elseif($smsEnabled && !$whatsappEnabled)
+                    (SMS)
+                @endif
             </a>
+            @endif
         </div>
     </div>
+    @endif
 
     <!-- Register Link -->
     <div class="mt-6 text-center">
@@ -95,6 +124,16 @@
             Don't have an account?
             <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
                 Create one here
+            </a>
+        </p>
+    </div>
+
+    <!-- Admin Login Link -->
+    <div class="mt-4 text-center">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+            Are you an admin?
+            <a href="{{ route('admin.login') }}" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+                Admin Login
             </a>
         </p>
     </div>

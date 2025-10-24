@@ -1,11 +1,20 @@
 <x-guest-layout>
+    @php
+        // Get enabled OTP methods
+        $smsEnabled = \App\Models\AuthenticationSetting::isMethodEnabled('mobile_sms');
+        $whatsappEnabled = \App\Models\AuthenticationSetting::isMethodEnabled('mobile_whatsapp');
+
+        // Determine default method
+        $defaultMethod = $whatsappEnabled ? 'whatsapp' : 'sms';
+    @endphp
+
     <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         Enter your mobile number to receive an OTP for quick login.
     </div>
 
     <form id="mobileLoginForm">
         @csrf
-        
+
         <!-- Phone Number -->
         <div>
             <x-input-label for="phone" :value="__('Mobile Number')" />
@@ -13,26 +22,39 @@
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                     +91
                 </span>
-                <x-text-input id="phone" class="block w-full rounded-l-none" type="tel" name="phone" 
+                <x-text-input id="phone" class="block w-full rounded-l-none" type="tel" name="phone"
                              placeholder="Enter 10-digit mobile number" required maxlength="10" />
             </div>
             <div id="phoneError" class="mt-2 text-sm text-red-600 hidden"></div>
         </div>
 
         <!-- OTP Type Selection -->
+        @if($smsEnabled || $whatsappEnabled)
         <div class="mt-4">
             <x-input-label :value="__('Receive OTP via')" />
             <div class="mt-2 space-y-2">
+                @if($smsEnabled)
                 <label class="inline-flex items-center">
-                    <input type="radio" name="type" value="sms" checked class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <input type="radio" name="type" value="sms" {{ $defaultMethod === 'sms' ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
                     <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">📱 SMS</span>
                 </label>
-                <label class="inline-flex items-center ml-6">
-                    <input type="radio" name="type" value="whatsapp" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                @endif
+                @if($whatsappEnabled)
+                <label class="inline-flex items-center {{ $smsEnabled ? 'ml-6' : '' }}">
+                    <input type="radio" name="type" value="whatsapp" {{ $defaultMethod === 'whatsapp' ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
                     <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">💬 WhatsApp</span>
                 </label>
+                @endif
             </div>
         </div>
+        @else
+        <input type="hidden" name="type" value="sms">
+        <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                ⚠️ OTP methods are not configured. Please contact administrator.
+            </p>
+        </div>
+        @endif
 
         <div class="flex items-center justify-end mt-6">
             <button type="submit" id="sendOtpBtn" 

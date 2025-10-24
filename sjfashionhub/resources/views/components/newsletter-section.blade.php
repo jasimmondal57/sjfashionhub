@@ -3,21 +3,21 @@
 @endphp
 
 @if($newsletter)
-<section class="py-16" style="background-color: {{ $newsletter->background_color }};">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-8 md:py-16" style="background-color: {{ $newsletter->background_color }};">
+    <div class="container mx-auto px-4">
         <div class="text-center">
-            <h2 class="text-3xl font-bold mb-4" style="color: {{ $newsletter->text_color }};">
+            <h2 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4" style="color: {{ $newsletter->text_color }};">
                 {{ $newsletter->title }}
             </h2>
-            
+
             @if($newsletter->subtitle)
-            <p class="text-lg mb-2" style="color: {{ $newsletter->text_color }};">
+            <p class="text-base md:text-lg mb-2" style="color: {{ $newsletter->text_color }};">
                 {{ $newsletter->subtitle }}
             </p>
             @endif
-            
+
             @if($newsletter->description)
-            <p class="text-base mb-8 max-w-2xl mx-auto" style="color: {{ $newsletter->text_color }};">
+            <p class="text-sm md:text-base mb-6 md:mb-8 max-w-2xl mx-auto" style="color: {{ $newsletter->text_color }};">
                 {{ $newsletter->description }}
             </p>
             @endif
@@ -27,16 +27,16 @@
                 <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3">
                     @csrf
                     <div class="flex-1">
-                        <input type="email" 
-                               name="email" 
+                        <input type="email"
+                               name="email"
                                id="newsletter-email"
-                               placeholder="{{ $newsletter->placeholder_text }}" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="{{ $newsletter->placeholder_text }}"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm md:text-base"
                                required>
                     </div>
-                    <button type="submit" 
+                    <button type="submit"
                             id="newsletter-submit"
-                            class="px-6 py-3 rounded-md font-medium transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            class="px-4 md:px-6 py-3 rounded-md font-medium transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 text-sm md:text-base"
                             style="background-color: {{ $newsletter->button_color }}; color: {{ $newsletter->button_text_color }};">
                         {{ $newsletter->button_text }}
                     </button>
@@ -60,15 +60,15 @@
             </div>
 
             @if($newsletter->show_social_links && $newsletter->social_links)
-            <div class="mt-8">
-                <p class="text-sm mb-4" style="color: {{ $newsletter->text_color }};">Follow us on social media:</p>
-                <div class="flex justify-center space-x-4">
+            <div class="mt-6 md:mt-8">
+                <p class="text-xs md:text-sm mb-3 md:mb-4" style="color: {{ $newsletter->text_color }};">Follow us on social media:</p>
+                <div class="flex justify-center space-x-3 md:space-x-4">
                     @foreach($newsletter->social_links as $link)
                         @if(!empty($link['platform']) && !empty($link['url']))
-                        <a href="{{ $link['url'] }}" 
-                           target="_blank" 
+                        <a href="{{ $link['url'] }}"
+                           target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md transition-colors"
+                           class="inline-flex items-center px-3 md:px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md transition-colors text-sm md:text-base"
                            style="color: {{ $newsletter->text_color }};">
                             @switch($link['platform'])
                                 @case('facebook')

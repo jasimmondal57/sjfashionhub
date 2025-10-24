@@ -167,11 +167,13 @@ class BodyFeatureSectionController extends Controller
 
         switch ($request->section_type) {
             case 'products':
-                if ($request->has('specific_products')) {
-                    $settings['specific_products'] = array_filter($request->specific_products);
+                if ($request->has('specific_products') && $request->specific_products !== null) {
+                    $specificProducts = is_array($request->specific_products) ? $request->specific_products : [$request->specific_products];
+                    $settings['specific_products'] = array_filter($specificProducts);
                 }
-                if ($request->has('filter_categories')) {
-                    $settings['categories'] = array_filter($request->filter_categories);
+                if ($request->has('filter_categories') && $request->filter_categories !== null) {
+                    $filterCategories = is_array($request->filter_categories) ? $request->filter_categories : [$request->filter_categories];
+                    $settings['categories'] = array_filter($filterCategories);
                 }
                 $settings['featured_only'] = $request->boolean('featured_only');
                 $settings['on_sale_only'] = $request->boolean('on_sale_only');
@@ -179,18 +181,21 @@ class BodyFeatureSectionController extends Controller
                 break;
 
             case 'categories':
-                if ($request->has('specific_categories')) {
-                    $settings['specific_categories'] = array_filter($request->specific_categories);
+                if ($request->has('specific_categories') && $request->specific_categories !== null) {
+                    $specificCategories = is_array($request->specific_categories) ? $request->specific_categories : [$request->specific_categories];
+                    $settings['specific_categories'] = array_filter($specificCategories);
                 }
                 $settings['parent_only'] = $request->boolean('parent_only');
                 break;
 
             case 'mixed':
-                if ($request->has('mixed_products')) {
-                    $settings['products'] = array_filter($request->mixed_products);
+                if ($request->has('mixed_products') && $request->mixed_products !== null) {
+                    $mixedProducts = is_array($request->mixed_products) ? $request->mixed_products : [$request->mixed_products];
+                    $settings['products'] = array_filter($mixedProducts);
                 }
-                if ($request->has('mixed_categories')) {
-                    $settings['categories'] = array_filter($request->mixed_categories);
+                if ($request->has('mixed_categories') && $request->mixed_categories !== null) {
+                    $mixedCategories = is_array($request->mixed_categories) ? $request->mixed_categories : [$request->mixed_categories];
+                    $settings['categories'] = array_filter($mixedCategories);
                 }
                 break;
         }

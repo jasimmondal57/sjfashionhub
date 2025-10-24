@@ -141,8 +141,8 @@
                         @foreach($sizeChart->products()->take(6)->get() as $product)
                             <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                 <div class="flex items-center space-x-3">
-                                    @if($product->images && count($product->images) > 0)
-                                        <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" 
+                                    @if($product->main_image)
+                                        <img src="{{ $product->main_image }}" alt="{{ $product->name }}"
                                              class="w-12 h-12 object-cover rounded-lg">
                                     @else
                                         <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">

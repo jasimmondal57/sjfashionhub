@@ -12,6 +12,30 @@
     <meta name="keywords" content="{{ $keywords }}">
     @endif
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SJ Fashion">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/pwa/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/pwa/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/images/pwa/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/pwa/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/pwa/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/pwa/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="/images/pwa/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/images/pwa/icon-512x512.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/pwa/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/pwa/icon-72x72.png">
+
     <!-- Structured Data -->
     @if(isset($structuredData))
     <script type="application/ld+json">
@@ -29,6 +53,150 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- PWA Mobile Styles -->
+    <link rel="stylesheet" href="{{ asset('css/pwa-mobile.css') }}">
+
+    <!-- Analytics & Tracking -->
+    <x-tracking.facebook-pixel />
+
+    <style>
+        /* Mobile App-like Optimizations */
+        @media (max-width: 768px) {
+            /* Hide desktop header on mobile, show mobile app bar */
+            body.mobile-view header.desktop-header {
+                display: none !important;
+            }
+
+            /* Mobile App Bar */
+            .mobile-app-bar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                background: #000;
+                color: #fff;
+                padding: 12px 16px;
+                padding-top: calc(12px + env(safe-area-inset-top));
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .mobile-app-bar .app-title {
+                font-size: 18px;
+                font-weight: 600;
+                flex: 1;
+                text-align: center;
+            }
+
+            .mobile-app-bar .app-icon {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+            }
+
+            /* Mobile Bottom Navigation */
+            .mobile-bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #fff;
+                border-top: 1px solid #e0e0e0;
+                display: flex;
+                justify-content: space-around;
+                padding: 8px 0;
+                padding-bottom: calc(8px + env(safe-area-inset-bottom));
+                z-index: 1000;
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            }
+
+            .mobile-bottom-nav a {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                padding: 8px;
+                text-decoration: none;
+                color: #666;
+                font-size: 11px;
+                position: relative;
+            }
+
+            .mobile-bottom-nav a.active {
+                color: #000;
+            }
+
+            .mobile-bottom-nav svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .mobile-bottom-nav .badge {
+                position: absolute;
+                top: 4px;
+                right: 20%;
+                background: #ff0000;
+                color: #fff;
+                font-size: 10px;
+                padding: 2px 6px;
+                border-radius: 10px;
+                min-width: 18px;
+                text-align: center;
+            }
+
+            /* Add padding for bottom nav and footer */
+            body.mobile-view {
+                padding-bottom: 70px;
+            }
+
+            /* Show footer on mobile with proper spacing */
+            body.mobile-view footer {
+                margin-bottom: 70px; /* Space for bottom navigation */
+            }
+
+            /* Optimize container padding */
+            .container {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            /* Optimize section padding */
+            section {
+                padding-top: 20px !important;
+                padding-bottom: 20px !important;
+            }
+
+            /* Optimize headings */
+            h1 { font-size: 24px !important; }
+            h2 { font-size: 20px !important; }
+            h3 { font-size: 16px !important; }
+
+            /* Optimize buttons */
+            .btn, button, a.btn {
+                min-height: 44px;
+                padding: 12px 20px !important;
+                font-size: 15px !important;
+            }
+
+            /* Optimize product cards */
+            .product-card {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            /* Optimize images */
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 
     <!-- Additional Head Content -->
     @stack('head')
@@ -69,7 +237,24 @@
         .scrolling-text[data-scroll-speed="200"] { animation-duration: 1.5s; }
     </style>
 </head>
-<body class="font-sans antialiased bg-white">
+<body class="font-sans antialiased bg-white {{ $isMobile ?? false ? 'mobile-view' : '' }}">
+    <!-- Mobile App Bar (Only on Mobile) -->
+    @if($isMobile ?? false)
+    <div class="mobile-app-bar">
+        <a href="javascript:history.back()" class="app-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <div class="app-title">SJ Fashion</div>
+        <a href="/shop" class="app-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </a>
+    </div>
+    @endif
+
     <!-- Announcement Bars -->
     @php
         $announcementBars = \App\Models\AnnouncementBar::active()->ordered()->get();
@@ -104,18 +289,18 @@
     @php
         $headerSettings = \App\Models\HeaderSetting::getActiveSettings();
     @endphp
-    <header class="header-main {{ $headerSettings->sticky_header ? 'sticky top-0 z-50 bg-white shadow-sm' : '' }}">
-        <div class="container-custom">
-            <div class="flex items-center justify-between py-4">
+    <header class="desktop-header header-main {{ $headerSettings->sticky_header ? 'sticky top-0 z-50 bg-white shadow-sm' : 'bg-white' }}">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3 md:py-4">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center">
                         @if($headerSettings->logo_image)
                             <img src="{{ Storage::url($headerSettings->logo_image) }}"
                                  alt="{{ $headerSettings->site_name }}"
-                                 class="h-8 w-auto">
+                                 class="h-6 md:h-8 w-auto">
                         @else
-                            <span class="text-2xl font-bold text-black">
+                            <span class="text-lg md:text-2xl font-bold text-gray-900">
                                 {{ $headerSettings->logo_text ?? $headerSettings->site_name }}
                             </span>
                         @endif
@@ -128,7 +313,7 @@
                         @foreach($headerSettings->navigation_menu as $menuItem)
                             @if($menuItem['is_active'] ?? true)
                                 <a href="{{ $menuItem['url'] }}"
-                                   class="nav-link {{ request()->url() === url($menuItem['url']) ? 'nav-link-active' : '' }}">
+                                   class="text-gray-700 hover:text-gray-900 font-medium transition-colors {{ request()->url() === url($menuItem['url']) ? 'text-gray-900 border-b-2 border-gray-900' : '' }}">
                                     {{ $menuItem['text'] }}
                                 </a>
                             @endif
@@ -137,20 +322,20 @@
                 @endif
 
                 <!-- Right Side Icons -->
-                <div class="flex items-center space-x-4">
-                    <!-- Search -->
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <!-- Search (Hidden on mobile, shown in mobile menu) -->
                     @if($headerSettings->show_search)
-                        <div class="flex items-center space-x-2">
+                        <div class="hidden md:flex items-center space-x-2">
                             <form id="search-form" action="{{ route('search') }}" method="GET" class="relative">
                                 <input type="text"
                                        name="q"
                                        value="{{ request('q') }}"
                                        placeholder="{{ $headerSettings->search_placeholder }}"
-                                       class="w-48 md:w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                       class="w-48 lg:w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                                        onkeypress="if(event.key==='Enter') submitSearch()">
                             </form>
-                            <button type="button" onclick="submitSearch()" class="p-2 hover:bg-gray-100 rounded-full">
-                                <svg class="w-5 h-5 text-gray-600 hover:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="button" onclick="submitSearch()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                                <svg class="w-5 h-5 text-gray-600 hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </button>
@@ -159,41 +344,47 @@
 
                     <!-- User Account -->
                     @if($headerSettings->show_account)
-                        <x-user-menu />
+                        <div class="hidden md:block">
+                            <x-user-menu />
+                        </div>
                     @endif
 
                     <!-- Wishlist -->
                     @if($headerSettings->show_wishlist)
                         @auth
-                            <a href="{{ route('user.wishlist') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('user.wishlist') }}" class="p-2 hover:bg-gray-100 rounded-full relative transition-colors">
+                                <svg class="w-5 h-5 text-gray-600 hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                 </svg>
-                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                                @php
+                                    $wishlistCount = auth()->user()->wishlists()->count();
+                                @endphp
+                                @if($wishlistCount > 0)
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 md:h-5 md:w-5 flex items-center justify-center">{{ $wishlistCount }}</span>
+                                @endif
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('login') }}" class="p-2 hover:bg-gray-100 rounded-full relative transition-colors">
+                                <svg class="w-5 h-5 text-gray-600 hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                 </svg>
-                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
                             </a>
                         @endauth
                     @endif
 
                     <!-- Cart -->
                     @if($headerSettings->show_cart)
-                        <a href="{{ route('cart.index') }}" class="p-2 hover:bg-gray-100 rounded-full relative">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('cart.index') }}" class="p-2 hover:bg-gray-100 rounded-full relative transition-colors">
+                            <svg class="w-5 h-5 text-gray-600 hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
                             </svg>
-                            <span class="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-count">0</span>
+                            <span class="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full h-4 w-4 md:h-5 md:w-5 flex items-center justify-center cart-count">0</span>
                         </a>
                     @endif
 
                     <!-- Mobile Menu Toggle -->
-                    <button class="lg:hidden p-2 hover:bg-gray-100 rounded-full" onclick="toggleMobileMenu()">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors" onclick="toggleMobileMenu()">
+                        <svg class="w-5 h-5 text-gray-600 hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
@@ -220,19 +411,19 @@
         $footerSettings = \App\Models\FooterSetting::getActiveSettings();
     @endphp
     <footer class="footer" style="background-color: {{ $footerSettings->background_color }}; color: {{ $footerSettings->text_color }};">
-        <div class="container-custom py-12">
-            <div class="flex flex-wrap justify-between gap-6 lg:gap-8">
+        <div class="container mx-auto px-4 py-8 md:py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
                 <!-- About Store -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-lg mb-4">{{ $footerSettings->company_name }}</h3>
+                <div class="md:col-span-2 lg:col-span-1">
+                    <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">{{ $footerSettings->business_name ?? $footerSettings->company_name }}</h3>
                     <p class="text-sm leading-relaxed opacity-80">
                         {{ $footerSettings->company_description }}
                     </p>
                 </div>
 
                 <!-- Quick Links -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-lg mb-4">{{ $footerSettings->quick_links_title ?? 'Quick Links' }}</h3>
+                <div>
+                    <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">{{ $footerSettings->quick_links_title ?? 'Quick Links' }}</h3>
                     <ul class="space-y-2 text-sm">
                         @if($footerSettings->quick_links && count($footerSettings->quick_links) > 0)
                             @foreach($footerSettings->quick_links as $link)
@@ -241,15 +432,15 @@
                         @else
                             <li><a href="/about" class="opacity-80 hover:opacity-100 transition-opacity">About Us</a></li>
                             <li><a href="/contact" class="opacity-80 hover:opacity-100 transition-opacity">Contact</a></li>
-                            <li><a href="/privacy" class="opacity-80 hover:opacity-100 transition-opacity">Privacy Policy</a></li>
-                            <li><a href="/terms" class="opacity-80 hover:opacity-100 transition-opacity">Terms of Service</a></li>
+                            <li><a href="/privacy-policy" class="opacity-80 hover:opacity-100 transition-opacity">Privacy Policy</a></li>
+                            <li><a href="/terms-of-service" class="opacity-80 hover:opacity-100 transition-opacity">Terms of Service</a></li>
                         @endif
                     </ul>
                 </div>
 
                 <!-- Customer Service -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-lg mb-4">{{ $footerSettings->customer_service_title ?? 'Customer Service' }}</h3>
+                <div>
+                    <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">{{ $footerSettings->customer_service_title ?? 'Customer Service' }}</h3>
                     <ul class="space-y-2 text-sm">
                         @if($footerSettings->customer_service_links && count($footerSettings->customer_service_links) > 0)
                             @foreach($footerSettings->customer_service_links as $link)
@@ -265,8 +456,8 @@
                 </div>
 
                 <!-- Categories -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-lg mb-4">{{ $footerSettings->categories_title ?? 'Categories' }}</h3>
+                <div>
+                    <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">{{ $footerSettings->categories_title ?? 'Categories' }}</h3>
                     <ul class="space-y-2 text-sm">
                         @if($footerSettings->categories_links && count($footerSettings->categories_links) > 0)
                             @foreach($footerSettings->categories_links as $link)
@@ -282,8 +473,8 @@
                 </div>
 
                 <!-- Contact Information (Fifth Section) -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-lg mb-4">Get In Touch</h3>
+                <div>
+                    <h3 class="font-semibold text-base md:text-lg mb-3 md:mb-4">Get In Touch</h3>
                     <ul class="space-y-2 text-sm">
                         @if($footerSettings->contact_info && (($footerSettings->contact_info['phone'] ?? null) || ($footerSettings->contact_info['email'] ?? null) || ($footerSettings->contact_info['address'] ?? null)))
                             @if($footerSettings->contact_info['phone'] ?? null)
@@ -308,18 +499,15 @@
 
             <!-- Payment Icons and App Downloads Section -->
             <div class="mt-8 pt-6 border-t border-gray-700">
-                <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+                <div class="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0">
 
                     <!-- Payment Icons (Left Side) -->
                     @if($footerSettings->show_payment_icons && $footerSettings->payment_icons && count($footerSettings->payment_icons) > 0)
                     <div class="flex flex-col items-center lg:items-start">
                         <p class="text-sm opacity-80 mb-3">We Accept:</p>
-                        <div class="flex flex-wrap justify-center lg:justify-start gap-3">
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3">
                             @foreach($footerSettings->payment_icons as $icon)
-                            @if(!empty($icon['url']))
-                                <a href="{{ $icon['url'] }}" class="block hover:opacity-80 transition-opacity">
-                            @endif
-                            <div class="bg-white rounded-lg p-1 shadow-sm flex items-center justify-center w-16 h-10" title="{{ $icon['name'] }}">
+                            <div class="bg-white rounded-lg p-1 shadow-sm flex items-center justify-center w-12 h-8 md:w-16 md:h-10" title="{{ $icon['name'] }}">
                                 @if(isset($icon['image_type']) && $icon['image_type'] === 'custom' && !empty($icon['custom_image']))
                                     <img src="{{ asset('storage/' . $icon['custom_image']) }}" alt="{{ $icon['name'] }}" class="w-14 h-8 object-contain">
                                 @elseif($icon['icon'] == 'upi')
@@ -371,9 +559,6 @@
                                     <span class="text-xs text-gray-600 font-medium">{{ $icon['name'] }}</span>
                                 @endif
                             </div>
-                            @if(!empty($icon['url']))
-                                </a>
-                            @endif
                             @endforeach
                         </div>
                     </div>
@@ -420,14 +605,14 @@
             </div>
 
             <!-- Bottom Footer -->
-            <div class="border-t border-opacity-20 mt-8 pt-6" style="border-color: {{ $footerSettings->text_color }};">
+            <div class="border-t border-opacity-20 mt-6 md:mt-8 pt-4 md:pt-6" style="border-color: {{ $footerSettings->text_color }};">
                 <div class="text-center">
-                    <div class="flex flex-wrap justify-center items-center text-sm opacity-75" style="color: {{ $footerSettings->text_color }};">
+                    <div class="flex flex-col md:flex-row flex-wrap justify-center items-center text-xs md:text-sm opacity-75 space-y-2 md:space-y-0" style="color: {{ $footerSettings->text_color }};">
                         <!-- Copyright -->
                         <span class="whitespace-nowrap px-2">{{ $footerSettings->copyright_text }}</span>
 
-                        <!-- First Dot Separator -->
-                        <span class="text-lg font-bold opacity-60 px-1">•</span>
+                        <!-- First Dot Separator (Hidden on mobile) -->
+                        <span class="hidden md:inline text-lg font-bold opacity-60 px-1">•</span>
 
                         <!-- Made with love in India -->
                         <div class="flex items-center space-x-1 whitespace-nowrap px-2">
@@ -447,8 +632,8 @@
                             @endif
                         </div>
 
-                        <!-- Second Dot Separator -->
-                        <span class="text-lg font-bold opacity-60 px-1">•</span>
+                        <!-- Second Dot Separator (Hidden on mobile) -->
+                        <span class="hidden md:inline text-lg font-bold opacity-60 px-1">•</span>
 
                         <!-- Designed by JM Software -->
                         <div class="flex items-center space-x-2 whitespace-nowrap px-2">
@@ -485,8 +670,98 @@
     </footer>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="mobile-menu mobile-menu-closed lg:hidden">
-        <!-- Mobile menu content would go here -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 lg:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+
+        <!-- Menu Panel -->
+        <div class="absolute right-0 top-0 h-full w-80 max-w-sm bg-white shadow-xl">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
+                <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex flex-col h-full">
+                <!-- Search (Mobile) -->
+                @if($headerSettings->show_search)
+                    <div class="p-4 border-b border-gray-200">
+                        <form action="{{ route('search') }}" method="GET" class="relative">
+                            <input type="text"
+                                   name="q"
+                                   value="{{ request('q') }}"
+                                   placeholder="{{ $headerSettings->search_placeholder }}"
+                                   class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                            <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
+                <!-- Navigation Links -->
+                @if($headerSettings->navigation_menu && count($headerSettings->navigation_menu) > 0)
+                    <nav class="flex-1 py-4">
+                        @foreach($headerSettings->navigation_menu as $menuItem)
+                            @if($menuItem['is_active'] ?? true)
+                                <a href="{{ $menuItem['url'] }}"
+                                   class="block px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors {{ request()->url() === url($menuItem['url']) ? 'bg-gray-100 text-gray-900 border-r-4 border-gray-900' : '' }}"
+                                   onclick="toggleMobileMenu()">
+                                    {{ $menuItem['text'] }}
+                                </a>
+                            @endif
+                        @endforeach
+                    </nav>
+                @endif
+
+                <!-- User Account (Mobile) -->
+                @if($headerSettings->show_account)
+                    <div class="border-t border-gray-200 p-4">
+                        @auth
+                            <div class="space-y-2">
+                                <a href="{{ route('user.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 inline mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    My Account
+                                </a>
+                                <a href="{{ route('user.orders') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 inline mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                    </svg>
+                                    My Orders
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5 inline mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="space-y-2">
+                                <a href="{{ route('login') }}" class="block w-full text-center px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+                                    Login
+                                </a>
+                                <a href="{{ route('register') }}" class="block w-full text-center px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                    Register
+                                </a>
+                            </div>
+                        @endauth
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 
     <!-- Cart Drawer -->
@@ -500,8 +775,15 @@
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('mobile-menu-open');
-            menu.classList.toggle('mobile-menu-closed');
+            if (menu.classList.contains('translate-x-full')) {
+                menu.classList.remove('translate-x-full');
+                menu.classList.add('translate-x-0');
+                document.body.style.overflow = 'hidden';
+            } else {
+                menu.classList.add('translate-x-full');
+                menu.classList.remove('translate-x-0');
+                document.body.style.overflow = '';
+            }
         }
 
         function toggleCart() {
@@ -530,7 +812,17 @@
         }
 
         // Add to Cart function with animation
-        function addToCartWithAnimation(productId, buttonElement) {
+        function addToCartWithAnimation(productId, buttonElement, hasVariants = false, productSlug = null) {
+            // If product has variants, redirect to product page to select variant
+            if (hasVariants) {
+                const url = productSlug ? `/products/${productSlug}` : `/products/${productId}`;
+                showNotification('Please select a size before adding to cart', 'info');
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 1000);
+                return;
+            }
+
             // Don't trigger if already animating or completed
             if (buttonElement.classList.contains('adding') || buttonElement.classList.contains('added')) {
                 return;
@@ -596,7 +888,7 @@
         }
 
         // Legacy add to cart function (for compatibility)
-        function addToCart(productId) {
+        function addToCart(productId, productName, price, category) {
             fetch('/cart/add', {
                 method: 'POST',
                 headers: {
@@ -615,6 +907,23 @@
                     showNotification('Product added to cart!', 'success');
                     // Update cart count if element exists
                     updateCartCount();
+
+                    // Track Facebook Pixel AddToCart event
+                    if (typeof fbq !== 'undefined' && productName && price) {
+                        fbq('track', 'AddToCart', {
+                            content_name: productName,
+                            content_category: category || 'Fashion',
+                            content_ids: [productId],
+                            content_type: 'product',
+                            value: price,
+                            currency: 'INR',
+                            contents: [{
+                                id: productId,
+                                quantity: 1,
+                                item_price: price
+                            }]
+                        });
+                    }
                 } else {
                     showNotification('Failed to add product to cart', 'error');
                 }
@@ -626,7 +935,17 @@
         }
 
         // Buy Now function
-        function buyNow(productId) {
+        function buyNow(productId, hasVariants = false, productSlug = null) {
+            // If product has variants, redirect to product page to select variant
+            if (hasVariants) {
+                const url = productSlug ? `/products/${productSlug}` : `/products/${productId}`;
+                showNotification('Please select a size before purchasing', 'info');
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 1000);
+                return;
+            }
+
             // Add to cart first, then redirect to checkout
             fetch('/cart/add', {
                 method: 'POST',
@@ -738,6 +1057,52 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js"></script>
     <script src="{{ asset('js/animated-order-button.js') }}"></script>
     <script src="{{ asset('js/cart-animation-button.js') }}"></script>
+
+    <!-- Mobile Bottom Navigation (Only on Mobile) -->
+    @if($isMobile ?? false)
+    <div class="mobile-bottom-nav">
+        <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="/categories" class="{{ request()->is('categories*') ? 'active' : '' }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+            <span>Categories</span>
+        </a>
+
+        <a href="/cart" class="{{ request()->is('cart*') ? 'active' : '' }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span>Cart</span>
+            @if(session('cart') && count(session('cart')) > 0)
+            <span class="badge">{{ count(session('cart')) }}</span>
+            @endif
+        </a>
+
+        <a href="/account/orders" class="{{ request()->is('account/orders*') ? 'active' : '' }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <span>Orders</span>
+        </a>
+
+        <a href="/account" class="{{ request()->is('account') || (request()->is('account/*') && !request()->is('account/orders*')) ? 'active' : '' }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <span>Account</span>
+        </a>
+    </div>
+    @endif
+
+    <!-- PWA Installation Script -->
+    <script src="{{ asset('js/pwa-install.js') }}"></script>
 
     @stack('scripts')
 </body>

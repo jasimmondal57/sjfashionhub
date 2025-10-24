@@ -131,8 +131,19 @@ class CouponController extends Controller
      */
     public function show(Coupon $coupon)
     {
-        $coupon->load(['products', 'categories']);
-        return view('admin.coupons.show', compact('coupon'));
+        // Load applicable products and categories from JSON fields
+        $applicableProducts = collect();
+        $applicableCategories = collect();
+
+        if ($coupon->applicable_products) {
+            $applicableProducts = Product::whereIn('id', $coupon->applicable_products)->get();
+        }
+
+        if ($coupon->applicable_categories) {
+            $applicableCategories = Category::whereIn('id', $coupon->applicable_categories)->get();
+        }
+
+        return view('admin.coupons.show', compact('coupon', 'applicableProducts', 'applicableCategories'));
     }
 
     /**

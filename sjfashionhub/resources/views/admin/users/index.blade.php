@@ -271,13 +271,18 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @if($user->city || $user->state || $user->country)
-                                            <div>{{ $user->city }}</div>
-                                            @if($user->state)
-                                                <div>{{ $user->state }}, {{ $user->country }}</div>
-                                            @endif
+                                        @if($user->last_login_location)
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+                                                <div>
+                                                    <div>{{ $user->last_login_location }}</div>
+                                                    @if($user->last_login_country)
+                                                        <div class="text-xs text-gray-400">{{ $user->last_login_country }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         @else
-                                            <span class="text-gray-400">Not provided</span>
+                                            <span class="text-gray-400">Never</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

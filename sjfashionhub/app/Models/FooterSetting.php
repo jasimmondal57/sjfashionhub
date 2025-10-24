@@ -10,6 +10,7 @@ class FooterSetting extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_name',
         'company_name',
         'company_description',
         'contact_info',
@@ -72,7 +73,8 @@ class FooterSetting extends Model
     public static function getDefaultSettings()
     {
         return (object) [
-            'company_name' => 'SJ Fashion Hub',
+            'business_name' => 'SJ Fashion Hub',
+            'company_name' => 'JM Software',
             'company_description' => 'At SJ Fashion Hub, we believe that style is more than just clothing—it\'s a statement. Our collection is designed for the modern person who values quality, comfort, and timeless fashion.',
             'contact_info' => [
                 'phone' => '+1 (555) 123-4567',

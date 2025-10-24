@@ -81,16 +81,29 @@ class Coupon extends Model
     // Relationships
     public function products()
     {
-        if ($this->applicable_products) {
-            return Product::whereIn('id', $this->applicable_products);
-        }
-        return collect();
+        return $this->belongsToMany(Product::class, 'coupon_products', 'coupon_id', 'product_id');
     }
 
     public function categories()
     {
-        if ($this->applicable_categories) {
-            return Category::whereIn('id', $this->applicable_categories);
+        return $this->belongsToMany(Category::class, 'coupon_categories', 'coupon_id', 'category_id');
+    }
+
+    // Helper Methods for getting applicable products/categories from JSON fields
+    public function getApplicableProductsAttribute()
+    {
+        if ($this->attributes['applicable_products']) {
+            $productIds = json_decode($this->attributes['applicable_products'], true);
+            return Product::whereIn('id', $productIds)->get();
+        }
+        return collect();
+    }
+
+    public function getApplicableCategoriesAttribute()
+    {
+        if ($this->attributes['applicable_categories']) {
+            $categoryIds = json_decode($this->attributes['applicable_categories'], true);
+            return Category::whereIn('id', $categoryIds)->get();
         }
         return collect();
     }

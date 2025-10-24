@@ -15,8 +15,8 @@ class ShippingSettingsController extends Controller
     public function index()
     {
         $settings = ShippingSetting::getSettings();
-        
-        return view('admin.shipping-settings.index', compact('settings'));
+
+        return view('admin.shipping-settings.index-improved', compact('settings'));
     }
 
     /**
@@ -52,6 +52,15 @@ class ShippingSettingsController extends Controller
 
         try {
             $settings = ShippingSetting::getSettings();
+
+            // Debug: Log what we're receiving
+            Log::info('Shipping settings update request:', [
+                'shipping_method' => $request->input('shipping_method'),
+                'free_shipping_enabled_checkbox' => $request->has('free_shipping_enabled'),
+                'free_shipping_enabled_value' => $request->input('free_shipping_enabled'),
+                'validation_errors' => $request->errors ?? 'none',
+                'all_request_data' => $request->all()
+            ]);
 
             // Process weight rates
             $weightRates = [];
@@ -108,6 +117,13 @@ class ShippingSettingsController extends Controller
                 'weight_unit' => $request->weight_unit,
                 'dimension_unit' => $request->dimension_unit,
                 'calculation_method' => $request->calculation_method,
+            ]);
+
+            // Debug: Log what was actually saved
+            Log::info('Shipping settings after update:', [
+                'shipping_method' => $settings->fresh()->shipping_method,
+                'free_shipping_enabled' => $settings->fresh()->free_shipping_enabled,
+                'free_shipping_threshold' => $settings->fresh()->free_shipping_threshold,
             ]);
 
             return redirect()->route('admin.shipping-settings.index')
@@ -241,6 +257,62 @@ class ShippingSettingsController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Failed to import shipping settings: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Save individual shipping zone (AJAX)
+     */
+    public function saveZone(Request $request)
+    {
+        try {
+            $request->validate([
+                'zone_index' => 'required|integer',
+                'zone_name' => 'required|string|max:255',
+                'rate' => 'required|numeric|min:0',
+                'delivery_days' => 'required|integer|min:1|max:30',
+                'type' => 'required|in:domestic,international',
+            ]);
+
+            $settings = ShippingSetting::getSettings();
+            $locationRates = $settings->location_rates ?? [];
+
+            // Prepare zone data
+            $zoneData = [
+                'type' => $request->type,
+                'zone_name' => $request->zone_name,
+                'rate' => (float) $request->rate,
+                'delivery_days' => (int) $request->delivery_days,
+            ];
+
+            // Add states or countries based on type
+            if ($request->type === 'domestic') {
+                $zoneData['states'] = $request->input('states', []);
+            } else {
+                $zoneData['countries'] = $request->input('countries', []);
+            }
+
+            // Update or add zone at the specified index
+            $locationRates[$request->zone_index] = $zoneData;
+
+            // Save to database
+            $settings->update([
+                'location_rates' => array_values($locationRates) // Re-index array
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Zone saved successfully!',
+                'zone' => $zoneData
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to save shipping zone: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save zone: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

@@ -198,9 +198,21 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('admin.categories.show', $category) }}" class="text-blue-600 hover:text-blue-900">View</a>
-                                    <a href="{{ route('admin.categories.edit', $category) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                    <button onclick="deleteCategory({{ $category->id }})" class="text-red-600 hover:text-red-900">Delete</button>
+                                    <a href="{{ route('admin.categories.show', $category) }}"
+                                       class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200">
+                                        <i class="fas fa-eye mr-1"></i>View
+                                    </a>
+                                    <a href="{{ route('admin.categories.edit', $category) }}"
+                                       class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </a>
+                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -404,19 +416,7 @@
             });
         }
 
-        function deleteCategory(categoryId) {
-            if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/categories/${categoryId}`;
-                form.innerHTML = `
-                    @csrf
-                    @method('DELETE')
-                `;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
+
     </script>
 
     <style>

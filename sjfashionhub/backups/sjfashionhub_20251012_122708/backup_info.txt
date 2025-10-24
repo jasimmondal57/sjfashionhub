@@ -1,0 +1,21 @@
+Backup Date: Sun Oct 12 12:27:30 IST 2025
+Site: sjfashionhub.com
+Server IP: 72.60.102.152
+Backup Location: /root/backups/sjfashionhub_20251012_122708
+
+Contents:
+- database.sqlite (SQLite database)
+- application_files.tar.gz (All application files except node_modules, vendor, cache)
+- storage.tar.gz (Storage directory with uploads)
+- .env (Environment configuration)
+
+To restore:
+1. Extract application_files.tar.gz to /var/www/
+2. Extract storage.tar.gz to /var/www/sjfashionhub.com/
+3. Copy database.sqlite to /var/www/sjfashionhub.com/database/
+4. Copy .env to /var/www/sjfashionhub.com/
+5. Run: composer install
+6. Run: npm install
+7. Run: php artisan key:generate
+8. Run: php artisan storage:link
+9. Set permissions: chown -R www-data:www-data /var/www/sjfashionhub.com

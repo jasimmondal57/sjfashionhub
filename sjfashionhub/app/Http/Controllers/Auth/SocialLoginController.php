@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\SocialLoginSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -73,6 +75,7 @@ class SocialLoginController extends Controller
             if ($user) {
                 // User exists, log them in
                 Auth::login($user);
+                Event::dispatch(new Login('social', $user, false));
                 return redirect()->intended('/');
             }
 
@@ -89,6 +92,7 @@ class SocialLoginController extends Controller
                 ]);
 
                 Auth::login($existingUser);
+                Event::dispatch(new Login('social', $existingUser, false));
                 return redirect()->intended('/');
             }
 
@@ -122,6 +126,7 @@ class SocialLoginController extends Controller
             ]));
 
             Auth::login($user);
+            Event::dispatch(new Login('social', $user, false));
             return redirect()->intended('/');
 
         } catch (\Exception $e) {

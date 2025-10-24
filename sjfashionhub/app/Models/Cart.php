@@ -33,17 +33,25 @@ class Cart extends Model
     }
 
     /**
+     * Get the product variant for this cart item
+     */
+    public function productVariant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    /**
      * Get cart items for current user or session
      */
     public static function getCartItems()
     {
         if (Auth::check()) {
             return self::where('user_id', Auth::id())
-                       ->with('product')
+                       ->with(['product', 'productVariant'])
                        ->get();
         } else {
             return self::where('session_id', session()->getId())
-                       ->with('product')
+                       ->with(['product', 'productVariant'])
                        ->get();
         }
     }

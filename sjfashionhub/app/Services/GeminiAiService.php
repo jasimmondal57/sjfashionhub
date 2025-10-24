@@ -137,17 +137,18 @@ class GeminiAiService
                 break;
         }
 
-        $basePrompt .= "\nFormat the response as JSON with the following structure:\n";
+        $basePrompt .= "\n\nIMPORTANT: Return ONLY valid JSON in the following exact format. Do not include any text before or after the JSON:\n\n";
         $basePrompt .= "{\n";
-        $basePrompt .= '  "title": "SEO-optimized blog post title",';
-        $basePrompt .= '  "excerpt": "Compelling 160-character excerpt",';
-        $basePrompt .= '  "content": "Full blog post content in HTML format",';
-        $basePrompt .= '  "seo_title": "SEO title (50-60 characters)",';
-        $basePrompt .= '  "seo_description": "Meta description (150-160 characters)",';
-        $basePrompt .= '  "seo_keywords": ["keyword1", "keyword2", "keyword3"],';
-        $basePrompt .= '  "suggested_tags": ["tag1", "tag2", "tag3"],';
-        $basePrompt .= '  "reading_time": 8';
-        $basePrompt .= "\n}\n";
+        $basePrompt .= '  "title": "SEO-optimized blog post title",'."\n";
+        $basePrompt .= '  "excerpt": "Compelling 160-character excerpt",'."\n";
+        $basePrompt .= '  "content": "Full blog post content in HTML format",'."\n";
+        $basePrompt .= '  "seo_title": "SEO title (50-60 characters)",'."\n";
+        $basePrompt .= '  "seo_description": "Meta description (150-160 characters)",'."\n";
+        $basePrompt .= '  "seo_keywords": ["keyword1", "keyword2", "keyword3"],'."\n";
+        $basePrompt .= '  "suggested_tags": ["tag1", "tag2", "tag3"],'."\n";
+        $basePrompt .= '  "reading_time": 8'."\n";
+        $basePrompt .= "}\n\n";
+        $basePrompt .= "Ensure all strings are properly escaped and the JSON is valid. Do not include markdown code blocks or any other formatting.";
 
         return $basePrompt;
     }
@@ -184,11 +185,22 @@ class GeminiAiService
         $data = json_decode($jsonContent, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            $errorMsg = json_last_error_msg() ?: 'Unknown JSON parsing error';
             Log::error('JSON parsing failed', [
-                'error' => json_last_error_msg(),
+                'error' => $errorMsg,
+                'json_error_code' => json_last_error(),
+                'json_content' => $jsonContent,
+                'raw_content' => $content
+            ]);
+            throw new Exception('Failed to parse JSON response from Gemini AI: ' . $errorMsg . ' (Code: ' . json_last_error() . ')');
+        }
+
+        if (!$data || !is_array($data)) {
+            Log::error('Invalid JSON data structure', [
+                'data_type' => gettype($data),
                 'json_content' => $jsonContent
             ]);
-            throw new Exception('Failed to parse JSON response from Gemini AI: ' . json_last_error_msg());
+            throw new Exception('Invalid JSON data structure from Gemini AI');
         }
 
         // Validate required fields

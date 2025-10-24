@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\ShippingSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,34 @@ class CartController extends Controller
         $cartTotal = Cart::getCartTotal();
         $cartCount = Cart::getCartCount();
 
-        return view('cart.index', compact('cartItems', 'cartTotal', 'cartCount'));
+        // Calculate shipping using settings
+        $shippingSettings = ShippingSetting::getSettings();
+        $shipping = $shippingSettings->calculateShipping($cartTotal);
+
+        // Calculate totals with inclusive GST (reverse calculation)
+        // Product prices include GST based on their individual tax_rate
+        $total_with_tax = $cartTotal; // This is the final amount customer pays
+
+        // Calculate tax based on actual product tax rates
+        $tax = 0;
+        $subtotal = 0;
+
+        foreach ($cartItems as $item) {
+            $price = $item->product->sale_price ?? $item->product->price;
+            $itemTotal = $price * $item->quantity;
+            $taxRate = $item->product->tax_rate ?? 5; // Default to 5% if not set
+
+            // Reverse GST calculation: tax portion from inclusive price
+            $itemTax = $itemTotal * ($taxRate / (100 + $taxRate));
+            $itemSubtotal = $itemTotal - $itemTax;
+
+            $tax += $itemTax;
+            $subtotal += $itemSubtotal;
+        }
+
+        $total = $subtotal + $shipping + $tax; // Final total (subtotal + shipping + tax)
+
+        return view('cart.index', compact('cartItems', 'cartTotal', 'cartCount', 'subtotal', 'shipping', 'tax', 'total'));
     }
 
     /**
@@ -75,6 +103,7 @@ class CartController extends Controller
                                    $query->where('session_id', $sessionId);
                                }
                            })
+                           ->with('product')
                            ->first();
 
             if (!$cartItem) {
@@ -84,6 +113,16 @@ class CartController extends Controller
                 ], 404);
             }
 
+            // Check stock availability
+            $product = $cartItem->product;
+            if ($product->manage_stock && $request->quantity > $product->stock_quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Only {$product->stock_quantity} items available in stock",
+                    'max_quantity' => $product->stock_quantity
+                ], 400);
+            }
+
             $cartItem->quantity = $request->quantity;
             $cartItem->save();
 
@@ -91,12 +130,58 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Cart updated successfully!',
                 'cart_count' => Cart::getCartCount(),
-                'cart_total' => Cart::getCartTotal()
+                'cart_total' => Cart::getCartTotal(),
+                'item_total' => ($product->sale_price ?? $product->price) * $request->quantity
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update cart: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate shipping cost for cart total
+     */
+    public function calculateShipping(Request $request)
+    {
+        $request->validate([
+            'cart_total' => 'required|numeric|min:0',
+            'state' => 'nullable|string',
+            'country' => 'nullable|string'
+        ]);
+
+        try {
+            $shippingSettings = ShippingSetting::getSettings();
+
+            // Build destination array for location-based shipping
+            $destination = null;
+            if ($request->state || $request->country) {
+                $destination = [
+                    'state' => $request->state,
+                    'country' => $request->country ?? 'India'
+                ];
+            }
+
+            $shipping = $shippingSettings->calculateShipping(
+                $request->cart_total,
+                null, // weight
+                $destination
+            );
+
+            return response()->json([
+                'success' => true,
+                'shipping' => $shipping,
+                'is_free' => $shipping == 0,
+                'method' => $shippingSettings->shipping_method,
+                'destination' => $destination
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to calculate shipping: ' . $e->getMessage()
             ], 500);
         }
     }

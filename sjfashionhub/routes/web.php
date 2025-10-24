@@ -577,6 +577,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/clear-password', [App\Http\Controllers\Admin\MaintenanceController::class, 'clearPassword'])->name('clear-password');
     });
 
+    // reCAPTCHA Settings
+    Route::prefix('recaptcha')->name('recaptcha.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\RecaptchaController::class, 'index'])->name('index');
+        Route::put('/update', [App\Http\Controllers\Admin\RecaptchaController::class, 'update'])->name('update');
+        Route::post('/test', [App\Http\Controllers\Admin\RecaptchaController::class, 'test'])->name('test');
+    });
+
     // Settings
     Route::get('/settings', function () {
         return view('admin.settings.index');

@@ -3,63 +3,119 @@
 namespace App\Http\Controllers;
 
 use App\Models\Wishlist;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display user's wishlist
      */
     public function index()
     {
-        //
+        $wishlistItems = Wishlist::where('user_id', Auth::id())
+            ->with('product')
+            ->latest()
+            ->get();
+
+        return view('user.dashboard.wishlist', compact('wishlistItems'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Add product to wishlist
      */
-    public function create()
+    public function add(Request $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        // Check if already in wishlist
+        $exists = Wishlist::where('user_id', Auth::id())
+            ->where('product_id', $request->product_id)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product already in wishlist',
+            ]);
+        }
+
+        Wishlist::create([
+            'user_id' => Auth::id(),
+            'product_id' => $request->product_id,
+        ]);
+
+        $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to wishlist',
+            'wishlist_count' => $wishlistCount,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Remove product from wishlist
      */
-    public function store(Request $request)
+    public function remove(Wishlist $wishlist)
     {
-        //
+        // Ensure user owns this wishlist item
+        if ($wishlist->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        $wishlist->delete();
+
+        $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product removed from wishlist',
+            'wishlist_count' => $wishlistCount,
+        ]);
     }
 
     /**
-     * Display the specified resource.
+     * Toggle wishlist (add or remove)
      */
-    public function show(Wishlist $wishlist)
+    public function toggle(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Wishlist $wishlist)
-    {
-        //
-    }
+        $wishlistItem = Wishlist::where('user_id', Auth::id())
+            ->where('product_id', $request->product_id)
+            ->first();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Wishlist $wishlist)
-    {
-        //
-    }
+        if ($wishlistItem) {
+            // Remove from wishlist
+            $wishlistItem->delete();
+            $inWishlist = false;
+            $message = 'Removed from wishlist';
+        } else {
+            // Add to wishlist
+            Wishlist::create([
+                'user_id' => Auth::id(),
+                'product_id' => $request->product_id,
+            ]);
+            $inWishlist = true;
+            $message = 'Added to wishlist';
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Wishlist $wishlist)
-    {
-        //
+        $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'in_wishlist' => $inWishlist,
+            'wishlist_count' => $wishlistCount,
+        ]);
     }
 }

@@ -155,14 +155,32 @@
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Items to Return</h3>
                     <div class="space-y-4">
                         @foreach($returnOrder->return_items as $item)
+                            @php
+                                // Find the order item to get product image
+                                $orderItem = $returnOrder->order->items->firstWhere('id', $item['order_item_id']);
+                                $productImage = null;
+
+                                if (isset($item['main_image']) && $item['main_image']) {
+                                    $productImage = $item['main_image'];
+                                } elseif ($orderItem && $orderItem->product) {
+                                    $productImage = $orderItem->product->main_image;
+                                }
+                            @endphp
                             <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                                <div class="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
+                                <div class="h-16 w-16 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                    @if($productImage)
+                                        <img src="{{ $productImage }}" alt="{{ $item['product_name'] }}" class="w-full h-full object-cover">
+                                    @else
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    @endif
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="text-sm font-medium text-gray-900">{{ $item['product_name'] }}</h4>
+                                    @if(isset($item['variant_details']) && isset($item['variant_details']['size']))
+                                        <p class="text-xs text-blue-600 font-medium">Size: {{ $item['variant_details']['size'] }}</p>
+                                    @endif
                                     <p class="text-sm text-gray-600">Quantity: {{ $item['quantity'] }} • ₹{{ number_format($item['total_price'], 0) }}</p>
                                 </div>
                             </div>

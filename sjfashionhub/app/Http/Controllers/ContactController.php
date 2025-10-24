@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\User;
+use App\Models\RecaptchaSetting;
 use App\Mail\ContactSubmissionNotification;
 use App\Mail\ContactConfirmationMail;
 use App\Services\MailConfigService;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class ContactController extends Controller
 {
@@ -32,6 +34,14 @@ class ContactController extends Controller
         if ($this->isIpBlocked($ip)) {
             Log::warning('Contact form submission from blocked IP', ['ip' => $ip]);
             return back()->with('error', 'Your IP address has been blocked due to spam. Please contact support.');
+        }
+
+        // Verify reCAPTCHA if enabled
+        if (RecaptchaSetting::isEnabled()) {
+            if (!$this->verifyRecaptcha($request)) {
+                Log::warning('reCAPTCHA verification failed', ['email' => $request->email, 'ip' => $ip]);
+                return back()->with('error', 'reCAPTCHA verification failed. Please try again.');
+            }
         }
 
         $validator = Validator::make($request->all(), [
@@ -313,5 +323,62 @@ class ContactController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Verify reCAPTCHA token
+     */
+    private function verifyRecaptcha($request)
+    {
+        $token = $request->input('g-recaptcha-response');
+
+        if (!$token) {
+            Log::warning('No reCAPTCHA token provided');
+            return false;
+        }
+
+        $settings = RecaptchaSetting::getCurrent();
+
+        try {
+            $response = Http::post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $settings->secret_key,
+                'response' => $token,
+            ]);
+
+            $data = $response->json();
+
+            if (!$response->successful() || !$data['success']) {
+                Log::warning('reCAPTCHA API error', [
+                    'errors' => $data['error-codes'] ?? [],
+                ]);
+                return false;
+            }
+
+            $score = $data['score'] ?? 0;
+            $threshold = $settings->threshold;
+
+            Log::info('reCAPTCHA verification', [
+                'score' => $score,
+                'threshold' => $threshold,
+                'passed' => $score >= $threshold,
+            ]);
+
+            // If score is below threshold, it's likely spam
+            if ($score < $threshold) {
+                Log::warning('reCAPTCHA score below threshold', [
+                    'score' => $score,
+                    'threshold' => $threshold,
+                ]);
+                return false;
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            Log::error('reCAPTCHA verification error', [
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
 }

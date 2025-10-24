@@ -97,6 +97,9 @@
                                     Return Details
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Products
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Customer & Order
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -121,6 +124,70 @@
                                             <div class="text-sm font-medium text-gray-900">{{ $returnOrder->return_number }}</div>
                                             <div class="text-sm text-gray-500">{{ $returnOrder->created_at->format('M d, Y g:i A') }}</div>
                                             <div class="text-xs text-gray-400">{{ $returnOrder->days_from_creation }} days ago</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            @php
+                                                $firstItem = $returnOrder->return_items[0] ?? null;
+                                                $itemCount = count($returnOrder->return_items);
+
+                                                // Try to get image from return_items first, then fallback to order_item's product
+                                                $productImage = null;
+                                                $variantSize = null;
+
+                                                if ($firstItem) {
+                                                    // Check if image is in return_items
+                                                    if (isset($firstItem['main_image'])) {
+                                                        $productImage = $firstItem['main_image'];
+                                                    } elseif (isset($firstItem['image'])) {
+                                                        $productImage = asset('storage/' . $firstItem['image']);
+                                                    } else {
+                                                        // Fallback: get from order_item's product
+                                                        $orderItem = $returnOrder->order->items()->find($firstItem['order_item_id']);
+                                                        if ($orderItem && $orderItem->product) {
+                                                            $productImage = $orderItem->product->main_image;
+                                                        }
+                                                    }
+
+                                                    // Check for variant details
+                                                    if (isset($firstItem['variant_details']['size'])) {
+                                                        $variantSize = $firstItem['variant_details']['size'];
+                                                    } else {
+                                                        // Fallback: get from order_item
+                                                        $orderItem = $orderItem ?? $returnOrder->order->items()->find($firstItem['order_item_id']);
+                                                        if ($orderItem) {
+                                                            if ($orderItem->productVariant) {
+                                                                $variantSize = $orderItem->productVariant->option1_value;
+                                                            } elseif ($orderItem->variant_details && isset($orderItem->variant_details['size'])) {
+                                                                $variantSize = $orderItem->variant_details['size'];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            @endphp
+                                            @if($firstItem)
+                                                @if($productImage)
+                                                    <img src="{{ $productImage }}"
+                                                         alt="{{ $firstItem['product_name'] }}"
+                                                         class="w-12 h-12 object-cover rounded-lg border border-gray-200">
+                                                @else
+                                                    <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                        <i class="fas fa-image text-gray-400 text-xs"></i>
+                                                    </div>
+                                                @endif
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-medium text-gray-900 truncate">{{ $firstItem['product_name'] }}</div>
+                                                    @if($variantSize)
+                                                        <div class="text-xs text-blue-600">Size: {{ $variantSize }}</div>
+                                                    @endif
+                                                    @if($itemCount > 1)
+                                                        <div class="text-xs text-gray-500">+{{ $itemCount - 1 }} more item(s)</div>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <div class="text-sm text-gray-400">No items</div>
+                                            @endif
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">

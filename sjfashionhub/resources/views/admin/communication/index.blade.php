@@ -177,6 +177,339 @@
         </div>
     </div>
 
+    <!-- Notification Preferences -->
+    <div class="bg-white rounded-lg shadow-md mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">📢 Notification Preferences</h3>
+            <p class="text-gray-600 text-sm mt-1">Configure which notification methods to use for different events</p>
+        </div>
+        <div class="p-6">
+            <form id="notification-preferences-form" action="{{ route('admin.communication.update-preferences') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Email Notifications -->
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <h4 class="text-md font-medium text-gray-900">Email Notifications</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_welcome" value="1"
+                                       {{ old('email_welcome', $preferences['email_welcome'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Welcome Message</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_placed" value="1"
+                                       {{ old('email_order_placed', $preferences['email_order_placed'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Placed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_confirmed" value="1"
+                                       {{ old('email_order_confirmed', $preferences['email_order_confirmed'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Confirmed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_ready_to_ship" value="1"
+                                       {{ old('email_ready_to_ship', $preferences['email_ready_to_ship'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Ready to Ship</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_shipped" value="1"
+                                       {{ old('email_order_shipped', $preferences['email_order_shipped'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Shipped (In Transit)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_out_for_delivery" value="1"
+                                       {{ old('email_out_for_delivery', $preferences['email_out_for_delivery'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Out for Delivery</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_delivered" value="1"
+                                       {{ old('email_order_delivered', $preferences['email_order_delivered'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Delivered</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_cancelled" value="1"
+                                       {{ old('email_order_cancelled', $preferences['email_order_cancelled'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Cancelled</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_order_rto" value="1"
+                                       {{ old('email_order_rto', $preferences['email_order_rto'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order RTO</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_request" value="1"
+                                       {{ old('email_return_request', $preferences['email_return_request'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Request Submitted</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_approved" value="1"
+                                       {{ old('email_return_approved', $preferences['email_return_approved'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Approved</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_rejected" value="1"
+                                       {{ old('email_return_rejected', $preferences['email_return_rejected'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Rejected</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_in_transit" value="1"
+                                       {{ old('email_return_in_transit', $preferences['email_return_in_transit'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return In Transit</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_received" value="1"
+                                       {{ old('email_return_received', $preferences['email_return_received'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Received</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_return_refund_processed" value="1"
+                                       {{ old('email_return_refund_processed', $preferences['email_return_refund_processed'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Refund Processed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="email_admin_alerts" value="1"
+                                       {{ old('email_admin_alerts', $preferences['email_admin_alerts'] ?? '1') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Admin Alerts</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- SMS Notifications -->
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                            <h4 class="text-md font-medium text-gray-900">SMS Notifications</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_welcome" value="1"
+                                       {{ old('sms_welcome', $preferences['sms_welcome'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Welcome Message</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_placed" value="1"
+                                       {{ old('sms_order_placed', $preferences['sms_order_placed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Placed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_confirmed" value="1"
+                                       {{ old('sms_order_confirmed', $preferences['sms_order_confirmed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Confirmed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_ready_to_ship" value="1"
+                                       {{ old('sms_ready_to_ship', $preferences['sms_ready_to_ship'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Ready to Ship</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_shipped" value="1"
+                                       {{ old('sms_order_shipped', $preferences['sms_order_shipped'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Shipped (In Transit)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_out_for_delivery" value="1"
+                                       {{ old('sms_out_for_delivery', $preferences['sms_out_for_delivery'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Out for Delivery</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_delivered" value="1"
+                                       {{ old('sms_order_delivered', $preferences['sms_order_delivered'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Delivered</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_cancelled" value="1"
+                                       {{ old('sms_order_cancelled', $preferences['sms_order_cancelled'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Cancelled</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_order_rto" value="1"
+                                       {{ old('sms_order_rto', $preferences['sms_order_rto'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order RTO</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_request" value="1"
+                                       {{ old('sms_return_request', $preferences['sms_return_request'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Request Submitted</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_approved" value="1"
+                                       {{ old('sms_return_approved', $preferences['sms_return_approved'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Approved</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_rejected" value="1"
+                                       {{ old('sms_return_rejected', $preferences['sms_return_rejected'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Rejected</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_in_transit" value="1"
+                                       {{ old('sms_return_in_transit', $preferences['sms_return_in_transit'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return In Transit</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_received" value="1"
+                                       {{ old('sms_return_received', $preferences['sms_return_received'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Received</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="sms_return_refund_processed" value="1"
+                                       {{ old('sms_return_refund_processed', $preferences['sms_return_refund_processed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Refund Processed</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Notifications -->
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <h4 class="text-md font-medium text-gray-900">WhatsApp Notifications</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_welcome" value="1"
+                                       {{ old('whatsapp_welcome', $preferences['whatsapp_welcome'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Welcome Message</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_placed" value="1"
+                                       {{ old('whatsapp_order_placed', $preferences['whatsapp_order_placed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Placed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_confirmed" value="1"
+                                       {{ old('whatsapp_order_confirmed', $preferences['whatsapp_order_confirmed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Confirmed</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_ready_to_ship" value="1"
+                                       {{ old('whatsapp_ready_to_ship', $preferences['whatsapp_ready_to_ship'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Ready to Ship</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_shipped" value="1"
+                                       {{ old('whatsapp_order_shipped', $preferences['whatsapp_order_shipped'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Shipped (In Transit)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_out_for_delivery" value="1"
+                                       {{ old('whatsapp_out_for_delivery', $preferences['whatsapp_out_for_delivery'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Out for Delivery</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_delivered" value="1"
+                                       {{ old('whatsapp_order_delivered', $preferences['whatsapp_order_delivered'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Delivered</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_cancelled" value="1"
+                                       {{ old('whatsapp_order_cancelled', $preferences['whatsapp_order_cancelled'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order Cancelled</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_order_rto" value="1"
+                                       {{ old('whatsapp_order_rto', $preferences['whatsapp_order_rto'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Order RTO</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_request" value="1"
+                                       {{ old('whatsapp_return_request', $preferences['whatsapp_return_request'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Request Submitted</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_approved" value="1"
+                                       {{ old('whatsapp_return_approved', $preferences['whatsapp_return_approved'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Approved</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_rejected" value="1"
+                                       {{ old('whatsapp_return_rejected', $preferences['whatsapp_return_rejected'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Rejected</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_in_transit" value="1"
+                                       {{ old('whatsapp_return_in_transit', $preferences['whatsapp_return_in_transit'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return In Transit</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_received" value="1"
+                                       {{ old('whatsapp_return_received', $preferences['whatsapp_return_received'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Received</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="whatsapp_return_refund_processed" value="1"
+                                       {{ old('whatsapp_return_refund_processed', $preferences['whatsapp_return_refund_processed'] ?? '0') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Return Refund Processed</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors font-medium">
+                        Save Preferences
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Recent Communications -->
     <div class="bg-white rounded-lg shadow-md">
         <div class="px-6 py-4 border-b border-gray-200">

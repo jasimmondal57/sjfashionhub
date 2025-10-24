@@ -75,6 +75,8 @@ return [
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
         'base_url' => env('WHATSAPP_BASE_URL', 'https://graph.facebook.com/v18.0'),
+        'webhook_verify_token' => env('WHATSAPP_WEBHOOK_VERIFY_TOKEN', 'sjfashion_webhook_2024'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
     ],
 
 ];

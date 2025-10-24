@@ -247,18 +247,18 @@ class CommunicationLog extends Model
      */
     public static function getStats($days = 30)
     {
-        $query = static::where('created_at', '>=', now()->subDays($days));
+        $baseQuery = static::where('created_at', '>=', now()->subDays($days));
 
         return [
-            'total' => $query->count(),
-            'sent' => $query->where('status', 'sent')->count(),
-            'delivered' => $query->where('status', 'delivered')->count(),
-            'failed' => $query->where('status', 'failed')->count(),
-            'pending' => $query->where('status', 'pending')->count(),
-            'total_cost' => $query->sum('cost'),
-            'email_count' => $query->where('type', 'email')->count(),
-            'sms_count' => $query->where('type', 'sms')->count(),
-            'whatsapp_count' => $query->where('type', 'whatsapp')->count(),
+            'total' => (clone $baseQuery)->count(),
+            'sent' => (clone $baseQuery)->where('status', 'sent')->count(),
+            'delivered' => (clone $baseQuery)->where('status', 'delivered')->count(),
+            'failed' => (clone $baseQuery)->where('status', 'failed')->count(),
+            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
+            'total_cost' => (clone $baseQuery)->sum('cost') ?? 0,
+            'email_count' => (clone $baseQuery)->where('type', 'email')->count(),
+            'sms_count' => (clone $baseQuery)->where('type', 'sms')->count(),
+            'whatsapp_count' => (clone $baseQuery)->where('type', 'whatsapp')->count(),
         ];
     }
 }

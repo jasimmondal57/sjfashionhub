@@ -11,8 +11,8 @@ class Order extends Model
 {
     protected $fillable = [
         'order_number', 'user_id', 'status', 'order_status', 'subtotal', 'tax_amount',
-        'shipping_amount', 'discount_amount', 'total_amount', 'currency', 'payment_status',
-        'payment_method', 'payment_id', 'billing_address', 'shipping_address', 'notes',
+        'shipping_amount', 'discount_amount', 'coupon_code', 'total_amount', 'currency', 'payment_status',
+        'payment_method', 'payment_id', 'transaction_id', 'payment_gateway', 'paid_at', 'billing_address', 'shipping_address', 'notes',
         'shipped_at', 'delivered_at', 'shiprocket_order_id', 'shiprocket_shipment_id',
         'awb_number', 'courier_company', 'courier_company_id', 'shipping_charges',
         'tracking_url', 'courier_details', 'is_manual_shipping', 'manual_tracking_id',

@@ -117,7 +117,7 @@ class PaymentGateway extends Model
     {
         $encryptedFields = [
             'razorpay' => ['key_id', 'key_secret', 'webhook_secret'],
-            'cashfree' => ['app_id', 'secret_key'],
+            'cashfree' => ['app_id', 'secret_key', 'webhook_secret'],
             'payu' => ['merchant_key', 'merchant_salt'],
             'paytm' => ['merchant_id', 'merchant_key'],
             'paypal' => ['client_id', 'client_secret'],

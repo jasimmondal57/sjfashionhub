@@ -65,9 +65,9 @@
                     <!-- Main Content -->
                     <div class="lg:col-span-2">
                         <!-- Featured Image -->
-                        @if($post->featured_image)
+                        @if($post->featured_image_url)
                             <div class="mb-8">
-                                <img src="{{ asset('storage/' . $post->featured_image) }}" 
+                                <img src="{{ $post->featured_image_url }}"
                                      alt="{{ $post->title }}"
                                      class="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg">
                             </div>
@@ -84,7 +84,12 @@
                                 <h3 class="text-xl font-semibold mb-4">Featured Product</h3>
                                 <div class="flex items-center space-x-4">
                                     @if($post->product->images && count($post->product->images) > 0)
-                                        <img src="{{ asset('storage/' . $post->product->images[0]['image_path']) }}" 
+                                        @php
+                                            $firstImage = is_array($post->product->images[0])
+                                                ? $post->product->images[0]['image_path']
+                                                : $post->product->images[0];
+                                        @endphp
+                                        <img src="{{ asset('storage/' . $firstImage) }}"
                                              alt="{{ $post->product->name }}"
                                              class="w-20 h-20 object-cover rounded-lg">
                                     @endif
@@ -174,7 +179,7 @@
                                 @csrf
                                 <input type="email" name="email" placeholder="Your email address" required
                                        class="w-full px-3 py-2 rounded-lg text-gray-900 placeholder-gray-500">
-                                <button type="submit" 
+                                <button type="submit"
                                         class="w-full bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                                     Subscribe
                                 </button>
@@ -195,8 +200,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         @foreach($relatedPosts as $relatedPost)
                             <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                @if($relatedPost->featured_image)
-                                    <img src="{{ asset('storage/' . $relatedPost->featured_image) }}" 
+                                @if($relatedPost->featured_image_url)
+                                    <img src="{{ $relatedPost->featured_image_url }}"
                                          alt="{{ $relatedPost->title }}"
                                          class="w-full h-48 object-cover">
                                 @else
@@ -228,34 +233,5 @@
         </div>
     @endif
 
-    <!-- Schema.org structured data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": "{{ $post->title }}",
-        "description": "{{ $post->excerpt ?? strip_tags(Str::limit($post->content, 160)) }}",
-        "author": {
-            "@type": "Person",
-            "name": "{{ $post->author->name ?? 'SJ Fashion Hub' }}"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "SJ Fashion Hub",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "{{ asset('images/logo.png') }}"
-            }
-        },
-        "datePublished": "{{ $post->published_at->toISOString() }}",
-        "dateModified": "{{ $post->updated_at->toISOString() }}",
-        @if($post->featured_image)
-        "image": "{{ asset('storage/' . $post->featured_image) }}",
-        @endif
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "{{ request()->url() }}"
-        }
-    }
-    </script>
+
 </x-layouts.main>

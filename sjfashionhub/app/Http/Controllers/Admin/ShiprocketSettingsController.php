@@ -80,6 +80,10 @@ class ShiprocketSettingsController extends Controller
                 ShiprocketSetting::set('shiprocket_webhook_url', $request->shiprocket_webhook_url, 'url', 'webhook', 'Webhook URL for status updates');
             }
 
+            // Save webhook token (generate if not provided)
+            $webhookToken = $request->shiprocket_webhook_token ?? \Illuminate\Support\Str::random(32);
+            ShiprocketSetting::set('shiprocket_webhook_token', $webhookToken, 'text', 'webhook', 'Webhook authentication token', true);
+
             // General Settings
             ShiprocketSetting::set('shiprocket_auto_assign_awb', $request->has('shiprocket_auto_assign_awb'), 'boolean', 'general', 'Automatically assign AWB numbers');
             ShiprocketSetting::set('shiprocket_auto_pickup', $request->has('shiprocket_auto_pickup'), 'boolean', 'general', 'Automatically schedule pickups');

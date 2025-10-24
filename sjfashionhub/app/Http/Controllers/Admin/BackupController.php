@@ -30,11 +30,48 @@ class BackupController extends Controller
      */
     public function index()
     {
-        // Very simple implementation to ensure page loads
+        // List local backups
+        $backupPath = storage_path('app/backups');
+        if (!file_exists($backupPath)) {
+            mkdir($backupPath, 0755, true);
+        }
+
         $backups = [];
-        $isConfigured = false;
+        $files = glob($backupPath . '/*.zip');
+
+        foreach ($files as $file) {
+            $backups[] = [
+                'name' => basename($file),
+                'path' => $file,
+                'size' => filesize($file),
+                'size_formatted' => $this->formatBytes(filesize($file)),
+                'created_at' => date('Y-m-d H:i:s', filemtime($file)),
+                'created_at_human' => \Carbon\Carbon::createFromTimestamp(filemtime($file))->diffForHumans(),
+            ];
+        }
+
+        // Sort by creation time (newest first)
+        usort($backups, function($a, $b) {
+            return filemtime($b['path']) - filemtime($a['path']);
+        });
+
+        $isConfigured = true; // Local backups always work
 
         return view('admin.backup.index', compact('backups', 'isConfigured'));
+    }
+
+    /**
+     * Format bytes to human readable format
+     */
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     /**
@@ -42,8 +79,19 @@ class BackupController extends Controller
      */
     public function settings()
     {
-        $settings = [];
-        $isConfigured = false;
+        $settings = [
+            'google_drive_client_id' => env('GOOGLE_DRIVE_CLIENT_ID', ''),
+            'google_drive_client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET', ''),
+            'google_drive_redirect_uri' => env('GOOGLE_DRIVE_REDIRECT_URI', route('admin.backup.callback')),
+            'google_drive_backup_folder' => env('GOOGLE_DRIVE_BACKUP_FOLDER', 'SJ Fashion Hub Backups'),
+            'backup_schedule_enabled' => env('BACKUP_SCHEDULE_ENABLED', false),
+            'backup_schedule_time' => env('BACKUP_SCHEDULE_TIME', '02:00'),
+            'backup_retention_days' => env('BACKUP_RETENTION_DAYS', 7),
+        ];
+
+        $isConfigured = !empty($settings['google_drive_client_id']) &&
+                       !empty($settings['google_drive_client_secret']) &&
+                       !empty($settings['google_drive_redirect_uri']);
 
         return view('admin.backup.settings', compact('settings', 'isConfigured'));
     }
@@ -100,7 +148,7 @@ class BackupController extends Controller
     public function authorize()
     {
         try {
-            $authUrl = $this->backupService->getAuthorizationUrl();
+            $authUrl = $this->getBackupService()->getAuthorizationUrl();
             return redirect($authUrl);
         } catch (\Exception $e) {
             Log::error('Failed to get authorization URL: ' . $e->getMessage());
@@ -125,8 +173,8 @@ class BackupController extends Controller
         }
 
         try {
-            $success = $this->backupService->handleCallback($request->code);
-            
+            $success = $this->getBackupService()->handleCallback($request->code);
+
             if ($success) {
                 return redirect()->route('admin.backup.settings')
                                 ->with('success', 'Google Drive authorization successful! You can now create backups.');
@@ -142,7 +190,7 @@ class BackupController extends Controller
     }
 
     /**
-     * Create manual backup
+     * Create manual backup (Full Site)
      */
     public function create(Request $request)
     {
@@ -151,19 +199,87 @@ class BackupController extends Controller
         ]);
 
         try {
-            if (!$this->backupService->isConfigured()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Google Drive is not properly configured. Please check your settings.'
-                ], 400);
+            set_time_limit(300); // 5 minutes timeout for large backups
+
+            $backupPath = storage_path('app/backups');
+            if (!file_exists($backupPath)) {
+                mkdir($backupPath, 0755, true);
             }
 
-            $result = $this->backupService->createBackup($request->description);
-            
+            $timestamp = date('Y-m-d_H-i-s');
+            $description = $request->description ? '_' . str_replace(' ', '_', $request->description) : '';
+            $filename = "sjfashionhub_full_backup_{$timestamp}{$description}.zip";
+            $zipPath = $backupPath . '/' . $filename;
+
+            // Create ZIP archive
+            $zip = new \ZipArchive();
+            if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+                throw new \Exception('Failed to create ZIP file');
+            }
+
+            $basePath = base_path();
+
+            // Add database
+            $dbPath = database_path('database.sqlite');
+            if (file_exists($dbPath)) {
+                $zip->addFile($dbPath, 'database/database.sqlite');
+            }
+
+            // Add .env file
+            $envPath = base_path('.env');
+            if (file_exists($envPath)) {
+                $zip->addFile($envPath, '.env');
+            }
+
+            // Add all important directories
+            $directories = [
+                'app' => 'app',
+                'bootstrap' => 'bootstrap',
+                'config' => 'config',
+                'database/migrations' => 'database/migrations',
+                'database/seeders' => 'database/seeders',
+                'public' => 'public',
+                'resources' => 'resources',
+                'routes' => 'routes',
+                'storage/app/public' => 'storage/app/public',
+            ];
+
+            foreach ($directories as $dir => $zipDir) {
+                $fullPath = base_path($dir);
+                if (is_dir($fullPath)) {
+                    $this->addDirectoryToZip($zip, $fullPath, $zipDir, 10000); // Allow up to 10k files
+                }
+            }
+
+            // Add important root files
+            $rootFiles = [
+                'composer.json',
+                'composer.lock',
+                'package.json',
+                'package-lock.json',
+                'artisan',
+                'vite.config.js',
+                'tailwind.config.js',
+                'postcss.config.js',
+            ];
+
+            foreach ($rootFiles as $file) {
+                $filePath = base_path($file);
+                if (file_exists($filePath)) {
+                    $zip->addFile($filePath, $file);
+                }
+            }
+
+            $zip->close();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Backup created successfully!',
-                'backup' => $result
+                'message' => 'Full site backup created successfully!',
+                'backup' => [
+                    'name' => $filename,
+                    'size' => $this->formatBytes(filesize($zipPath)),
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]
             ]);
 
         } catch (\Exception $e) {
@@ -176,22 +292,77 @@ class BackupController extends Controller
     }
 
     /**
-     * Download backup
+     * Add directory to ZIP recursively (with file limit)
      */
-    public function download($fileId)
+    private function addDirectoryToZip($zip, $dir, $zipDir = '', $maxFiles = 10000)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $fileCount = 0;
+
+        // Exclude patterns
+        $excludePatterns = [
+            '/node_modules/',
+            '/vendor/',
+            '/.git/',
+            '/storage/logs/',
+            '/storage/framework/cache/',
+            '/storage/framework/sessions/',
+            '/storage/framework/views/',
+            '/storage/app/backups/',
+        ];
+
+        try {
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::LEAVES_ONLY
+            );
+
+            foreach ($files as $file) {
+                if ($fileCount >= $maxFiles) {
+                    break;
+                }
+
+                if (!$file->isDir()) {
+                    $filePath = $file->getRealPath();
+
+                    // Skip excluded paths
+                    $skip = false;
+                    foreach ($excludePatterns as $pattern) {
+                        if (strpos($filePath, $pattern) !== false) {
+                            $skip = true;
+                            break;
+                        }
+                    }
+
+                    if (!$skip) {
+                        $relativePath = $zipDir . '/' . substr($filePath, strlen($dir) + 1);
+                        $zip->addFile($filePath, $relativePath);
+                        $fileCount++;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Error adding directory to zip: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download backup (Local)
+     */
+    public function download($filename)
     {
         try {
-            if (!$this->backupService->isConfigured()) {
+            $backupPath = storage_path('app/backups/' . $filename);
+
+            if (!file_exists($backupPath)) {
                 return redirect()->route('admin.backup.index')
-                                ->with('error', 'Google Drive is not properly configured.');
+                                ->with('error', 'Backup file not found.');
             }
 
-            $content = $this->backupService->downloadBackup($fileId);
-            $filename = 'sjfashionhub_backup_' . Carbon::now()->format('Y-m-d_H-i-s') . '.zip';
-            
-            return response($content)
-                    ->header('Content-Type', 'application/zip')
-                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            return response()->download($backupPath);
 
         } catch (\Exception $e) {
             Log::error('Backup download failed: ' . $e->getMessage());
@@ -201,20 +372,22 @@ class BackupController extends Controller
     }
 
     /**
-     * Delete backup
+     * Delete backup (Local)
      */
-    public function delete($fileId)
+    public function delete($filename)
     {
         try {
-            if (!$this->backupService->isConfigured()) {
+            $backupPath = storage_path('app/backups/' . $filename);
+
+            if (!file_exists($backupPath)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Google Drive is not properly configured.'
-                ], 400);
+                    'message' => 'Backup file not found.'
+                ], 404);
             }
 
-            $this->backupService->deleteBackup($fileId);
-            
+            unlink($backupPath);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Backup deleted successfully!'
@@ -235,7 +408,7 @@ class BackupController extends Controller
     public function testConnection()
     {
         try {
-            if (!$this->backupService->isConfigured()) {
+            if (!$this->getBackupService()->isConfigured()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Google Drive is not properly configured.'
@@ -243,7 +416,7 @@ class BackupController extends Controller
             }
 
             // Try to list files to test connection
-            $backups = $this->backupService->listBackups();
+            $backups = $this->getBackupService()->listBackups();
             
             return response()->json([
                 'success' => true,
@@ -266,13 +439,13 @@ class BackupController extends Controller
     public function status()
     {
         try {
-            $isConfigured = $this->backupService->isConfigured();
+            $isConfigured = $this->getBackupService()->isConfigured();
             $backupCount = 0;
             $lastBackup = null;
             $totalSize = 0;
 
             if ($isConfigured) {
-                $backups = $this->backupService->listBackups();
+                $backups = $this->getBackupService()->listBackups();
                 $backupCount = count($backups);
                 $lastBackup = $backups[0] ?? null;
                 $totalSize = array_sum(array_column($backups, 'size_bytes'));

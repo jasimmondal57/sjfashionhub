@@ -79,7 +79,7 @@ class ReturnController extends Controller
         $returnItems = [];
         
         foreach ($request->return_items as $itemId) {
-            $orderItem = $order->items()->find($itemId);
+            $orderItem = $order->items()->with(['product', 'productVariant'])->find($itemId);
             if ($orderItem) {
                 $returnAmount += $orderItem->total_price;
                 $returnItems[] = [
@@ -87,7 +87,10 @@ class ReturnController extends Controller
                     'product_name' => $orderItem->product_name,
                     'quantity' => $orderItem->quantity,
                     'unit_price' => $orderItem->unit_price,
-                    'total_price' => $orderItem->total_price
+                    'total_price' => $orderItem->total_price,
+                    'sku' => $orderItem->product_sku,
+                    'main_image' => $orderItem->product ? $orderItem->product->main_image : null,
+                    'variant_details' => $orderItem->variant_details
                 ];
             }
         }
@@ -185,8 +188,9 @@ class ReturnController extends Controller
         }
 
         $returnOrder->update([
-            'status' => 'cancelled',
-            'admin_notes' => 'Cancelled by customer'
+            'status' => 'rejected',
+            'rejection_reason' => 'Cancelled by customer',
+            'rejected_at' => now()
         ]);
 
         return back()->with('success', 'Return request cancelled successfully.');

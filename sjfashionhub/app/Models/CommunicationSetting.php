@@ -255,4 +255,30 @@ class CommunicationSetting extends Model
     {
         return $query->where('service', $service);
     }
+
+    /**
+     * Get global notification settings
+     */
+    public static function getGlobalSettings()
+    {
+        $settings = [
+            'email_enabled' => true,
+            'sms_enabled' => false,
+            'whatsapp_enabled' => false
+        ];
+
+        // Check if email provider is configured
+        $emailSettings = self::getProviderSettings('email');
+        $settings['email_enabled'] = !empty($emailSettings['host']) && !empty($emailSettings['username']);
+
+        // Check if SMS provider is configured
+        $smsSettings = self::getProviderSettings('sms');
+        $settings['sms_enabled'] = !empty($smsSettings['api_key']) || !empty($smsSettings['auth_key']);
+
+        // Check if WhatsApp provider is configured
+        $whatsappSettings = self::getProviderSettings('whatsapp');
+        $settings['whatsapp_enabled'] = !empty($whatsappSettings['api_key']) || !empty($whatsappSettings['access_token']);
+
+        return $settings;
+    }
 }

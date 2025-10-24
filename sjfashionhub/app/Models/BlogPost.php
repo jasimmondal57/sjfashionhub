@@ -181,6 +181,25 @@ class BlogPost extends Model
     }
 
     /**
+     * Get featured image URL with fallback to product image
+     */
+    public function getFeaturedImageUrlAttribute()
+    {
+        // If blog has featured image, return it
+        if ($this->featured_image) {
+            return asset('storage/' . $this->featured_image);
+        }
+
+        // Fallback to product's main image if blog is linked to a product
+        if ($this->product && $this->product->main_image) {
+            return $this->product->main_image;
+        }
+
+        // No image available
+        return null;
+    }
+
+    /**
      * Increment views count
      */
     public function incrementViews()

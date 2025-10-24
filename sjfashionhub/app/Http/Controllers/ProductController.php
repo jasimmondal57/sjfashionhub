@@ -12,7 +12,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category')->active();
+        $query = Product::with(['category', 'activeVariants'])->active();
 
         // Search
         if ($request->filled('search')) {
@@ -83,7 +83,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load(['category', 'variants']);
+        $product->load(['category', 'variants', 'sizeChart']);
 
         // Get related products from the same category
         $relatedProducts = Product::with('category')

@@ -76,7 +76,13 @@ class CommunicationTemplate extends Model
      */
     public function getAvailableVariables()
     {
-        return $this->variables ?? $this->getDefaultVariables();
+        // If variables is set and is an array, return it
+        if ($this->variables && is_array($this->variables)) {
+            return $this->variables;
+        }
+
+        // Otherwise return keys from default variables
+        return array_keys($this->getDefaultVariables());
     }
 
     /**

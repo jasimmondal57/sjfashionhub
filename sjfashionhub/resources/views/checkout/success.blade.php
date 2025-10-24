@@ -1,4 +1,9 @@
 <x-layouts.main>
+    <!-- Facebook Pixel Purchase Event -->
+    @if($order)
+        <x-tracking.facebook-pixel-events event="Purchase" :order="$order" />
+    @endif
+
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg shadow-sm p-8 text-center">
@@ -62,15 +67,23 @@
 
                 <!-- Support Information -->
                 <div class="mt-8 pt-8 border-t border-gray-200">
+                    @php
+                        $headerSettings = \App\Models\HeaderSetting::getActiveSettings();
+                        $contactInfo = is_array($headerSettings->contact_info) ? $headerSettings->contact_info : [];
+                        $supportEmail = $contactInfo['email'] ?? config('mail.from.address', 'support@sjfashionhub.com');
+                        $supportPhone = $contactInfo['phone'] ?? null;
+                    @endphp
                     <p class="text-sm text-gray-600">
-                        Need help? Contact our support team at 
-                        <a href="mailto:support@sjfashionhub.in" class="text-indigo-600 hover:text-indigo-500">
-                            support@sjfashionhub.in
+                        Need help? Contact our support team at
+                        <a href="mailto:{{ $supportEmail }}" class="text-indigo-600 hover:text-indigo-500">
+                            {{ $supportEmail }}
                         </a>
-                        or call 
-                        <a href="tel:+911234567890" class="text-indigo-600 hover:text-indigo-500">
-                            +91 12345 67890
-                        </a>
+                        @if($supportPhone)
+                            or call
+                            <a href="tel:{{ str_replace(' ', '', $supportPhone) }}" class="text-indigo-600 hover:text-indigo-500">
+                                {{ $supportPhone }}
+                            </a>
+                        @endif
                     </p>
                 </div>
             </div>

@@ -120,6 +120,105 @@ class ProductController extends Controller
             'return_days' => 'nullable|integer|min:0',
             'price_includes_tax' => 'boolean',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
+
+            // NEW FIELDS - Inventory & Stock Management
+            'barcode' => 'nullable|string|max:255',
+            'supplier_name' => 'nullable|string|max:255',
+            'supplier_sku' => 'nullable|string|max:255',
+            'supplier_cost' => 'nullable|numeric|min:0',
+            'supplier_lead_time_days' => 'nullable|integer|min:0',
+            'reorder_point' => 'nullable|integer|min:0',
+            'reorder_quantity' => 'nullable|integer|min:0',
+            'stock_location' => 'nullable|string|max:255',
+            'backorder_status' => 'nullable|in:no,notify,yes',
+            'allow_preorder' => 'boolean',
+            'preorder_release_date' => 'nullable|date',
+
+            // Fashion Attributes
+            'fabric_composition' => 'nullable|string',
+            'care_instructions' => 'nullable|string',
+            'fit_type' => 'nullable|string|max:100',
+            'occasion' => 'nullable|string|max:100',
+            'sleeve_type' => 'nullable|string|max:100',
+            'neck_type' => 'nullable|string|max:100',
+            'length_type' => 'nullable|string|max:100',
+            'closure_type' => 'nullable|string|max:100',
+            'pocket_details' => 'nullable|string|max:255',
+            'has_lining' => 'boolean',
+            'transparency' => 'nullable|in:opaque,semi-transparent,sheer',
+            'is_stretchable' => 'boolean',
+            'season' => 'nullable|string|max:100',
+            'style_code' => 'nullable|string|max:100',
+            'collection_name' => 'nullable|string|max:255',
+
+            // Shipping & Dimensions
+            'length_cm' => 'nullable|numeric|min:0',
+            'width_cm' => 'nullable|numeric|min:0',
+            'height_cm' => 'nullable|numeric|min:0',
+            'volumetric_weight' => 'nullable|numeric|min:0',
+            'package_type' => 'nullable|string|max:100',
+            'is_fragile' => 'boolean',
+            'requires_signature' => 'boolean',
+            'shipping_class' => 'nullable|string|max:100',
+
+            // Pricing & Promotions
+            'bulk_price_tier1_qty' => 'nullable|numeric|min:0',
+            'bulk_price_tier1_price' => 'nullable|numeric|min:0',
+            'bulk_price_tier2_qty' => 'nullable|numeric|min:0',
+            'bulk_price_tier2_price' => 'nullable|numeric|min:0',
+            'bulk_price_tier3_qty' => 'nullable|numeric|min:0',
+            'bulk_price_tier3_price' => 'nullable|numeric|min:0',
+            'member_price' => 'nullable|numeric|min:0',
+            'sale_start_date' => 'nullable|date',
+            'sale_end_date' => 'nullable|date|after:sale_start_date',
+            'min_order_quantity' => 'nullable|integer|min:1',
+            'max_order_quantity' => 'nullable|integer|min:1',
+            'quantity_increment' => 'nullable|integer|min:1',
+            'wholesale_price' => 'nullable|numeric|min:0',
+            'margin_percentage' => 'nullable|numeric|min:0|max:100',
+
+            // Media & Content
+            'video_url' => 'nullable|url|max:500',
+            'model_info' => 'nullable|string',
+            'lifestyle_images' => 'nullable|array',
+            'image_360_urls' => 'nullable|array',
+            'product_documents' => 'nullable|array',
+
+            // SEO & Marketing
+            'url_slug' => 'nullable|string|max:255',
+            'canonical_url' => 'nullable|url|max:500',
+            'meta_robots' => 'nullable|string|max:100',
+            'og_image_url' => 'nullable|url|max:500',
+            'twitter_card_type' => 'nullable|string|max:100',
+            'schema_type' => 'nullable|string|max:100',
+            'product_badges' => 'nullable|array',
+            'product_labels' => 'nullable|array',
+            'launch_date' => 'nullable|date',
+            'discontinue_date' => 'nullable|date',
+
+            // Additional Features
+            'enable_reviews' => 'boolean',
+            'enable_questions' => 'boolean',
+            'allow_personalization' => 'boolean',
+            'personalization_instructions' => 'nullable|string',
+            'gift_wrap_available' => 'boolean',
+            'gift_wrap_price' => 'nullable|numeric|min:0',
+            'allow_gift_message' => 'boolean',
+            'assembly_required' => 'boolean',
+            'certifications' => 'nullable|array',
+            'sustainability_info' => 'nullable|string',
+            'made_to_order' => 'boolean',
+            'production_time_days' => 'nullable|integer|min:0',
+
+            // Additional Info
+            'wash_care_symbols' => 'nullable|string',
+            'country_of_manufacture' => 'nullable|string|max:100',
+            'is_eco_friendly' => 'boolean',
+            'is_handmade' => 'boolean',
+            'special_features' => 'nullable|string',
+
+            // Variants
+            'variants_data' => 'nullable|json',
         ]);
 
         // Generate slug
@@ -166,8 +265,33 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
+        // Handle variants
+        if ($request->filled('variants_data')) {
+            $variantsData = json_decode($request->variants_data, true);
+
+            if (is_array($variantsData) && count($variantsData) > 0) {
+                foreach ($variantsData as $variantData) {
+                    \App\Models\ProductVariant::create([
+                        'product_id' => $product->id,
+                        'option1_name' => $variantData['option1_name'] ?? null,
+                        'option1_value' => $variantData['option1_value'] ?? null,
+                        'option2_name' => $variantData['option2_name'] ?? null,
+                        'option2_value' => $variantData['option2_value'] ?? null,
+                        'option3_name' => $variantData['option3_name'] ?? null,
+                        'option3_value' => $variantData['option3_value'] ?? null,
+                        'sku' => $variantData['sku'] ?? null,
+                        'barcode' => $variantData['barcode'] ?? null,
+                        'price' => $variantData['price'] ?? null,
+                        'stock_quantity' => $variantData['stock_quantity'] ?? 0,
+                        'image_url' => $variantData['image_url'] ?? null,
+                        'is_active' => $variantData['is_active'] ?? true,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('admin.products.index')
-            ->with('success', 'Product created successfully!');
+            ->with('success', 'Product created successfully with ' . ($product->productVariants()->count()) . ' variants!');
     }
 
     public function show(Product $product)

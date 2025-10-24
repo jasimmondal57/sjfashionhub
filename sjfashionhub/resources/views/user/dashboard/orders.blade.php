@@ -21,8 +21,8 @@
                         <div class="space-y-4">
                             @foreach($order->items as $item)
                                 <div class="flex items-center space-x-4">
-                                    @if($item->product && $item->product->featured_image)
-                                        <img class="h-16 w-16 rounded-lg object-cover" src="{{ Storage::url($item->product->featured_image) }}" alt="{{ $item->product_name }}">
+                                    @if($item->product && $item->product->main_image)
+                                        <img class="h-16 w-16 rounded-lg object-cover" src="{{ $item->product->main_image }}" alt="{{ $item->product_name }}">
                                     @else
                                         <div class="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center">
                                             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,6 +32,11 @@
                                     @endif
                                     <div class="flex-1">
                                         <h4 class="text-sm font-medium text-gray-900">{{ $item->product_name }}</h4>
+                                        @if($item->productVariant)
+                                            <p class="text-xs text-blue-600 font-medium">Size: {{ $item->productVariant->option1_value }}</p>
+                                        @elseif($item->variant_details && isset($item->variant_details['size']))
+                                            <p class="text-xs text-blue-600 font-medium">Size: {{ $item->variant_details['size'] }}</p>
+                                        @endif
                                         <p class="text-sm text-gray-600">Quantity: {{ $item->quantity }}</p>
                                     </div>
                                     <div class="text-right">

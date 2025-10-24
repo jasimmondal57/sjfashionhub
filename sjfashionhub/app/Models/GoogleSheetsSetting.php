@@ -134,7 +134,50 @@ class GoogleSheetsSetting extends Model
                 'address' => 'K',
                 'city' => 'L',
                 'state' => 'M',
-                'country' => 'N'
+                'postal_code' => 'N',
+                'country' => 'O',
+                'date_of_birth' => 'P',
+                'gender' => 'Q',
+                'email_marketing_consent' => 'R',
+                'sms_marketing_consent' => 'S',
+                'total_addresses' => 'T',
+                'default_address' => 'U',
+                'created_at' => 'V',
+                'updated_at' => 'W'
+            ],
+            'user_addresses' => [
+                'address_id' => 'A',
+                'user_id' => 'B',
+                'user_name' => 'C',
+                'user_email' => 'D',
+                'address_type' => 'E',
+                'first_name' => 'F',
+                'last_name' => 'G',
+                'company' => 'H',
+                'address_line_1' => 'I',
+                'address_line_2' => 'J',
+                'city' => 'K',
+                'state' => 'L',
+                'postal_code' => 'M',
+                'country' => 'N',
+                'phone' => 'O',
+                'is_default' => 'P',
+                'created_at' => 'Q',
+                'updated_at' => 'R'
+            ],
+            'user_changes' => [
+                'change_id' => 'A',
+                'user_id' => 'B',
+                'user_name' => 'C',
+                'user_email' => 'D',
+                'change_type' => 'E',
+                'field_name' => 'F',
+                'old_value' => 'G',
+                'new_value' => 'H',
+                'changed_by' => 'I',
+                'ip_address' => 'J',
+                'user_agent' => 'K',
+                'changed_at' => 'L'
             ],
             'newsletters' => [
                 'subscriber_id' => 'A',
@@ -152,6 +195,75 @@ class GoogleSheetsSetting extends Model
             ],
             default => []
         };
+    }
+
+    /**
+     * Sync headers to Google Sheets
+     */
+    public function syncHeaders($headers)
+    {
+        try {
+            $response = Http::timeout(30)->post($this->web_app_url, [
+                'action' => 'create_headers',
+                'sheet_type' => $this->sheet_type,
+                'headers' => $headers,
+                'sheet_name' => $this->sheet_name,
+                'column_mapping' => $this->column_mapping
+            ]);
+
+            if ($response->successful()) {
+                $this->update([
+                    'last_sync_at' => now(),
+                    'sync_status' => 'success'
+                ]);
+
+                // Log the sync
+                GoogleSheetsSyncLog::create([
+                    'google_sheets_setting_id' => $this->id,
+                    'sync_type' => 'manual',
+                    'operation' => 'create_headers',
+                    'status' => 'success',
+                    'records_count' => count($headers),
+                    'response_data' => $response->json(),
+                    'triggered_by' => auth()->id() ?: 'system',
+                    'started_at' => now(),
+                    'completed_at' => now()
+                ]);
+
+                return true;
+            } else {
+                $this->update(['sync_status' => 'failed']);
+
+                GoogleSheetsSyncLog::create([
+                    'google_sheets_setting_id' => $this->id,
+                    'sync_type' => 'manual',
+                    'operation' => 'create_headers',
+                    'status' => 'failed',
+                    'error_message' => $response->body(),
+                    'triggered_by' => auth()->id() ?: 'system',
+                    'started_at' => now(),
+                    'completed_at' => now()
+                ]);
+
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->update(['sync_status' => 'failed']);
+
+            GoogleSheetsSyncLog::create([
+                'google_sheets_setting_id' => $this->id,
+                'sync_type' => 'manual',
+                'operation' => 'create_headers',
+                'status' => 'failed',
+                'error_message' => $e->getMessage(),
+                'triggered_by' => auth()->id() ?: 'system',
+                'started_at' => now(),
+                'completed_at' => now()
+            ]);
+
+            \Log::error("Google Sheets header sync failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**

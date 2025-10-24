@@ -17,7 +17,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please login to access admin panel.');
+            return redirect()->route('admin.login')->with('error', 'Please login to access admin panel.');
         }
 
         $user = Auth::user();
@@ -25,7 +25,7 @@ class AdminMiddleware
         // Check if user is active
         if ($user->status !== 'active') {
             Auth::logout();
-            return redirect()->route('login')->with('error', 'Your account has been deactivated. Please contact administrator.');
+            return redirect()->route('admin.login')->with('error', 'Your account has been deactivated. Please contact administrator.');
         }
 
         // Check if user has admin or manager role

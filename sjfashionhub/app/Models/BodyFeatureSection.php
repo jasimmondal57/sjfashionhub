@@ -59,7 +59,7 @@ class BodyFeatureSection extends Model
 
     private function getProducts($settings)
     {
-        $query = Product::with('category');
+        $query = Product::with(['category', 'activeVariants']);
 
         // Apply filters based on settings
         if (isset($settings['specific_products']) && !empty($settings['specific_products'])) {
@@ -104,17 +104,41 @@ class BodyFeatureSection extends Model
 
     private function getCategories($settings)
     {
-        $query = Category::query();
+        // When section type is "categories", we want to show products FROM those categories
+        // not the category names themselves
+        $query = Product::with(['category', 'activeVariants'])->where('is_active', true);
 
         if (isset($settings['specific_categories']) && !empty($settings['specific_categories'])) {
-            $query->whereIn('id', $settings['specific_categories']);
+            $query->whereIn('category_id', $settings['specific_categories']);
         }
 
         if (isset($settings['parent_only']) && $settings['parent_only']) {
-            $query->whereNull('parent_id');
+            // If parent_only is true, get products from parent categories only
+            $query->whereHas('category', function($q) {
+                $q->whereNull('parent_id');
+            });
         }
 
-        $query->orderBy('sort_order')->orderBy('name');
+        // Apply sorting
+        $sortBy = $settings['sort_by'] ?? 'newest';
+        switch ($sortBy) {
+            case 'featured':
+                $query->orderBy('is_featured', 'desc')->orderBy('created_at', 'desc');
+                break;
+            case 'price_low':
+                $query->orderByRaw('COALESCE(sale_price, price) ASC');
+                break;
+            case 'price_high':
+                $query->orderByRaw('COALESCE(sale_price, price) DESC');
+                break;
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
 
         return $query->take($this->items_limit)->get();
     }

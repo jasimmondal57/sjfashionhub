@@ -173,6 +173,86 @@
                             <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Additional Inventory Fields -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-md font-semibold text-gray-900 mb-4">📦 Advanced Inventory</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="barcode" class="block text-sm font-medium text-gray-700 mb-2">Barcode</label>
+                                <input type="text" name="barcode" id="barcode" value="{{ old('barcode') }}"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter barcode number">
+                            </div>
+
+                            <div>
+                                <label for="supplier_name" class="block text-sm font-medium text-gray-700 mb-2">Supplier Name</label>
+                                <input type="text" name="supplier_name" id="supplier_name" value="{{ old('supplier_name') }}"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Supplier or vendor name">
+                            </div>
+
+                            <div>
+                                <label for="reorder_point" class="block text-sm font-medium text-gray-700 mb-2">Reorder Point</label>
+                                <input type="number" name="reorder_point" id="reorder_point" value="{{ old('reorder_point', 0) }}" min="0"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="When to restock">
+                                <p class="mt-1 text-xs text-gray-500">Alert when stock reaches this level</p>
+                            </div>
+
+                            <div>
+                                <label for="reorder_quantity" class="block text-sm font-medium text-gray-700 mb-2">Reorder Quantity</label>
+                                <input type="number" name="reorder_quantity" id="reorder_quantity" value="{{ old('reorder_quantity', 0) }}" min="0"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="How much to restock">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Promotions -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-md font-semibold text-gray-900 mb-4">💰 Pricing & Promotions</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="sale_start_date" class="block text-sm font-medium text-gray-700 mb-2">Sale Start Date</label>
+                                <input type="datetime-local" name="sale_start_date" id="sale_start_date" value="{{ old('sale_start_date') }}"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label for="sale_end_date" class="block text-sm font-medium text-gray-700 mb-2">Sale End Date</label>
+                                <input type="datetime-local" name="sale_end_date" id="sale_end_date" value="{{ old('sale_end_date') }}"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label for="min_order_quantity" class="block text-sm font-medium text-gray-700 mb-2">Min Order Quantity</label>
+                                <input type="number" name="min_order_quantity" id="min_order_quantity" value="{{ old('min_order_quantity', 1) }}" min="1"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label for="max_order_quantity" class="block text-sm font-medium text-gray-700 mb-2">Max Order Quantity</label>
+                                <input type="number" name="max_order_quantity" id="max_order_quantity" value="{{ old('max_order_quantity') }}" min="1"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Leave empty for no limit">
+                            </div>
+
+                            <div>
+                                <label for="member_price" class="block text-sm font-medium text-gray-700 mb-2">Member Price (₹)</label>
+                                <input type="number" name="member_price" id="member_price" value="{{ old('member_price') }}" step="0.01" min="0"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Special price for members">
+                            </div>
+
+                            <div>
+                                <label for="wholesale_price" class="block text-sm font-medium text-gray-700 mb-2">Wholesale Price (₹)</label>
+                                <input type="number" name="wholesale_price" id="wholesale_price" value="{{ old('wholesale_price') }}" step="0.01" min="0"
+                                       class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="B2B wholesale price">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Product Images -->
@@ -183,13 +263,13 @@
                     <div class="mb-6">
                         <div class="border-b border-gray-200">
                             <nav class="-mb-px flex space-x-8">
-                                <button type="button" onclick="switchImageMethod('upload')"
+                                <button type="button" onclick="switchImageMethod('upload')" id="upload-tab"
                                         class="image-method-tab active py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600">
-                                    Upload Files
+                                    📁 Upload Files
                                 </button>
-                                <button type="button" onclick="switchImageMethod('url')"
+                                <button type="button" onclick="switchImageMethod('url')" id="url-tab"
                                         class="image-method-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                    Image URLs
+                                    🔗 Image URLs
                                 </button>
                             </nav>
                         </div>
@@ -277,6 +357,109 @@
                         @enderror
                     </div>
                 </div>
+
+                <!-- Fashion Attributes -->
+                <div class="bg-white rounded-lg border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-black mb-4">👗 Fashion Attributes</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="color" class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                            <input type="text" name="color" id="color" value="{{ old('color') }}"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="e.g., Black, Red, Blue">
+                            <p class="mt-1 text-xs text-gray-500">Primary color of the product</p>
+                        </div>
+
+                        <div>
+                            <label for="material" class="block text-sm font-medium text-gray-700 mb-2">Material</label>
+                            <input type="text" name="material" id="material" value="{{ old('material') }}"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="e.g., Cotton, Polyester, Silk">
+                            <p class="mt-1 text-xs text-gray-500">Primary material of the product</p>
+                        </div>
+
+                        <div>
+                            <label for="fabric_composition" class="block text-sm font-medium text-gray-700 mb-2">Fabric Composition</label>
+                            <input type="text" name="fabric_composition" id="fabric_composition" value="{{ old('fabric_composition') }}"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="e.g., 100% Cotton or 65% Polyester, 35% Cotton">
+                            <p class="mt-1 text-xs text-gray-500">Specify the fabric materials and percentages</p>
+                        </div>
+
+                        <div>
+                            <label for="fit_type" class="block text-sm font-medium text-gray-700 mb-2">Fit Type</label>
+                            <select name="fit_type" id="fit_type" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select fit type...</option>
+                                <option value="Regular" {{ old('fit_type') == 'Regular' ? 'selected' : '' }}>Regular</option>
+                                <option value="Slim" {{ old('fit_type') == 'Slim' ? 'selected' : '' }}>Slim</option>
+                                <option value="Loose" {{ old('fit_type') == 'Loose' ? 'selected' : '' }}>Loose</option>
+                                <option value="Oversized" {{ old('fit_type') == 'Oversized' ? 'selected' : '' }}>Oversized</option>
+                                <option value="Relaxed" {{ old('fit_type') == 'Relaxed' ? 'selected' : '' }}>Relaxed</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="occasion" class="block text-sm font-medium text-gray-700 mb-2">Occasion</label>
+                            <select name="occasion" id="occasion" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select occasion...</option>
+                                <option value="Casual" {{ old('occasion') == 'Casual' ? 'selected' : '' }}>Casual</option>
+                                <option value="Formal" {{ old('occasion') == 'Formal' ? 'selected' : '' }}>Formal</option>
+                                <option value="Party" {{ old('occasion') == 'Party' ? 'selected' : '' }}>Party</option>
+                                <option value="Wedding" {{ old('occasion') == 'Wedding' ? 'selected' : '' }}>Wedding</option>
+                                <option value="Festive" {{ old('occasion') == 'Festive' ? 'selected' : '' }}>Festive</option>
+                                <option value="Sports" {{ old('occasion') == 'Sports' ? 'selected' : '' }}>Sports</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="sleeve_type" class="block text-sm font-medium text-gray-700 mb-2">Sleeve Type</label>
+                            <select name="sleeve_type" id="sleeve_type" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select sleeve type...</option>
+                                <option value="Full Sleeve" {{ old('sleeve_type') == 'Full Sleeve' ? 'selected' : '' }}>Full Sleeve</option>
+                                <option value="Half Sleeve" {{ old('sleeve_type') == 'Half Sleeve' ? 'selected' : '' }}>Half Sleeve</option>
+                                <option value="Sleeveless" {{ old('sleeve_type') == 'Sleeveless' ? 'selected' : '' }}>Sleeveless</option>
+                                <option value="3/4 Sleeve" {{ old('sleeve_type') == '3/4 Sleeve' ? 'selected' : '' }}>3/4 Sleeve</option>
+                                <option value="Cap Sleeve" {{ old('sleeve_type') == 'Cap Sleeve' ? 'selected' : '' }}>Cap Sleeve</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="neck_type" class="block text-sm font-medium text-gray-700 mb-2">Neck Type</label>
+                            <select name="neck_type" id="neck_type" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select neck type...</option>
+                                <option value="Round Neck" {{ old('neck_type') == 'Round Neck' ? 'selected' : '' }}>Round Neck</option>
+                                <option value="V-Neck" {{ old('neck_type') == 'V-Neck' ? 'selected' : '' }}>V-Neck</option>
+                                <option value="Collar" {{ old('neck_type') == 'Collar' ? 'selected' : '' }}>Collar</option>
+                                <option value="Boat Neck" {{ old('neck_type') == 'Boat Neck' ? 'selected' : '' }}>Boat Neck</option>
+                                <option value="High Neck" {{ old('neck_type') == 'High Neck' ? 'selected' : '' }}>High Neck</option>
+                                <option value="Square Neck" {{ old('neck_type') == 'Square Neck' ? 'selected' : '' }}>Square Neck</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="season" class="block text-sm font-medium text-gray-700 mb-2">Season</label>
+                            <select name="season" id="season" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select season...</option>
+                                <option value="Summer" {{ old('season') == 'Summer' ? 'selected' : '' }}>Summer</option>
+                                <option value="Winter" {{ old('season') == 'Winter' ? 'selected' : '' }}>Winter</option>
+                                <option value="Monsoon" {{ old('season') == 'Monsoon' ? 'selected' : '' }}>Monsoon</option>
+                                <option value="All Season" {{ old('season') == 'All Season' ? 'selected' : '' }}>All Season</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="care_instructions" class="block text-sm font-medium text-gray-700 mb-2">Care Instructions</label>
+                            <textarea name="care_instructions" id="care_instructions" rows="3"
+                                      class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="e.g., Machine wash cold, Do not bleach, Tumble dry low, Iron on low heat">{{ old('care_instructions') }}</textarea>
+                            <p class="mt-1 text-xs text-gray-500">Provide washing and care instructions for the product</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variant Manager -->
+                @include('admin.products.partials.variant-manager')
 
                 <!-- Google Merchant Center -->
                 <div class="bg-white rounded-lg border border-gray-100 p-6">
@@ -500,42 +683,98 @@
                 <div class="bg-white rounded-lg border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-black mb-4">🚚 Shipping Information</h3>
 
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Product Weight (kg)</label>
-                            <input type="number" name="weight" id="weight" value="{{ old('weight') }}" step="0.01" min="0"
-                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('weight')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
+                            <label for="length_cm" class="block text-sm font-medium text-gray-700 mb-2">Length (cm)</label>
+                            <input type="number" name="length_cm" id="length_cm" value="{{ old('length_cm') }}" step="0.01" min="0"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="0.00">
                         </div>
 
                         <div>
-                            <label for="dimensions" class="block text-sm font-medium text-gray-700 mb-2">Product Dimensions</label>
-                            <input type="text" name="dimensions" id="dimensions" value="{{ old('dimensions') }}" placeholder="L x W x H (cm)"
-                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('dimensions')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
+                            <label for="width_cm" class="block text-sm font-medium text-gray-700 mb-2">Width (cm)</label>
+                            <input type="number" name="width_cm" id="width_cm" value="{{ old('width_cm') }}" step="0.01" min="0"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label for="height_cm" class="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                            <input type="number" name="height_cm" id="height_cm" value="{{ old('height_cm') }}" step="0.01" min="0"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Product Weight (kg)</label>
+                            <input type="number" name="weight" id="weight" value="{{ old('weight') }}" step="0.01" min="0"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
                         <div>
                             <label for="shipping_weight" class="block text-sm font-medium text-gray-700 mb-2">Shipping Weight (kg)</label>
                             <input type="number" name="shipping_weight" id="shipping_weight" value="{{ old('shipping_weight') }}" step="0.01" min="0"
-                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <p class="mt-1 text-xs text-gray-500">Including packaging</p>
-                            @error('shipping_weight')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="package_type" class="block text-sm font-medium text-gray-700 mb-2">Package Type</label>
+                            <select name="package_type" id="package_type" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select package type...</option>
+                                <option value="Box" {{ old('package_type') == 'Box' ? 'selected' : '' }}>Box</option>
+                                <option value="Poly Bag" {{ old('package_type') == 'Poly Bag' ? 'selected' : '' }}>Poly Bag</option>
+                                <option value="Envelope" {{ old('package_type') == 'Envelope' ? 'selected' : '' }}>Envelope</option>
+                                <option value="Custom" {{ old('package_type') == 'Custom' ? 'selected' : '' }}>Custom</option>
+                            </select>
                         </div>
 
                         <div>
                             <label for="shipping_cost" class="block text-sm font-medium text-gray-700 mb-2">Shipping Cost (₹)</label>
                             <input type="number" name="shipping_cost" id="shipping_cost" value="{{ old('shipping_cost') }}" step="0.01" min="0"
-                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('shipping_cost')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-4 space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="is_fragile" value="1" {{ old('is_fragile') ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Fragile Item (Handle with care)</span>
+                        </label>
+
+                        <label class="flex items-center">
+                            <input type="checkbox" name="requires_signature" value="1" {{ old('requires_signature') ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Requires Signature on Delivery</span>
+                        </label>
+                    </div>
+
+                    <!-- Keep old dimensions field for backward compatibility -->
+                    <input type="hidden" name="dimensions" id="dimensions" value="{{ old('dimensions') }}">
+                </div>
+
+                <!-- Media & Content -->
+                <div class="bg-white rounded-lg border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-black mb-4">🎥 Media & Content</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="video_url" class="block text-sm font-medium text-gray-700 mb-2">Product Video URL</label>
+                            <input type="url" name="video_url" id="video_url" value="{{ old('video_url') }}"
+                                   class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="https://youtube.com/watch?v=... or https://vimeo.com/...">
+                            <p class="mt-1 text-xs text-gray-500">YouTube or Vimeo video URL</p>
+                        </div>
+
+                        <div>
+                            <label for="model_info" class="block text-sm font-medium text-gray-700 mb-2">Model Information</label>
+                            <textarea name="model_info" id="model_info" rows="2"
+                                      class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder='e.g., Model is 5\'6" wearing size M'>{{ old('model_info') }}</textarea>
+                            <p class="mt-1 text-xs text-gray-500">Help customers visualize the fit</p>
                         </div>
                     </div>
                 </div>
@@ -628,106 +867,185 @@
     <!-- Include AI Modal -->
     <x-ai-product-modal :categories="$categories" :variantTypes="$variantTypes" />
 
+    <style>
+        .image-method-tab {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .image-method-tab:hover {
+            border-color: #d1d5db !important;
+            color: #374151 !important;
+        }
+        .image-method-tab.active {
+            border-color: #3b82f6 !important;
+            color: #3b82f6 !important;
+        }
+    </style>
+
     <script>
         // Global variables for file management
         let selectedFiles = [];
+        let fileDataTransfer = new DataTransfer();
         const maxFiles = 8;
 
-        // Simple file upload approach
-        function simpleHandleFileUpload(input) {
-            console.log('Simple file upload handler triggered');
+        // Improved file upload with remove functionality
+        window.simpleHandleFileUpload = function(input) {
+            console.log('Image upload handler triggered');
             const files = Array.from(input.files);
             const preview = document.getElementById('upload-preview');
 
             if (files.length > maxFiles) {
                 alert(`You can only upload up to ${maxFiles} images.`);
-                input.value = ''; // Clear the input
+                input.value = '';
                 return;
             }
 
-            if (files.length > 0) {
-                preview.style.display = 'grid';
+            if (files.length === 0) {
+                preview.style.display = 'none';
                 preview.innerHTML = '';
+                return;
+            }
 
-                files.forEach((file, index) => {
-                    if (file.type.startsWith('image/')) {
-                        if (file.size <= 10 * 1024 * 1024) { // 10MB limit
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const div = document.createElement('div');
-                                div.className = 'relative group';
-                                div.innerHTML = `
-                                    <img src="${e.target.result}" alt="Preview ${index + 1}"
-                                         class="w-full h-32 object-cover rounded-lg border border-gray-300">
-                                    <div class="absolute top-2 left-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
-                                        ${index + 1}
-                                    </div>
-                                    <p class="text-xs text-gray-600 mt-1 truncate" title="${file.name}">${file.name}</p>
-                                    <p class="text-xs text-gray-400">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                                `;
-                                preview.appendChild(div);
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
-                        }
-                    }
-                });
+            // Store files
+            selectedFiles = files;
 
-                // Add file count info
-                setTimeout(() => {
-                    const infoDiv = document.createElement('div');
-                    infoDiv.className = 'col-span-full text-center py-4 text-sm text-gray-600 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300';
-                    infoDiv.innerHTML = `
-                        <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <p><strong>${files.length}</strong> of <strong>${maxFiles}</strong> images selected</p>
-                        <p class="text-xs text-gray-500 mt-1">Upload will process when you save the product</p>
+            // Clear and show preview
+            preview.innerHTML = '';
+            preview.style.display = 'grid';
+
+            files.forEach((file, index) => {
+                if (!file.type.startsWith('image/')) {
+                    alert(`"${file.name}" is not an image file.`);
+                    return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`"${file.name}" is too large. Maximum size is 10MB.`);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group border-2 border-gray-300 rounded-lg overflow-hidden hover:border-blue-500 transition-colors';
+                    div.setAttribute('data-index', index);
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}"
+                             class="w-full h-32 object-cover">
+                        <div class="absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow">
+                            #${index + 1}
+                        </div>
+                        <button type="button" onclick="removeImagePreview(${index})"
+                                class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2">
+                            <p class="text-xs truncate" title="${file.name}">${file.name}</p>
+                            <p class="text-xs text-gray-300">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        </div>
                     `;
-                    preview.appendChild(infoDiv);
-                }, 100);
+                    preview.appendChild(div);
+                };
+                reader.onerror = function() {
+                    alert(`Error reading file: ${file.name}`);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Add summary info
+            setTimeout(() => {
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'col-span-full text-center py-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-2 border-dashed border-blue-300';
+                infoDiv.innerHTML = `
+                    <svg class="w-10 h-10 mx-auto mb-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm font-semibold text-gray-700"><strong class="text-blue-600">${files.length}</strong> of <strong class="text-blue-600">${maxFiles}</strong> images ready</p>
+                    <p class="text-xs text-gray-600 mt-1">Images will be uploaded when you save the product</p>
+                    <p class="text-xs text-gray-500 mt-1">Hover over images to remove them</p>
+                `;
+                preview.appendChild(infoDiv);
+            }, 100);
+        }
+
+        // Remove image from preview
+        window.removeImagePreview = function(indexToRemove) {
+            const input = document.getElementById('image-upload');
+            const preview = document.getElementById('upload-preview');
+
+            // Create new file list without the removed file
+            const dt = new DataTransfer();
+            selectedFiles.forEach((file, index) => {
+                if (index !== indexToRemove) {
+                    dt.items.add(file);
+                }
+            });
+
+            // Update input files
+            input.files = dt.files;
+            selectedFiles = Array.from(dt.files);
+
+            // Re-render preview
+            if (selectedFiles.length > 0) {
+                simpleHandleFileUpload(input);
             } else {
                 preview.style.display = 'none';
+                preview.innerHTML = '';
             }
         }
 
-        // Image method switching
-        function switchImageMethod(method) {
+        // Image method switching - make it global and fix event.target issue
+        window.switchImageMethod = function(method) {
+            console.log('Switching to method:', method);
+
             // Update tabs
             document.querySelectorAll('.image-method-tab').forEach(tab => {
                 tab.classList.remove('active', 'border-blue-500', 'text-blue-600');
                 tab.classList.add('border-transparent', 'text-gray-500');
             });
 
-            event.target.classList.add('active', 'border-blue-500', 'text-blue-600');
-            event.target.classList.remove('border-transparent', 'text-gray-500');
+            // Activate the clicked tab by ID (more reliable than event.target)
+            if (method === 'upload') {
+                const uploadTab = document.getElementById('upload-tab');
+                uploadTab.classList.add('active', 'border-blue-500', 'text-blue-600');
+                uploadTab.classList.remove('border-transparent', 'text-gray-500');
+            } else {
+                const urlTab = document.getElementById('url-tab');
+                urlTab.classList.add('active', 'border-blue-500', 'text-blue-600');
+                urlTab.classList.remove('border-transparent', 'text-gray-500');
+            }
 
             // Show/hide sections
-            document.getElementById('upload-section').style.display = 'none';
-            document.getElementById('url-section').style.display = 'none';
+            const uploadSection = document.getElementById('upload-section');
+            const urlSection = document.getElementById('url-section');
 
             if (method === 'upload') {
-                document.getElementById('upload-section').style.display = 'block';
+                uploadSection.style.display = 'block';
+                urlSection.style.display = 'none';
+                console.log('Upload section shown');
             } else {
-                document.getElementById('url-section').style.display = 'block';
+                uploadSection.style.display = 'none';
+                urlSection.style.display = 'block';
+                console.log('URL section shown');
             }
         }
 
-        // Drag and drop handlers
-        function handleDragOver(e) {
+        // Drag and drop handlers - make global
+        window.handleDragOver = function(e) {
             e.preventDefault();
             e.stopPropagation();
             e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
         }
 
-        function handleDragLeave(e) {
+        window.handleDragLeave = function(e) {
             e.preventDefault();
             e.stopPropagation();
             e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
         }
 
-        function handleDrop(e) {
+        window.handleDrop = function(e) {
             e.preventDefault();
             e.stopPropagation();
             e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
@@ -753,8 +1071,8 @@
             simpleHandleFileUpload(input);
         }
 
-        // URL input functions
-        function addImageInput() {
+        // URL input functions - make global
+        window.addImageInput = function() {
             const container = document.getElementById('images-container');
             const div = document.createElement('div');
             div.className = 'image-input-group mb-3';
@@ -769,7 +1087,7 @@
             container.appendChild(div);
         }
 
-        function removeImageInput(button) {
+        window.removeImageInput = function(button) {
             const container = document.getElementById('images-container');
             if (container.children.length > 1) {
                 button.closest('.image-input-group').remove();

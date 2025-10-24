@@ -104,6 +104,41 @@ class UserOtp extends Model
     }
 
     /**
+     * Verify OTP for password reset (simplified method)
+     */
+    public static function verifyOtp($identifier, $otp, $purpose)
+    {
+        $otpRecord = self::where('identifier', $identifier)
+            ->where('otp', $otp)
+            ->where('purpose', $purpose)
+            ->where('verified', false)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$otpRecord) {
+            // Try to increment attempts for failed verification
+            self::where('identifier', $identifier)
+                ->where('purpose', $purpose)
+                ->where('verified', false)
+                ->increment('attempts');
+            return false;
+        }
+
+        // Check attempts limit
+        if ($otpRecord->attempts >= 3) {
+            return false;
+        }
+
+        // Mark as verified
+        $otpRecord->update([
+            'verified' => true,
+            'verified_at' => now(),
+        ]);
+
+        return true;
+    }
+
+    /**
      * Get best delivery method based on available services
      */
     private static function getBestDeliveryMethod($type)
