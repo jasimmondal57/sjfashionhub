@@ -260,16 +260,25 @@
                     body: JSON.stringify({ phone, type })
                 });
 
+                // Check if response is ok
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Server error:', response.status, errorText);
+                    showError('phoneError', 'Server error. Please try again.');
+                    return;
+                }
+
                 const data = await response.json();
 
                 if (data.success) {
                     showOtpForm(phone, type);
                     startCountdown();
                 } else {
-                    showError('phoneError', data.message);
+                    showError('phoneError', data.message || 'Failed to send OTP. Please try again.');
                 }
             } catch (error) {
-                showError('phoneError', 'Network error. Please try again.');
+                console.error('Send OTP Error:', error);
+                showError('phoneError', 'Network error. Please check your connection and try again.');
             } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerHTML = '📱 Send OTP';
