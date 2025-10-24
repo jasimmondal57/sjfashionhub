@@ -513,6 +513,37 @@ class SocialMediaService
             ];
         }
 
+        // First, test if the token is valid by checking the token info
+        $tokenResponse = Http::get("https://graph.facebook.com/debug_token", [
+            'input_token' => $accessToken,
+            'access_token' => $accessToken
+        ]);
+
+        if ($tokenResponse->successful()) {
+            $tokenData = $tokenResponse->json();
+
+            // Check if token is valid
+            if (isset($tokenData['data']['is_valid']) && $tokenData['data']['is_valid']) {
+                return [
+                    'success' => true,
+                    'error' => null,
+                    'data' => [
+                        'message' => 'Facebook credentials are valid! ✅',
+                        'page_id' => $pageId,
+                        'token_valid' => true,
+                        'app_id' => $tokenData['data']['app_id'] ?? 'Unknown'
+                    ]
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'error' => 'Access token is invalid or expired',
+                    'data' => $tokenData
+                ];
+            }
+        }
+
+        // Fallback: try to get page info (may fail due to permissions)
         $response = Http::get("https://graph.facebook.com/v18.0/{$pageId}", [
             'fields' => 'id,name',
             'access_token' => $accessToken
