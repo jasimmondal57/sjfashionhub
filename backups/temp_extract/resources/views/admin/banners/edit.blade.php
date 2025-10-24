@@ -1,0 +1,334 @@
+<x-layouts.admin>
+    <x-slot name="title">Edit Banner - SJ Fashion Hub Admin</x-slot>
+    <x-slot name="description">Edit banner details</x-slot>
+    <x-slot name="pageTitle">🎨 Edit Banner</x-slot>
+
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <p class="text-gray-600">Edit banner: {{ $banner->title }}</p>
+        </div>
+        <a href="{{ route('admin.banners.index') }}" class="btn btn-secondary">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Banners
+        </a>
+    </div>
+
+    <!-- Current Banner Preview -->
+    <div class="bg-white rounded-lg border border-gray-100 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-black mb-4">Current Banner Preview</h3>
+        <div class="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+            @if($banner->image_path)
+                <img src="{{ Storage::url($banner->image_path) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div class="text-center" style="color: {{ $banner->text_color }}">
+                        <h4 class="text-2xl font-bold mb-2">{{ $banner->title }}</h4>
+                        @if($banner->description)
+                            <p class="text-lg mb-4">{{ $banner->description }}</p>
+                        @endif
+                        @if($banner->button_text)
+                            <span class="inline-block px-6 py-2 rounded-lg font-semibold" style="background-color: {{ $banner->button_color }}; color: {{ $banner->text_color }};">
+                                {{ $banner->button_text }}
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Banner Form -->
+    <div class="bg-white rounded-lg border border-gray-100 p-6">
+        <form action="{{ route('admin.banners.update', $banner) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @method('PUT')
+
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Title -->
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Banner Title *</label>
+                    <input type="text" id="title" name="title" value="{{ old('title', $banner->title) }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                           placeholder="Enter banner title" required>
+                    @error('title')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Sort Order -->
+                <div>
+                    <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label>
+                    <input type="number" id="sort_order" name="sort_order" value="{{ old('sort_order', $banner->sort_order) }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                           placeholder="0" min="0">
+                    @error('sort_order')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea id="description" name="description" rows="3" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                          placeholder="Enter banner description">{{ old('description', $banner->description) }}</textarea>
+                @error('description')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Image Upload -->
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Banner Image</label>
+
+                <!-- Image Size Recommendations -->
+                <div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium mb-1">Recommended Image Specifications:</p>
+                            <ul class="space-y-1 text-xs">
+                                <li><strong>Dimensions:</strong> 1920x600px (Desktop) or 1200x600px (minimum)</li>
+                                <li><strong>Aspect Ratio:</strong> 16:5 or 2:1 for best results</li>
+                                <li><strong>Format:</strong> JPG, PNG, or WebP</li>
+                                <li><strong>File Size:</strong> Under 10MB for optimal loading</li>
+                                <li><strong>Resolution:</strong> 72-150 DPI for web display</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                    <div class="space-y-1 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-black hover:text-gray-800 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-black">
+                                <span>Upload a new file</span>
+                                <input id="image" name="image" type="file" class="sr-only" accept="image/*">
+                            </label>
+                            <p class="pl-1">or drag and drop</p>
+                        </div>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB (leave empty to keep current image)</p>
+                        <p class="text-xs text-gray-400">Recommended: 1920x600px for best quality</p>
+                    </div>
+                </div>
+                @error('image')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Button Configuration -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Button Configuration</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Button Text -->
+                    <div>
+                        <label for="button_text" class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+                        <input type="text" id="button_text" name="button_text" value="{{ old('button_text', $banner->button_text) }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                               placeholder="Shop Now">
+                        @error('button_text')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Link Type -->
+                    <div>
+                        <label for="link_type" class="block text-sm font-medium text-gray-700 mb-2">Link Type</label>
+                        <select id="link_type" name="link_type" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                onchange="toggleLinkOptions()">
+                            <option value="none" {{ old('link_type', $banner->link_type) === 'none' ? 'selected' : '' }}>No Link</option>
+                            <option value="category" {{ old('link_type', $banner->link_type) === 'category' ? 'selected' : '' }}>Category</option>
+                            <option value="product" {{ old('link_type', $banner->link_type) === 'product' ? 'selected' : '' }}>Product</option>
+                            <option value="custom" {{ old('link_type', $banner->link_type) === 'custom' ? 'selected' : '' }}>Custom URL</option>
+                        </select>
+                        @error('link_type')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Category Selection -->
+                <div id="category_selection" class="mt-4 hidden">
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+                    <select id="category_id" name="category_id" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                        <option value="">Choose a category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id', $banner->category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Product Selection -->
+                <div id="product_selection" class="mt-4 hidden">
+                    <label for="product_id" class="block text-sm font-medium text-gray-700 mb-2">Select Product</label>
+                    <select id="product_id" name="product_id" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                        <option value="">Choose a product</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}" {{ old('product_id', $banner->product_id) == $product->id ? 'selected' : '' }}>
+                                {{ $product->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('product_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Custom URL -->
+                <div id="custom_url" class="mt-4 hidden">
+                    <label for="custom_link" class="block text-sm font-medium text-gray-700 mb-2">Custom URL</label>
+                    <input type="url" id="custom_link" name="custom_link" value="{{ old('custom_link', $banner->custom_link) }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                           placeholder="https://example.com">
+                    @error('custom_link')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Styling Options -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Styling Options</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Text Position -->
+                    <div>
+                        <label for="text_position" class="block text-sm font-medium text-gray-700 mb-2">Text Position</label>
+                        <select id="text_position" name="text_position" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                            <option value="left" {{ old('text_position', $banner->text_position) === 'left' ? 'selected' : '' }}>Left</option>
+                            <option value="center" {{ old('text_position', $banner->text_position) === 'center' ? 'selected' : '' }}>Center</option>
+                            <option value="right" {{ old('text_position', $banner->text_position) === 'right' ? 'selected' : '' }}>Right</option>
+                        </select>
+                        @error('text_position')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Text Color -->
+                    <div>
+                        <label for="text_color" class="block text-sm font-medium text-gray-700 mb-2">Text Color</label>
+                        <input type="color" id="text_color" name="text_color" value="{{ old('text_color', $banner->text_color) }}" 
+                               class="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                        @error('text_color')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Button Color -->
+                    <div>
+                        <label for="button_color" class="block text-sm font-medium text-gray-700 mb-2">Button Color</label>
+                        <input type="color" id="button_color" name="button_color" value="{{ old('button_color', $banner->button_color) }}" 
+                               class="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                        @error('button_color')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex items-center">
+                    <input type="checkbox" id="is_active" name="is_active" value="1" 
+                           {{ old('is_active', $banner->is_active) ? 'checked' : '' }}
+                           class="h-4 w-4 text-black focus:ring-black border-gray-300 rounded">
+                    <label for="is_active" class="ml-2 block text-sm text-gray-900">
+                        Active (banner will be displayed on the website)
+                    </label>
+                </div>
+                @error('is_active')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                <a href="{{ route('admin.banners.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Banner</button>
+            </div>
+        </form>
+    </div>
+
+</x-layouts.admin>
+
+    <script>
+        function toggleLinkOptions() {
+            const linkType = document.getElementById('link_type').value;
+            const categorySelection = document.getElementById('category_selection');
+            const productSelection = document.getElementById('product_selection');
+            const customUrl = document.getElementById('custom_url');
+
+            // Hide all options first
+            categorySelection.classList.add('hidden');
+            productSelection.classList.add('hidden');
+            customUrl.classList.add('hidden');
+
+            // Show relevant option
+            if (linkType === 'category') {
+                categorySelection.classList.remove('hidden');
+            } else if (linkType === 'product') {
+                productSelection.classList.remove('hidden');
+            } else if (linkType === 'custom') {
+                customUrl.classList.remove('hidden');
+            }
+        }
+
+        // Image preview functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleLinkOptions();
+            
+            const imageInput = document.getElementById('image');
+            if (imageInput) {
+                imageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Check file size (10MB = 10485760 bytes)
+                        if (file.size > 10485760) {
+                            alert('File size must be less than 10MB');
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Show preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            // Find or create preview container
+                            let previewContainer = document.querySelector('.image-preview-container');
+                            if (!previewContainer) {
+                                previewContainer = document.createElement('div');
+                                previewContainer.className = 'image-preview-container mt-4';
+                                imageInput.closest('.space-y-1').appendChild(previewContainer);
+                            }
+                            
+                            previewContainer.innerHTML = `
+                                <div class="relative">
+                                    <img src="${e.target.result}" alt="Preview" class="max-w-full h-48 object-cover rounded-lg border border-gray-300">
+                                    <p class="text-sm text-gray-600 mt-2">New image preview (${(file.size / 1024 / 1024).toFixed(2)} MB)</p>
+                                </div>
+                            `;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+    </script>

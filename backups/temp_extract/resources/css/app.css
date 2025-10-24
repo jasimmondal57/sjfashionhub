@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-family: 'Urbanist', system-ui, sans-serif;
+    }
+
+    body {
+        @apply text-gray-900 bg-white;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-medium text-gray-900;
+    }
+
+    /* Mobile-first responsive text sizing */
+    @media (max-width: 640px) {
+        html {
+            font-size: 14px;
+        }
+    }
+}
+
+@layer components {
+    /* Button Components */
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+
+    .btn-primary {
+        @apply bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-900 shadow-sm;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-900 shadow-sm;
+    }
+
+    .btn-outline {
+        @apply bg-transparent text-gray-900 border border-gray-300 hover:border-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-900;
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+
+    /* Mobile button adjustments */
+    @media (max-width: 640px) {
+        .btn {
+            @apply px-3 py-2 text-sm;
+        }
+
+        .btn-lg {
+            @apply px-4 py-2.5 text-base;
+        }
+    }
+
+    /* Card Components */
+    .card {
+        @apply bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden;
+    }
+
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    }
+
+    /* Product Card */
+    .product-card {
+        @apply card card-hover cursor-pointer;
+    }
+
+    .product-image {
+        @apply w-full h-64 object-cover transition-transform duration-300;
+    }
+
+    .product-badge {
+        @apply absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded;
+    }
+
+    .product-badge-sale {
+        @apply bg-red-500;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply text-gray-700 hover:text-gray-900 transition-colors duration-200 font-medium;
+    }
+
+    .nav-link-active {
+        @apply text-gray-900 font-semibold border-b-2 border-gray-900;
+    }
+
+    /* Form Elements */
+    .form-input {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent;
+    }
+
+    .form-select {
+        @apply form-input appearance-none bg-white;
+    }
+
+    /* Header Styles */
+    .header-top {
+        @apply bg-gray-900 text-white text-sm py-2;
+    }
+
+    .header-main {
+        @apply bg-white border-b border-gray-200 sticky top-0 z-50;
+    }
+
+    /* Footer */
+    .footer {
+        @apply bg-white border-t border-gray-200 mt-auto;
+    }
+
+    /* Utility Classes */
+    .text-gradient {
+        @apply bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent;
+    }
+
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Loading States */
+    .loading {
+        @apply animate-pulse;
+    }
+
+    .skeleton {
+        @apply bg-gray-200 rounded;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+        @apply fixed inset-0 z-50 bg-white transform transition-transform duration-300;
+    }
+
+    .mobile-menu-open {
+        @apply translate-x-0;
+    }
+
+    .mobile-menu-closed {
+        @apply translate-x-full;
+    }
+
+    /* Cart Drawer */
+    .cart-drawer {
+        @apply fixed right-0 top-0 h-full w-96 bg-white shadow-xl transform transition-transform duration-300 z-50;
+    }
+
+    .cart-drawer-open {
+        @apply translate-x-0;
+    }
+
+    .cart-drawer-closed {
+        @apply translate-x-full;
+    }
+
+    /* Search */
+    .search-overlay {
+        @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+    }
+
+    .search-modal {
+        @apply fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-2xl bg-white rounded-lg shadow-xl z-50;
+    }
+
+    /* Admin Layout */
+    .admin-content {
+        margin-left: 0;
+    }
+
+    @media (min-width: 1024px) {
+        .admin-content {
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+        }
+    }
+
+    /* Mobile-specific improvements */
+    @media (max-width: 768px) {
+        .container-custom {
+            @apply px-3;
+        }
+
+        .product-card {
+            @apply shadow-sm;
+        }
+
+        .product-image {
+            @apply h-48;
+        }
+
+        /* Improve touch targets */
+        .btn, .nav-link, button, a {
+            min-height: 44px;
+            @apply flex items-center justify-center;
+        }
+
+        /* Better spacing for mobile */
+        .grid {
+            @apply gap-3;
+        }
+
+        /* Mobile typography */
+        h1 {
+            @apply text-2xl;
+        }
+
+        h2 {
+            @apply text-xl;
+        }
+
+        h3 {
+            @apply text-lg;
+        }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .btn-primary {
+            @apply border-2 border-white;
+        }
+
+        .btn-secondary {
+            @apply border-2;
+        }
+    }
+}

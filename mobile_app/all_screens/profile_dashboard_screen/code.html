@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#141414',
+              'background-light': '#f7f7f7',
+              'background-dark': '#191919',
+            },
+            fontFamily: {
+              display: ['Plus Jakarta Sans'],
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+          },
+        },
+      };
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex h-screen flex-col">
+<header class="flex-shrink-0">
+<div class="flex items-center justify-between p-4">
+<button class="rounded-full p-2 text-primary dark:text-white">
+<span class="material-symbols-outlined"> arrow_back </span>
+</button>
+<h1 class="text-lg font-bold text-primary dark:text-white">Profile</h1>
+<div class="w-10"></div>
+</div>
+</header>
+<main class="flex-grow overflow-y-auto">
+<div class="flex flex-col items-center p-6">
+<div class="relative mb-4">
+<img alt="Sophia Carter" class="h-24 w-24 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqtgmOemOPTbrMoEgc4RSdL3FbEDfIqcZUCf6Yl-imfm-QVRrxgdb9U6xkxM8lYLG_VywpZ4TjQJyo6yk7Of-5hLiCZRze0_qgoSKmBDapnRnZhFQVJh2Nf-q9I706tFRdZYeOrJO_zd7OWj8ywgy_VRQqv7I8Wm_MWp1MHY6yYlbSJEaFJydmfLqQ6ezgqI1aHsLY_qPMQ-oVfIXej-62-KosbhYEXmyyCKC_vK2RNv2e-rTJV2g4XybAkavKT7hR3CO1vUxGt8fj"/>
+<button class="absolute bottom-0 right-0 rounded-full bg-primary p-2 text-white">
+<span class="material-symbols-outlined text-base"> edit </span>
+</button>
+</div>
+<h2 class="text-xl font-bold text-primary dark:text-white">Sophia Carter</h2>
+<p class="text-sm text-primary/60 dark:text-white/60">sophia.carter@email.com</p>
+</div>
+<div class="px-4">
+<div class="rounded-xl bg-white p-4 dark:bg-primary/20">
+<h3 class="mb-4 text-base font-bold text-primary dark:text-white">Membership</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> military_tech </span>
+</div>
+<div>
+<p class="font-medium text-primary dark:text-white">Membership Tier</p>
+<p class="text-sm text-primary/60 dark:text-white/60">Gold</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> card_giftcard </span>
+</div>
+<div>
+<p class="font-medium text-primary dark:text-white">Reward Points</p>
+<p class="text-sm text-primary/60 dark:text-white/60">1,250</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 pt-6">
+<h3 class="mb-2 text-base font-bold text-primary dark:text-white">Settings</h3>
+<div class="space-y-2">
+<a class="flex items-center gap-4 rounded-lg bg-white p-3 dark:bg-primary/20" href="#">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> person </span>
+</div>
+<p class="flex-1 font-medium text-primary dark:text-white">Account Details</p>
+<span class="material-symbols-outlined text-primary/60 dark:text-white/60"> chevron_right </span>
+</a>
+<a class="flex items-center gap-4 rounded-lg bg-white p-3 dark:bg-primary/20" href="#">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> credit_card </span>
+</div>
+<p class="flex-1 font-medium text-primary dark:text-white">Payment Methods</p>
+<span class="material-symbols-outlined text-primary/60 dark:text-white/60"> chevron_right </span>
+</a>
+<a class="flex items-center gap-4 rounded-lg bg-white p-3 dark:bg-primary/20" href="#">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> local_shipping </span>
+</div>
+<p class="flex-1 font-medium text-primary dark:text-white">Shipping Addresses</p>
+<span class="material-symbols-outlined text-primary/60 dark:text-white/60"> chevron_right </span>
+</a>
+<a class="flex items-center gap-4 rounded-lg bg-white p-3 dark:bg-primary/20" href="#">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> notifications </span>
+</div>
+<p class="flex-1 font-medium text-primary dark:text-white">Notifications</p>
+<span class="material-symbols-outlined text-primary/60 dark:text-white/60"> chevron_right </span>
+</a>
+<a class="flex items-center gap-4 rounded-lg bg-white p-3 dark:bg-primary/20" href="#">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-primary dark:bg-primary/30 dark:text-white">
+<span class="material-symbols-outlined"> help </span>
+</div>
+<p class="flex-1 font-medium text-primary dark:text-white">Help &amp; Support</p>
+<span class="material-symbols-outlined text-primary/60 dark:text-white/60"> chevron_right </span>
+</a>
+</div>
+</div>
+<div class="px-4 py-6">
+<button class="w-full rounded-lg bg-primary/10 py-3 text-primary dark:bg-primary/30 dark:text-white">
+                Logout
+            </button>
+</div>
+</main>
+<footer class="flex-shrink-0 border-t border-primary/10 bg-white shadow-lg dark:border-white/10 dark:bg-primary/20">
+<nav class="flex items-center justify-around p-2">
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined"> home </span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined"> category </span>
+<span class="text-xs font-medium">Categories</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined"> shopping_cart </span>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined"> receipt_long </span>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 rounded-lg bg-primary/10 p-2 text-primary dark:bg-primary/30 dark:text-white" href="#">
+<span class="material-symbols-outlined"> person </span>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+
+</body></html>

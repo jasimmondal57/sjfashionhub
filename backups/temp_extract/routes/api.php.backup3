@@ -1,0 +1,60 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CouponController;
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
+// Public API routes
+Route::post('/validate-coupon', [CouponController::class, 'validateCode'])->name('api.coupon.validate');
+
+// User address routes (requires authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/user/addresses', [\App\Http\Controllers\User\AddressController::class, 'getAddresses']);
+});
+
+// Mobile App API Routes
+use App\Http\Controllers\Api\MobileApiController;
+
+// Public routes
+Route::prefix('mobile')->group(function () {
+    // Auth
+    Route::post('/register', [MobileApiController::class, 'register']);
+    Route::post('/login', [MobileApiController::class, 'login']);
+    
+    // Products
+    Route::get('/products', [MobileApiController::class, 'getProducts']);
+    Route::get('/products/{id}', [MobileApiController::class, 'getProduct']);
+    
+    // Categories
+    Route::get('/categories', [MobileApiController::class, 'getCategories']);
+    
+    // Banners
+    Route::get('/banners', [MobileApiController::class, 'getBanners']);
+});
+
+// Protected routes (require authentication)
+Route::prefix('mobile')->middleware('auth:sanctum')->group(function () {
+    // Auth
+    Route::post('/logout', [MobileApiController::class, 'logout']);
+    
+    // Profile
+    Route::get('/profile', [MobileApiController::class, 'getProfile']);
+    Route::put('/profile', [MobileApiController::class, 'updateProfile']);
+    
+    // Orders
+    Route::get('/orders', [MobileApiController::class, 'getOrders']);
+    Route::get('/orders/{id}', [MobileApiController::class, 'getOrder']);
+    
+    // Cart
+    Route::get('/cart', [MobileApiController::class, 'getCart']);
+    Route::post('/cart', [MobileApiController::class, 'addToCart']);
+    
+    // Wishlist
+    Route::get('/wishlist', [MobileApiController::class, 'getWishlist']);
+    Route::post('/wishlist', [MobileApiController::class, 'addToWishlist']);
+    Route::delete('/wishlist/{productId}', [MobileApiController::class, 'removeFromWishlist']);
+});

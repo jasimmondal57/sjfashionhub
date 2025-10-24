@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Center</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#141414",
+            "background-light": "#f7f7f7",
+            "background-dark": "#191919",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary dark:text-background-light">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center p-4 border-b border-primary/10 dark:border-background-light/10">
+<button class="p-2 -ml-2">
+<span class="material-symbols-outlined text-primary dark:text-background-light">arrow_back</span>
+</button>
+<h1 class="flex-1 text-lg font-bold text-center text-primary dark:text-background-light">Notifications</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="flex-1 px-4 pt-6 pb-24 space-y-8">
+<section>
+<h2 class="text-xl font-bold text-primary dark:text-background-light mb-4">Promotions</h2>
+<div class="space-y-4">
+<div class="flex items-start p-3 space-x-4 rounded-lg bg-background-light dark:bg-background-dark shadow-sm border border-primary/5">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAWxRxFWyKMBEH4-DiKhW1N8PL0Gh3qEFtt6VxwZYkO5E4IMACyEVD0crLfEoQDlDrKGbOPZZj4AuIScXvSxiydX3r-ZJ6QMi0BGJTBfmz-kCZ6Wrf6jz_4qdqKtGBS-sh0psb1NV3GlswqebHZXsP2D8_OB6HbZm6uOga1WBXjDLHzKRAjckRkbeqYzv3cCU7Rf5u2zKOMW9nGrm_et5lKHoF2pvn4SeVzp9ygHEvRfL83Bml9UpOW5Q8cLuO9yqlrDzzG3ftmkbGt");'></div>
+<div class="flex-1">
+<p class="font-semibold text-primary dark:text-background-light">20% off on all summer collections</p>
+<p class="text-sm text-primary/60 dark:text-background-light/60">Ends in 2 days</p>
+</div>
+<span class="w-2.5 h-2.5 bg-primary rounded-full mt-1.5 shrink-0"></span>
+</div>
+<div class="flex items-start p-3 space-x-4 rounded-lg bg-background-light dark:bg-background-dark shadow-sm border border-primary/5">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzsmC0rVkOayEwCcENrZYg6M_hNlyUiGW0CN80_Nahtor-CcHWG8zuv8qBzfyCoNaMgQFk3yvQ8T85sNOv5xHSQRwRG8ST8JwsWozwBimcAQfrpPcMrW5CTzGlstpCoyVk7DKP2VkNEd-mEIuBZ802Li_CTZAZEgvlrQ1dkZ5kslp6oGaeBNmV6VSPnAhdmgecLtPNXg7g5MU1eOJGcj4RLQxGCyy6OWFPTeaYvvNnE7lxkzzv5YQIA7EWefMAn06NZ3fmvZp-ZEYz");'></div>
+<div class="flex-1">
+<p class="font-semibold text-primary dark:text-background-light">Free shipping on orders over $50</p>
+<p class="text-sm text-primary/60 dark:text-background-light/60">Ends in 1 week</p>
+</div>
+<span class="w-2.5 h-2.5 bg-primary rounded-full mt-1.5 shrink-0"></span>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-xl font-bold text-primary dark:text-background-light mb-4">Order Updates</h2>
+<div class="space-y-4">
+<div class="flex items-start p-3 space-x-4 rounded-lg bg-background-light dark:bg-background-dark shadow-sm border border-primary/5">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBAIjDOXypOS2mML3ZVCuqme0BDr26OnM2pOSD2eXmeZQV_8a0rwied_vms8hCvkabGBdTRbIuyCraBPCEXjYWjW1jNW8ZaMP4rTyO-lup8xU-kiAlLv34VaLVwEpT98DQTlTrI9F4shN3w4UwW6qGMHzgW6Hh7WVJGMEAvTuphWR7XOsXDcEzv8miFZiCAQ8Qkk0RWmgP-Kfh33iw0CkN1GZg262o096ty2c4tNymjdSo8Sb6Eml6xY8fciZJsDM65z7dOKxayzZrG");'></div>
+<div class="flex-1">
+<p class="font-semibold text-primary dark:text-background-light">Order #123456789</p>
+<p class="text-sm text-primary/60 dark:text-background-light/60">Delivered</p>
+</div>
+</div>
+<div class="flex items-start p-3 space-x-4 rounded-lg bg-background-light dark:bg-background-dark shadow-sm border border-primary/5">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDnrU9oPQ_ZZ1GT2DiE_2CqH8HH6zEdTMea4EmnUBs9KLciT5AAto6Pc2Gea30PrpJdltPSW_Yf4TKMh3iGz78lS-NM-9JjfsqhSvAL9F3FGXbAReRlAtcaK0DSG-FTJ3bxnz99SxfX0w_Uj6dBwC5t76WgHpTflGU4FqSMmlUIOCvM4XasXKv1CZp0MOPedTSJxF1HpbEFksanSGzt1Fjq1edBTYTzBSMvTUIc15P_rORDgLY8cl7Oz0L3Y3gJS5_Sdh-5zOQ_wIO-");'></div>
+<div class="flex-1">
+<p class="font-semibold text-primary dark:text-background-light">Order #987654321</p>
+<p class="text-sm text-primary/60 dark:text-background-light/60">Shipped</p>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-xl font-bold text-primary dark:text-background-light mb-4">Announcements</h2>
+<div class="space-y-4">
+<div class="flex items-start p-3 space-x-4 rounded-lg bg-background-light dark:bg-background-dark shadow-sm border border-primary/5">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAVywsXewLnwJTH6SQKfy9b9o6vUoQS39mJc6GjHkO3XDT1XrNK44uzJIv0xZEBVG2pDIKq3bS40bvbxQ4FzDajmPwPwugMz10OpfpUl6lZWOapGZrgkBoIKu_ZJimE4jcNh6oowZZs8loRTm4tYT8AGDZuzZ1k8eSjiCn4s1w5cgW1YD_uJ-fAGlVPuNdDBqkvHKHuM2cUVl6G4lSPeEZ7m0fPSbmrmspDcZ-lLkjhZmH-jZqk4S3NSoWF3rX_mTbfdWCoksoaqSF_");'></div>
+<div class="flex-1">
+<p class="font-semibold text-primary dark:text-background-light">Introducing our new fall collection</p>
+<p class="text-sm text-primary/60 dark:text-background-light/60">New arrivals</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm border-t border-primary/10 dark:border-background-light/10">
+<div class="flex justify-around items-center h-20 px-2">
+<a class="flex flex-col items-center justify-center space-y-1 text-primary/60 dark:text-background-light/60 hover:text-primary dark:hover:text-background-light" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center space-y-1 text-primary/60 dark:text-background-light/60 hover:text-primary dark:hover:text-background-light" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="text-xs font-medium">Categories</span>
+</a>
+<a class="flex flex-col items-center justify-center space-y-1 text-primary/60 dark:text-background-light/60 hover:text-primary dark:hover:text-background-light" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center space-y-1 text-primary/60 dark:text-background-light/60 hover:text-primary dark:hover:text-background-light" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center space-y-1 text-primary dark:text-background-light" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

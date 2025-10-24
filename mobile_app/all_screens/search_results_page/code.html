@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub - Search Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#141414",
+              "background-light": "#f7f7f7",
+              "background-dark": "#191919",
+            },
+            fontFamily: {
+              display: ["Plus Jakarta Sans"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary dark:text-background-light">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div>
+<header class="sticky top-0 z-10 flex items-center justify-between bg-background-light/80 px-4 py-3 backdrop-blur-sm dark:bg-background-dark/80">
+<button class="flex h-10 w-10 items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-background-light">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold text-primary dark:text-background-light">Search Results</h1>
+<button class="flex h-10 w-10 items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-background-light">shopping_bag</span>
+</button>
+</header>
+<main>
+<div class="px-4 py-3">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-primary/50 dark:text-background-light/50">search</span>
+<input class="w-full rounded-full border-none bg-background-light/0 dark:bg-background-dark/0 py-3 pl-10 pr-4 text-base ring-1 ring-inset ring-primary/20 focus:ring-2 focus:ring-primary dark:ring-background-light/20 dark:focus:ring-background-light" placeholder="Dresses" type="text"/>
+</div>
+</div>
+<div class="flex gap-2 px-4 pb-4 overflow-x-auto">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-background-light/10 dark:text-background-light">
+<span>Sort</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-background-light/10 dark:text-background-light">
+<span>Filter</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-background-light/10 dark:text-background-light">
+<span>Size</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4 px-4">
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Elegant Evening Gown" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQOZLX3KoWV2N4gWu_IqJNnoJHg10rnmdl8xiULCTOiVzqeWY1P0IjLxk-0NdBb2_-xRzVbQ5bLGr470sP5-yNCRLDauz2-ACkc90_4GD5hWcwHNC4otlURjp-FbvN8E8AW8uVZYp_bEmUzh_V_ELrmkDPraseavscunFLqEEhgsy3P9BoDspOSnrNjLiSzKq7lNNBeiSgrTYT-Q0LrPOaSfHvSphR52l-PtU1z8tDrrG2s3iPd8R1uYRHtsIxhhQPhyr6JyoSN-m_"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Elegant Evening Gown</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$129.99</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Casual Summer Dress" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMSLqlASV4mSwbFq4qALgQF8fxQq0KBOJG_3UHWxdO8tIEoZzh28F97zAjs5E9Gf7WbQUpcm45lFUEy1OZqxPfZECPr649X0orMsH8Tdg-8_s4WsBZ9BLndNhHunJwDO-53IrNc1M4tTOPjIIxv7io4Ez553YsJvw2In_gjchjHWygLewnxpFvyhIf5WTscbzWMnwYVwt7j0zOXSWcx90VR2pPBYk3XOw0EvGN1ByAoJOnNNRpafQs2eYxJIeYseRgUF23C2aM5V_x"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Casual Summer Dress</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$59.99</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Classic Denim Jacket" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGKz4eMlzFPdLwF9BX2az6vjBiSDPs7341m1lFgZp6WwxcXuIOGCOiFHPieYVNRt6MYjJ4fozx6rTApgGrWE8oW_s7GugluKD2-9hN_0D1Sn3R8io7sVPbIFMSosd8UbaPhRJne2-UFWqJoSIweC0J49Nw8xPOJmbglyvDpcGoilLQ305tGgmtxpKbLpx-ISoRMsxBV3TIOB1T6oui7_s_gNJl6hdR_NmwN96DWFZzIG4OBS-1JefAyCb8Ee3z0oIUDE9l0T-E6Zhf"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Classic Denim Jacket</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$89.99</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Stylish Leather Boots" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYoM5aQH6Hzem13tkd4aHjbLd4eq4obDzUpgUMd6t8ylF1wKEqVuszTgzHw3bv98raf-il6PIYZh1Kv74yzrrG5jjrhSKOXDSYdCB4he7eEHU2p4AR4JgMKx7C5BFHramY4XBR21CLox4xC5E-FAGgBc4jwHM4w6vctOBo5YHm5PPmeIkI_1NhkZpqvE95_6q_w1fx7h6N7Gp9yY0ePfrcJzuAerRdUnnCHwVQAtOn5ySt1WReuLvpjbrXEH7v3aa2B3OzNNJsDPBh"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Stylish Leather Boots</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$149.99</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Cozy Knit Sweater" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkk1qgJtjuoKPkMaCV4g9BHcKn7MJDN6Q8ljxr0zCYJZ2QrFi5TQmGjvIR555HwcX5adjfLw3S_wtck8MuTbAq27gB14Vsr1RRVG08Z6m7G9Uhsa-P5duvYN7WIRDHv3pF5Rb3R0LBkv-qlT5H9oocSzszlGr_YhVLuHqmUO7JFk_gQkWnWKi4f5Sg27bw_QzivmWcjQMcimzBqHQQEahRjd_x_YSWzcry-2zt71fzcU3CuurOJH_5NoJP6IrKC44syC3yRYr42q3J"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Cozy Knit Sweater</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$79.99</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+<img alt="Trendy Graphic Tee" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBql1rGWYRTWOxY3rO7-kA1eVlyOG1K4DgmkohvLWtE1-F4mQLXIyYYcGfCdJEpFr9h1afQHm_DZaOiHILc_Y4kyzpLAnfli-EknyEa-djPZ2Q8uGaxuVkUkXUlNQG3nGXxReaW-VOwhtAxM2qSxQ8eF2KxL4a-EwSeuaB4OYwEgXQycakHxfO1K1S2FsLLmUeQFCcjIrL9GJacn7Bc6qgidXc6i0NtvHCQ_OFkTZw-q6YEkws_iOmX_uPcO59HS3iljhaj0nQqcHFm"/>
+</div>
+<p class="text-sm font-medium text-primary dark:text-background-light">Trendy Graphic Tee</p>
+<p class="text-sm font-bold text-primary dark:text-background-light">$29.99</p>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 z-10 border-t border-primary/10 bg-background-light/80 pb-3 pt-2 backdrop-blur-sm dark:border-background-light/10 dark:bg-background-dark/80">
+<div class="flex justify-around">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-xs font-medium">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary dark:text-background-light" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">search</span>
+<p class="text-xs font-bold">Search</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<p class="text-xs font-medium">Favorites</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<p class="text-xs font-medium">Cart</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-xs font-medium">Profile</p>
+</a>
+</div>
+</footer>
+</div>
+
+</body></html>

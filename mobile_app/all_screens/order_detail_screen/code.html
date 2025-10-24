@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#141414",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#191919",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col font-display text-primary dark:text-white">
+<header class="sticky top-0 z-10 flex items-center justify-between border-b border-background-light bg-white p-4 dark:border-background-dark/20 dark:bg-background-dark">
+<button>
+<span class="material-symbols-outlined text-primary dark:text-white">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold text-primary dark:text-white">Order Details</h1>
+<div class="w-8"></div>
+</header>
+<main class="flex-grow overflow-y-auto p-4">
+<h2 class="text-xl font-bold text-primary dark:text-white">Order #1234567890</h2>
+<p class="mb-6 text-sm text-primary/70 dark:text-white/70">Placed on June 10, 2024</p>
+<div class="space-y-4">
+<div class="flex items-center gap-4 rounded-lg bg-background-light p-4 dark:bg-background-dark/50">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20">
+<span class="material-symbols-outlined text-primary dark:text-white">local_shipping</span>
+</div>
+<div>
+<p class="font-bold text-primary dark:text-white">Arriving Today</p>
+<p class="text-sm text-primary/70 dark:text-white/70">Delivered</p>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-lg bg-background-light p-4 dark:bg-background-dark/50">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20">
+<span class="material-symbols-outlined text-primary dark:text-white">inventory_2</span>
+</div>
+<div>
+<p class="font-bold text-primary dark:text-white">Shipment 1 of 1</p>
+<p class="text-sm text-primary/70 dark:text-white/70">1 item</p>
+</div>
+</div>
+</div>
+<h3 class="mt-8 mb-4 text-lg font-bold text-primary dark:text-white">Items</h3>
+<div class="flex items-center gap-4 rounded-lg bg-background-light p-4 dark:bg-background-dark/50">
+<div class="aspect-square w-20 shrink-0 rounded-lg bg-cover bg-center bg-no-repeat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAK4SKmNr2-Qs46KQpwrIM5pkWkcIDu75j3jTDDCS5wozjqwzm0DqSu2apUp1b9UnQpyIhPQjxR7TeuS_95EjhqlVzw31HB2oZ91EotsNB3zkJsR4DZDWkG0wEAulWJCA3qnCzco1cIAz-Yy63ngSEXboErXZRmb3DC33ADjnzBGAQQfuDJShZyxRQczDILkLGkgTRjSlqzBMfin-1BKxPj_k7QuCSQTsYFa1Z2vHt87uFD4agnmB1IV0un_RT1S-ROZRRH9REZ54-I");'></div>
+<div class="flex-grow">
+<p class="font-bold text-primary dark:text-white">Classic Crewneck T-Shirt</p>
+<p class="text-sm text-primary/70 dark:text-white/70">Size: M, Qty: 1</p>
+<p class="mt-1 font-bold text-primary dark:text-white">$25.00</p>
+</div>
+</div>
+<h3 class="mt-8 mb-4 text-lg font-bold text-primary dark:text-white">Tracking</h3>
+<div class="mb-6 h-48 w-full rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD5gTM7qgjZMPv-_cHVRIO60aUebom3SM5lNBLO9vxaDTir6Puv2GWeJwZljAdbqaD_NgF01htp6tHwnaNn3YtN07ltMkxl_eFJVdrz0CeMbLZwD0_5FolkEIjzaXwuUjJf5RX3xhnPnd5G2yA5fzQfs2ulco9K7X3Q_U82iDQ6FphVNYwMyQisS3N1q_lJ-6LZUh7DDfWaNDldvnYihD64Nd9QiW3_yoojX8INDIPyU1XyW8CHob2wdNxDtbBGkxISkA5MBb9M8awc");'></div>
+<div>
+<div class="relative flex gap-4">
+<div class="absolute left-3.5 top-0 h-full w-0.5 bg-primary/20 dark:bg-white/20"></div>
+<div class="flex flex-col items-center">
+<div class="z-10 flex size-8 items-center justify-center rounded-full bg-primary">
+<span class="material-symbols-outlined text-sm text-white">local_shipping</span>
+</div>
+</div>
+<div class="flex-grow pb-8">
+<p class="font-bold text-primary dark:text-white">Out for Delivery</p>
+<p class="text-sm text-primary/70 dark:text-white/70">Estimated delivery: Today</p>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="absolute left-3.5 top-0 h-full w-0.5 bg-primary/20 dark:bg-white/20"></div>
+<div class="flex flex-col items-center">
+<div class="z-10 flex size-8 items-center justify-center rounded-full bg-primary">
+<span class="material-symbols-outlined text-sm text-white">warehouse</span>
+</div>
+</div>
+<div class="flex-grow pb-8">
+<p class="font-bold text-primary dark:text-white">Arrived at Delivery Hub</p>
+<p class="text-sm text-primary/70 dark:text-white/70">San Francisco, CA</p>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="flex flex-col items-center">
+<div class="z-10 flex size-8 items-center justify-center rounded-full bg-primary">
+<span class="material-symbols-outlined text-sm text-white">receipt_long</span>
+</div>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-primary dark:text-white">Order Placed</p>
+<p class="text-sm text-primary/70 dark:text-white/70">Today</p>
+</div>
+</div>
+</div>
+<h3 class="mt-8 mb-4 text-lg font-bold text-primary dark:text-white">Invoice</h3>
+<div class="space-y-2 rounded-lg bg-background-light p-4 dark:bg-background-dark/50">
+<div class="flex justify-between text-sm">
+<p class="text-primary/70 dark:text-white/70">Subtotal</p>
+<p class="font-medium text-primary dark:text-white">$25.00</p>
+</div>
+<div class="flex justify-between text-sm">
+<p class="text-primary/70 dark:text-white/70">Shipping</p>
+<p class="font-medium text-primary dark:text-white">$5.00</p>
+</div>
+<div class="flex justify-between text-sm">
+<p class="text-primary/70 dark:text-white/70">Taxes</p>
+<p class="font-medium text-primary dark:text-white">$2.50</p>
+</div>
+<div class="my-2 border-t border-primary/10 dark:border-white/10"></div>
+<div class="flex justify-between font-bold">
+<p class="text-primary dark:text-white">Total</p>
+<p class="text-primary dark:text-white">$32.50</p>
+</div>
+</div>
+</main>
+<footer class="sticky bottom-0 bg-white dark:bg-background-dark">
+<div class="flex gap-4 p-4">
+<button class="flex h-12 flex-1 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20 dark:text-white">
+<span class="font-bold">Contact Support</span>
+</button>
+<button class="flex h-12 flex-1 items-center justify-center rounded-lg bg-primary text-white">
+<span class="font-bold">Reorder</span>
+</button>
+</div>
+<nav class="flex justify-around border-t border-background-light p-2 dark:border-background-dark/20">
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="text-xs">Categories</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-xs">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 rounded-lg bg-primary/10 p-2 text-primary dark:bg-primary/20 dark:text-white" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="text-xs">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-xs">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+
+</body></html>

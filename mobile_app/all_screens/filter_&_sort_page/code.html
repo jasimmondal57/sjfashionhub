@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>SJ Fashion Hub</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#141414",
+              "background-light": "#f7f7f7",
+              "background-dark": "#191919",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-end bg-black/40 font-display">
+<div class="flex flex-col items-stretch rounded-t-xl bg-background-light dark:bg-background-dark">
+<button class="flex h-5 w-full items-center justify-center">
+<div class="h-1 w-9 rounded-full bg-primary/20"></div>
+</button>
+<div class="flex-1">
+<div class="flex items-center p-4 pb-2">
+<h2 class="flex-1 text-center text-lg font-bold text-primary dark:text-white">Filter &amp; Sort</h2>
+<button class="w-12 text-right text-sm font-bold text-primary/70 dark:text-white/70">Clear</button>
+</div>
+<div class="space-y-4 p-4">
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Size</h3>
+<div class="flex flex-wrap gap-2">
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">XS</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">S</button>
+<button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white">M</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">L</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">XL</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">XXL</button>
+</div>
+</div>
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Color</h3>
+<div class="flex flex-wrap gap-3">
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(255, 255, 255);">
+<input checked="" class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(0, 0, 0);">
+<input class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(255, 0, 0);">
+<input class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(0, 255, 0);">
+<input class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(0, 0, 255);">
+<input class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+<label class="relative h-10 w-10 cursor-pointer rounded-full border border-primary/20 dark:border-white/20" style="background-color: rgb(255, 255, 0);">
+<input class="peer sr-only" name="color" type="radio"/>
+<span class="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary dark:peer-checked:border-white"></span>
+</label>
+</div>
+</div>
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Price</h3>
+<div class="relative w-full pt-2">
+<div class="relative h-1 w-full rounded-full bg-primary/20 dark:bg-white/20">
+<div class="absolute h-1 rounded-full bg-primary dark:bg-white" style="left: 15%; right: 40%;"></div>
+<div class="absolute -top-1.5" style="left: 15%;">
+<div class="h-4 w-4 rounded-full bg-primary dark:bg-white"></div>
+<span class="absolute left-1/2 top-5 -translate-x-1/2 text-sm text-primary dark:text-white">$30</span>
+</div>
+<div class="absolute -top-1.5" style="right: 40%;">
+<div class="h-4 w-4 rounded-full bg-primary dark:bg-white"></div>
+<span class="absolute left-1/2 top-5 -translate-x-1/2 text-sm text-primary dark:text-white">$120</span>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Rating</h3>
+<div class="flex flex-wrap gap-2">
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  4 Stars &amp; Up
+                  <input class="sr-only" name="rating" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  3 Stars &amp; Up
+                  <input class="sr-only" name="rating" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  2 Stars &amp; Up
+                  <input class="sr-only" name="rating" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  1 Star &amp; Up
+                  <input class="sr-only" name="rating" type="radio"/>
+</label>
+</div>
+</div>
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Material</h3>
+<div class="flex flex-wrap gap-2">
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">Cotton</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">Polyester</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">Silk</button>
+<button class="rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary dark:bg-primary/20 dark:text-white">Wool</button>
+</div>
+</div>
+<div>
+<h3 class="mb-3 text-base font-bold text-primary dark:text-white">Sort By</h3>
+<div class="flex flex-wrap gap-2">
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  Newest
+                  <input class="sr-only" name="sort" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  Price: Low to High
+                  <input class="sr-only" name="sort" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  Price: High to Low
+                  <input class="sr-only" name="sort" type="radio"/>
+</label>
+<label class="cursor-pointer rounded-lg border border-primary/20 px-4 py-2 text-sm font-medium text-primary has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-white dark:border-white/20 dark:text-white dark:has-[:checked]:border-white dark:has-[:checked]:bg-white dark:has-[:checked]:text-primary">
+                  Popularity
+                  <input class="sr-only" name="sort" type="radio"/>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-primary/10 bg-background-light p-4 dark:border-white/10 dark:bg-background-dark">
+<button class="h-12 w-full rounded-lg bg-primary text-base font-bold text-white">Apply Filters</button>
+</div>
+</div>
+</div>
+
+</body></html>

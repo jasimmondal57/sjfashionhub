@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub - Payment Methods</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#141414",
+              "background-light": "#f7f7f7",
+              "background-dark": "#191919",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"],
+            },
+            borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+          },
+        },
+      };
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen">
+<header class="flex items-center justify-between p-4 border-b border-primary/10 dark:border-primary/20">
+<button class="text-primary dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold text-primary dark:text-white">Payment Methods</h1>
+<div class="w-8"></div>
+</header>
+<main class="flex-grow p-4 space-y-6">
+<h2 class="text-xl font-bold text-primary dark:text-white">Saved Payment Methods</h2>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-primary/10 rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-6 bg-center bg-no-repeat bg-contain" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOLWjpPT_jSJNHtMbAzBOS1r2EBgyddFLIAxhviSrUXrpPJCpSlWsLYZXdcQwo6QWmMjQHJEJrlultL4Pxc_T8iIrgTWhtqO7i9mX9jZK1pxZbul1HzEA6uMB3kwKO1l8PHieXGjcPu608A_m1WgxFs5hHhm4AfkIuWyJPVe-ka7BRnhgfHI3sTAl_gFApn2Cl_lecDCzpnuTt8depLtBNzyoxyZa5jAf_SLpZejwhpyWGxXvUF296o64J-pYiHDqYHKaCrfOaCIys')"></div>
+<div>
+<p class="font-semibold text-primary dark:text-white">Visa ending in 4567</p>
+<p class="text-sm text-primary/60 dark:text-white/60">Expires 03/25</p>
+</div>
+</div>
+<button class="text-primary/60 dark:text-white/60 hover:text-red-500 dark:hover:text-red-400">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-white dark:bg-primary/10 rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-6 bg-center bg-no-repeat bg-contain" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOLWjpPT_jSJNHtMbAzBOS1r2EBgyddFLIAxhviSrUXrpPJCpSlWsLYZXdcQwo6QWmMjQHJEJrlultL4Pxc_T8iIrgTWhtqO7i9mX9jZK1pxZbul1HzEA6uMB3kwKO1l8PHieXGjcPu608A_m1WgxFs5hHhm4AfkIuWyJPVe-ka7BRnhgfHI3sTAl_gFApn2Cl_lecDCzpnuTt8depLtBNzyoxyZa5jAf_SLpZejwhpyWGxXvUF296o64J-pYiHDqYHKaCrfOaCIys')"></div>
+<div>
+<p class="font-semibold text-primary dark:text-white">MasterCard ending in 8901</p>
+<p class="text-sm text-primary/60 dark:text-white/60">Expires 01/24</p>
+</div>
+</div>
+<button class="text-primary/60 dark:text-white/60 hover:text-red-500 dark:hover:text-red-400">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</main>
+<footer class="p-4 border-t border-primary/10 dark:border-primary/20">
+<button class="w-full h-12 px-5 text-base font-bold text-white bg-primary rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-offset-background-dark">
+          Add Payment Method
+        </button>
+</footer>
+</div>
+
+
+</body></html>

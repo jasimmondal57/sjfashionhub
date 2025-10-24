@@ -217,6 +217,9 @@ class ProductController extends Controller
             'is_handmade' => 'boolean',
             'special_features' => 'nullable|string',
 
+            // Social Media Auto-Share
+            'auto_share_social_media' => 'boolean',
+
             // Variants
             'variants_data' => 'nullable|json',
         ]);

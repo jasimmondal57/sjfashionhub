@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub - Order Tracking</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#141414",
+            "background-light": "#f7f7f7",
+            "background-dark": "#191919",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary dark:text-white">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center p-4">
+<button class="p-2 -ml-2">
+<span class="material-symbols-outlined text-primary dark:text-white">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-center flex-grow text-primary dark:text-white">Track Order</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="flex-grow">
+<div class="p-4">
+<h2 class="text-xl font-bold mb-2 text-primary dark:text-white">Order #234567890</h2>
+<p class="text-sm text-primary/60 dark:text-white/60 mb-4">Estimated Delivery: June 18, 2024</p>
+<div class="rounded-lg overflow-hidden mb-6">
+<img alt="Map showing delivery location" class="w-full h-48 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAulfsrrhwXRIH91AcxRjNhFwU2S9rQ6hyur-FZrmJsWnVu2C5VCdEEeyrwP8FQXH7sy9HFkmRNnq6aX23DXANH-bT_YaCSJvrjH9voTBvLGt99chw2CWiDgGwrua2FkaZeaPphwbuAT6TIxzS4ejzkVCH-ZmVquhJaW_StcxKIakw8E2nWKKLZ2RpxAHBvL4lKourdWtvH0drs_FSlm2nTGxcbMK91nrYTd1PorOA-h5fD7OtJKWJKE3mFjV8EklWnBz7ugS0voPF4"/>
+</div>
+<div class="space-y-2">
+<div class="flex items-start">
+<div class="flex flex-col items-center mr-4">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-base">check</span>
+</div>
+<div class="w-0.5 flex-grow bg-primary/20 dark:bg-white/20"></div>
+</div>
+<div class="pb-6">
+<p class="font-bold text-primary dark:text-white">Order Placed</p>
+<p class="text-sm text-primary/60 dark:text-white/60">June 15, 2024, 10:30 AM</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="flex flex-col items-center mr-4">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-base">check</span>
+</div>
+<div class="w-0.5 flex-grow bg-primary/20 dark:bg-white/20"></div>
+</div>
+<div class="pb-6">
+<p class="font-bold text-primary dark:text-white">Order Shipped</p>
+<p class="text-sm text-primary/60 dark:text-white/60">June 16, 2024, 09:00 AM</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="flex flex-col items-center mr-4">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-base">check</span>
+</div>
+<div class="w-0.5 flex-grow bg-primary/20 dark:bg-white/20"></div>
+</div>
+<div class="pb-6">
+<p class="font-bold text-primary dark:text-white">In Transit</p>
+<p class="text-sm text-primary/60 dark:text-white/60">June 17, 2024 - Arrived at local facility</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="flex flex-col items-center mr-4">
+<div class="w-6 h-6 rounded-full bg-primary/20 dark:bg-white/20 flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-primary dark:text-white text-base">local_shipping</span>
+</div>
+</div>
+<div>
+<p class="font-bold text-primary dark:text-white">Out for Delivery</p>
+<p class="text-sm text-primary/60 dark:text-white/60">Expected today</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="sticky bottom-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-primary/10 dark:border-white/10">
+<nav class="flex justify-around items-center py-2 px-1">
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="text-xs font-medium">Shop</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-xs font-medium">Bag</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 rounded-lg bg-primary/10 dark:bg-white/10 text-primary dark:text-white" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-xs font-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

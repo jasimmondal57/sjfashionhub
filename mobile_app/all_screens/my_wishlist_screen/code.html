@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wishlist</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#141414",
+            "background-light": "#ffffff",
+            "background-dark": "#121212",
+            "secondary-light": "#f2f2f2",
+            "secondary-dark": "#1f1f1f",
+            "text-light": "#141414",
+            "text-dark": "#ffffff",
+            "text-muted-light": "#757575",
+            "text-muted-dark": "#a3a3a3",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.75rem",
+            "lg": "1rem",
+            "xl": "1.25rem",
+            "full": "9999px"
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center p-4">
+<button class="p-2 text-text-light dark:text-text-dark">
+<svg class="feather feather-arrow-left" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" x2="5" y1="12" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+</button>
+<h1 class="text-lg font-bold text-center flex-1 text-text-light dark:text-text-dark pr-10">Wishlist</h1>
+<button class="p-2 text-text-light dark:text-text-dark">
+<svg class="feather feather-search" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+</button>
+</div>
+</header>
+<main class="flex-grow p-4 space-y-4">
+<div class="flex items-center gap-4 bg-background-light dark:bg-secondary-dark p-3 rounded-lg">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCMS4u8TPcCGhHA1nqaJ-cR2yp6zws9wpfed1qMj7lzSn14AwLxVLxZmBGAX1w2iB7d9rK7aJPvpqkZFPs1erKZyqW0Op-8p8w2m4LIUq2E_H2SCkl6-9J_uq-ohUqCbzM7z0Kuk90kjPUPhONe_JBiOrfIH9YDjNMDzLa6OjV5GvCV8ScN5OLHJe19p0PYZ6PBMIumRDuWh8udt0m-QifH_xelgQi_ZC-V7Cb93V7G7dZBvkgEviqVJEyh-DjuW9Db7Wv4S7z7NL_S");'></div>
+<div class="flex-1">
+<h3 class="text-base font-bold text-text-light dark:text-text-dark">Leather Jacket</h3>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">$120.00</p>
+</div>
+<button class="bg-primary text-white rounded-full p-3">
+<svg class="feather feather-shopping-bag" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+</button>
+</div>
+<div class="flex items-center gap-4 bg-background-light dark:bg-secondary-dark p-3 rounded-lg">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4EHjL11-AazsMMFiiGy9LgfuURE9pgz_fWQ6Yac5dXiB-p3OMLqL7_x659ZXoFty3MeAT_LxaPq7tJccd_uhJ9QMJ7dJTfKcNDRxSI0Uld6WuinnL6krVLeBJIxNnhJisHF0nP7TwwwmxhBVQGNxIRJoMmyzEFp9AOwQQYF3E1ArgneCGQYalVkUjiTqNhi5bJQAaWqdy1yB87QzZuylSY08feqFtTNH4vlAvHI_IFXHT1hjnGRy_qi8fT4KwJGE74ir83Vsg7kiN");'></div>
+<div class="flex-1">
+<h3 class="text-base font-bold text-text-light dark:text-text-dark">Denim Jeans</h3>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">$80.00</p>
+</div>
+<button class="bg-primary text-white rounded-full p-3">
+<svg class="feather feather-shopping-bag" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+</button>
+</div>
+<div class="flex items-center gap-4 bg-background-light dark:bg-secondary-dark p-3 rounded-lg">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBCsK8c6f1H4tjpsW9YSfowZwPVKbwzgbWB5OSJmC2YFozcLN2g-DVgc390DKmQUTlMVk_qrss1ibpww4wxafglGb67bULFy2rSOL9uVDbPVnxi5w5ZuOQVys7Z4OFIuWFDvUu6VaGpnfM7RsinVV6kHy7qNuTHOe2nx8IL0MZS8LK95LUBS-x0oeKQ6XnJkvWa921PLBnxVnifbu2HGqPwKSULvlsmCyiPQp8DnF0JsbaNd_c4oz7W4qat3ud7XmpKZV9ZSPcT4yjv");'></div>
+<div class="flex-1">
+<h3 class="text-base font-bold text-text-light dark:text-text-dark">Cotton T-shirt</h3>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">$50.00</p>
+</div>
+<button class="bg-primary text-white rounded-full p-3">
+<svg class="feather feather-shopping-bag" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+</button>
+</div>
+<div class="flex items-center gap-4 bg-background-light dark:bg-secondary-dark p-3 rounded-lg">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrXgzwTTNcjXWmuW371SaSwK8jW6PjHELslMLDzr0tLdo5C5nGbFAiUWh5V5DHkq7DaHjz4681q1_XCfMhhx8YAfxp12J45cFF1GLQC6mQPXKbdIU3j_GH6MtsRCtpC7igg9kc2lLbx4IZwbobnatLukmozFX8tJTDYGaGPwxbja349wo-OiohhEAc1PTVzdrPxxsEg5d0LJgq0hC4SoeQUYieDmrzXKNtqsi4Fr3eHO10sj4PDXyHxI6QBzmt9Y2yAaOjGl-emM9I");'></div>
+<div class="flex-1">
+<h3 class="text-base font-bold text-text-light dark:text-text-dark">Wool Sweater</h3>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">$150.00</p>
+</div>
+<button class="bg-primary text-white rounded-full p-3">
+<svg class="feather feather-shopping-bag" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+</button>
+</div>
+</main>
+<footer class="sticky bottom-0 bg-background-light dark:bg-background-dark border-t border-secondary-light dark:border-secondary-dark">
+<div class="flex justify-around p-2">
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark p-2" href="#">
+<svg class="feather feather-home" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark p-2" href="#">
+<svg class="feather feather-compass" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+<span class="text-xs">Explore</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-light dark:text-text-dark font-bold p-2" href="#">
+<svg class="feather feather-heart" fill="currentColor" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+<span class="text-xs">Wishlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark p-2" href="#">
+<svg class="feather feather-shopping-cart" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+<span class="text-xs">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark p-2" href="#">
+<svg class="feather feather-user" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+<span class="text-xs">Profile</span>
+</a>
+</div>
+</footer>
+</div>
+
+</body></html>

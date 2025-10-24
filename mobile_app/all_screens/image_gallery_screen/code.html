@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub - Product Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#141414",
+            "background-light": "#f7f7f7",
+            "background-dark": "#191919",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen min-h-screen w-full flex-col justify-between">
+<header class="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-primary dark:text-white">SJ Fashion Hub</h1>
+<div class="w-10"></div>
+</header>
+<main class="flex-grow w-full h-full">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBCFLscnw9-qkaRnrVEGcP16Fzzt-xpEEh98aUKlUEfWhfAbYt1-Q6q8w-7sbKgy1iCbSf1IwXqOwJdEebXATGGuuTtn1YeBavJIBdO8gRjbv2BAkNE_3C_jALLKr_0xw7JM5CBxLR08ilFnLXmBi2T9s-P0F21a6IrqQILHP0GtJ30HyMvax_CrwSzgKRFQAIawBzx1hTTAo1SHW1_eIvetG8gqQCCu-PorLxrdZ98qVq8zZehNOu_6-3ka2x21E0NxK0cduaDUyD_");'>
+</div>
+</main>
+<footer class="sticky bottom-0 left-0 right-0 p-4 bg-background-light dark:bg-background-dark border-t border-primary/10 dark:border-white/10">
+<div class="grid grid-cols-3 gap-4 text-center">
+<div class="flex flex-col items-center gap-2">
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-white/10 text-primary dark:text-white">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<p class="text-xs font-medium text-primary dark:text-white">Zoom</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-white/10 text-primary dark:text-white">
+<span class="material-symbols-outlined">share</span>
+</button>
+<p class="text-xs font-medium text-primary dark:text-white">Share</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-white/10 text-primary dark:text-white">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+<p class="text-xs font-medium text-primary dark:text-white">Save</p>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

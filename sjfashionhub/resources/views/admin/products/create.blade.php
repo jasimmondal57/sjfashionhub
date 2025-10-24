@@ -675,6 +675,12 @@
                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Active (Visible on website)</span>
                             </label>
+
+                            <label class="flex items-center">
+                                <input type="checkbox" name="auto_share_social_media" value="1" {{ old('auto_share_social_media') ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">📱 Auto-share to Social Media (Facebook, Instagram, etc.)</span>
+                            </label>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "134218834451",
+    "project_id": "j-fashion-hub",
+    "storage_bucket": "j-fashion-hub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134218834451:android:74ad714616e9ef09b995e6",
+        "android_client_info": {
+          "package_name": "com.sjfashionhub.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIvNMpG16QLvK1NQqyaTTFNfdEFF7OQXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#141414",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#191919",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div class="flex-grow">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<div class="flex-1"></div>
+<h1 class="flex-1 text-center text-lg font-bold text-primary dark:text-white">SJ Fashion Hub</h1>
+<div class="flex flex-1 items-center justify-end">
+<button class="flex items-center justify-center rounded-full p-2 text-primary dark:text-white hover:bg-primary/10 dark:hover:bg-primary/20">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"></path>
+</svg>
+</button>
+</div>
+</div>
+</header>
+<main class="p-4">
+<h2 class="text-2xl font-bold text-primary dark:text-white mb-4">Top Categories</h2>
+<div class="grid grid-cols-2 gap-4">
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAtFEKTooRKYG3iVSCQ8-hlj_5vdN2ZgEOZ5dsQwgx6aAzuPLsx28zz3lfywkU6UgskZlyVMzXGMYk9X8ewG7N8rD4A5W7h7ba4_3g8a8VnxLrVH37QtaXG9QhfL8j_s2jRbjV49yW01maMByiTjye6EWVtkf6EVbdzd_2mjFr9I22vg6it4v4yr4DFIMzgbfYdoOZz2IU-wwfrvRgG9g_9ngHqbDcWkamj0IrCR4Qz4WEiWmPzk44DEl4Ibdho87IswdNfzWwyMpxH");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Women</p>
+</a>
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCOaafkyDFhD0SpqSlwv6hz1C9NmJ1D4RrEhBv-e0BTBnrKI_JJrqB7DD2qcZE4GSlbJodeIfDBbo1LvlIFjslergBcOtdYv6_EAaHKhgtTW_BRyzV5hrFxB3JDe0oOsyJZZw8Bzx4ZxahsUuH5vsLzV-9kj-_TfYR-Am5RbXUxvd7HWmS3yt2OjC0UdIui49ZqM57Qx9kFq9XZlOUAWwcFbMDhjECooSF1x0iRoz2hOwOJfNbtolmtz74a8E9gZWMS282NFkRjJcnn");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Men</p>
+</a>
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzaWcjRNc_8TZ10JtZuxsn8yk0FubXtBdu4veNywvkcVdGnAYD5QYUxUsZbOLDcFIyszcMUAp7bKw-7bKopz9xnVXCltN5e-Yw4aR0hWXX9W2sVrsD6O01sd5HeKqQNcl_wJTQD9IlZPlOdVBdzrkg98Ipy83h5t6e0iw7ne1wyPnxUOu5WSvT1sk4XTMDWjGdioL_eLhlm_9zKIp5oMgfxyX60Is_0U844McD8uF2AQTfRRmzXpZ8uFKqLZORAbc67KszMQa_t8Kb");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Sarees</p>
+</a>
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJ7KEnvTWy9EPTxSYYM1fXSKouaQ--Tcc83Dsgywpc15k6DM0XhPi1n-8td1ln08ACcN4WMr4czVQtONAIeHVfion4svcv_qKm155NowByts13pTfHQyrTQMoEjUncmRoIjpM0Ek2Raa8nb11WNmOJ4vLkSZw6iAXdoqiSCz1R9v_a3siFrRuHSkI8PzSRDrVxgNw6FATAy0fg_pdps94AlviixxaFPVqZYl7fVRm2r1gpiHZMHUUnvWvHZ_RqMlQrdcL0eJPiq5K2");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Kurtis</p>
+</a>
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHsQ2i-z9ZZRTKt5lqB6qc4k-LMk1bsrM6f4Tkb4zrUdiqg36aBFK-lE62tt3Wzmm0WVXomgSf-7rMK7RldSdgduzwSJnevOIKUhBdbibQuMUNXH3FhCXHi6gzEiv1myQ-qYw4k9E7NxJJeNnfSCLBLpCetbC7dERWl2NRhdm9oQ96HbflfFYOLd2ow6lvgVI6RXrWXNjdSH8QMojCqc1I9ZYE0DICBf4_iBI-m01m7D63kKkiwuERFpnvXTIs4O34tSjbwgLufqcc");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Kantha</p>
+</a>
+<a class="group" href="#">
+<div class="w-full overflow-hidden rounded-lg aspect-square">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDbPgUAM3skXDeNL23sgC4uDbUkUuYFBXV4Rv1yZKsqQHS4q6WBOS_P7gQeb_0Kb6GS74inWVud0nazDfbct-PKN6rZf8lA_UPI9sffgAv3X00MsuLq6Z4zvQUc0WEhc9qSe7DAzRQwKgvn5FcMzcz_qdwZ2TcB8rnxN3Tmw6PN0ERffwwbK3q9jctWdOPokGvI3WJXHBnfS6Pvm42Y04_DbJwvFewi4whQFyHV7N9HP3XanCX8WRvSCREMBbpojO7Aw3qcJgwyBX4U");'></div>
+</div>
+<p class="mt-2 text-base font-semibold text-primary dark:text-white">Tops</p>
+</a>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 z-10 border-t border-primary/10 bg-background-light/80 dark:border-white/10 dark:bg-background-dark/80 backdrop-blur-sm">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60 hover:text-primary dark:hover:text-white" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z"></path>
+</svg>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 rounded-full text-white bg-primary" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M56,128a16,16,0,1,1-16-16A16,16,0,0,1,56,128ZM40,48A16,16,0,1,0,56,64,16,16,0,0,0,40,48Zm0,128a16,16,0,1,0,16,16A16,16,0,0,0,40,176Zm176-64H88a8,8,0,0,0-8,8v16a8,8,0,0,0,8,8H216a8,8,0,0,0,8-8V120A8,8,0,0,0,216,112Zm0-64H88a8,8,0,0,0-8,8V72a8,8,0,0,0,8,8H216a8,8,0,0,0,8-8V56A8,8,0,0,0,216,48Zm0,128H88a8,8,0,0,0-8,8v16a8,8,0,0,0,8,8H216a8,8,0,0,0,8-8V184A8,8,0,0,0,216,176Z"></path>
+</svg>
+<span class="text-xs font-medium">Categories</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60 hover:text-primary dark:hover:text-white" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"></path>
+</svg>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60 hover:text-primary dark:hover:text-white" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M72,104a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,104Zm8,40h96a8,8,0,0,0,0-16H80a8,8,0,0,0,0,16ZM232,56V208a8,8,0,0,1-11.58,7.15L192,200.94l-28.42,14.21a8,8,0,0,1-7.16,0L128,200.94,99.58,215.15a8,8,0,0,1-7.16,0L64,200.94,35.58,215.15A8,8,0,0,1,24,208V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Zm-16,0H40V195.06l20.42-10.22a8,8,0,0,1,7.16,0L96,199.06l28.42-14.22a8,8,0,0,1,7.16,0L160,199.06l28.42-14.22a8,8,0,0,1,7.16,0L216,195.06Z"></path>
+</svg>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary/60 dark:text-white/60 hover:text-primary dark:hover:text-white" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+</svg>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

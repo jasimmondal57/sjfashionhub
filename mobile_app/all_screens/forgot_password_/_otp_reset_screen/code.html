@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub - Reset Password</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#141414",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#191919",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary dark:text-background-light">
+<div class="flex flex-col min-h-screen">
+<header class="flex items-center p-4">
+<button class="p-2">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+</svg>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold">SJ Fashion Hub</h1>
+<div class="w-10"></div>
+</header>
+<main class="flex-grow px-4 py-8">
+<h2 class="text-2xl font-bold mb-2">Reset Password</h2>
+<p class="text-primary/70 dark:text-background-light/70 mb-8">Enter the OTP sent to your registered mobile number</p>
+<form class="space-y-6">
+<div>
+<label class="sr-only" for="otp">Enter OTP</label>
+<input class="w-full bg-primary/10 dark:bg-primary/20 border-none rounded-lg p-4 h-14 placeholder-primary/50 dark:placeholder-background-light/50 focus:ring-primary focus:ring-2" id="otp" name="otp" placeholder="Enter OTP" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="new-password">New Password</label>
+<input class="w-full bg-primary/10 dark:bg-primary/20 border-none rounded-lg p-4 h-14 placeholder-primary/50 dark:placeholder-background-light/50 focus:ring-primary focus:ring-2" id="new-password" name="new-password" placeholder="New Password" type="password"/>
+</div>
+<div>
+<label class="sr-only" for="confirm-password">Confirm New Password</label>
+<input class="w-full bg-primary/10 dark:bg-primary/20 border-none rounded-lg p-4 h-14 placeholder-primary/50 dark:placeholder-background-light/50 focus:ring-primary focus:ring-2" id="confirm-password" name="confirm-password" placeholder="Confirm New Password" type="password"/>
+</div>
+<button class="w-full bg-primary text-white font-bold rounded-lg h-14 flex items-center justify-center" type="submit">
+                    Submit
+                </button>
+</form>
+</main>
+</div>
+
+</body></html>

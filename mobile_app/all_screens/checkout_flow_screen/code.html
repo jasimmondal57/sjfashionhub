@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#000000",
+            "content": "#1a1a1a",
+            "subtle": "#6b7280",
+            "border": "#e5e7eb",
+            "background": "#ffffff",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    @layer base {
+      input[type="radio"]:checked {
+        background-color: theme('colors.primary');
+        border-color: theme('colors.primary');
+      }
+      input[type="radio"] {
+        --tw-ring-offset-color: theme('colors.background');
+      }
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-display text-content">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background/80 backdrop-blur-sm">
+<div class="container mx-auto px-4">
+<div class="flex items-center justify-between py-4">
+<button class="flex items-center justify-center w-10 h-10">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path>
+</svg>
+</button>
+<h1 class="text-xl font-bold">Checkout</h1>
+<div class="w-10"></div>
+</div>
+</div>
+</header>
+<main class="flex-grow pb-28">
+<div class="container mx-auto px-4 space-y-6">
+<section>
+<h2 class="text-lg font-bold py-4">Delivery Address</h2>
+<div class="space-y-3">
+<label class="flex items-start p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="flex-grow pr-4">
+<p class="font-bold">Home</p>
+<p class="text-sm text-subtle">123 Maple Street, Apt 4B</p>
+<p class="text-sm text-subtle">Springfield, IL 62704</p>
+</div>
+<input checked="" class="form-radio h-5 w-5 mt-1 text-primary focus:ring-primary focus:ring-offset-2" name="address" type="radio"/>
+</label>
+<label class="flex items-start p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="flex-grow pr-4">
+<p class="font-bold">Office</p>
+<p class="text-sm text-subtle">456 Oak Avenue, Suite 201</p>
+<p class="text-sm text-subtle">Springfield, IL 62704</p>
+</div>
+<input class="form-radio h-5 w-5 mt-1 text-primary focus:ring-primary focus:ring-offset-2" name="address" type="radio"/>
+</label>
+<button class="w-full flex items-center justify-center gap-2 py-3 bg-white rounded-lg border border-dashed border-border hover:bg-black/5 transition-colors">
+<svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+</svg>
+<span class="font-semibold">Add New Address</span>
+</button>
+</div>
+</section>
+<section>
+<h2 class="text-lg font-bold py-4">Shipping Method</h2>
+<div class="space-y-3">
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="flex-grow pr-4">
+<p class="font-bold">Standard Shipping</p>
+<p class="text-sm text-subtle">Est. Delivery: 2-3 Days</p>
+</div>
+<p class="font-bold mr-4">$5.00</p>
+<input checked="" class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="shipping" type="radio"/>
+</label>
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="flex-grow pr-4">
+<p class="font-bold">Express Shipping</p>
+<p class="text-sm text-subtle">Est. Delivery: 1-2 Days</p>
+</div>
+<p class="font-bold mr-4">$12.00</p>
+<input class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="shipping" type="radio"/>
+</label>
+</div>
+</section>
+<section>
+<h2 class="text-lg font-bold py-4">Payment Method</h2>
+<div class="space-y-3">
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<img alt="Visa" class="h-6 mr-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTYTPm9no42fgMKF6Qpxtj9hX-UgQdUD82j6TnF7RDoIb62vkBQ54FEdYtE1pW5p4Fqs6-1qmE8XVwO8ijqQYWqZPMJJzIYnkkcfr_9LCQGnhTZ8Fu69Giiyl57kU4WxHy6YJqLaZedLoe88RbEnI3QR58u5FMgZDVH3y-SP3yRaJbMCxaoWaytnItZQ--PKOoClRwNLfon-PiDW2hZ0cYLIOd3dl_4-Q-BlzQFpi5j8zo2GGfinpg6FIJgVYh6d4ljTgB3xU_P_Zk"/>
+<span class="flex-grow font-semibold">Credit Card</span>
+<input checked="" class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="payment" type="radio"/>
+</label>
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="w-8 h-8 flex items-center justify-center mr-4 rounded-full bg-gray-100"><svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M208,80a8,8,0,0,1-8,8H167.85c.09,1.32.15,2.65.15,4a60.07,60.07,0,0,1-60,60H92.69l72.69,66.08a8,8,0,1,1-10.76,11.84l-88-80A8,8,0,0,1,72,136h36a44.05,44.05,0,0,0,44-44c0-1.35-.07-2.68-.19-4H72a8,8,0,0,1,0-16h75.17A44,44,0,0,0,108,48H72a8,8,0,0,1,0-16H200a8,8,0,0,1,0,16H148.74a60.13,60.13,0,0,1,15.82,24H200A8,8,0,0,1,208,80Z"></path>
+</svg></div>
+<span class="flex-grow font-semibold">UPI</span>
+<input class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="payment" type="radio"/>
+</label>
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="w-8 h-8 flex items-center justify-center mr-4 rounded-full bg-gray-100"><svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M24,104H48v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16H208V104h24a8,8,0,0,0,4.19-14.81l-104-64a8,8,0,0,0-8.38,0l-104,64A8,8,0,0,0,24,104Zm40,0H96v64H64Zm80,0v64H112V104Zm48,64H160V104h32ZM128,41.39,203.74,88H52.26ZM248,208a8,8,0,0,1-8,8H16a8,8,0,0,1,0-16H240A8,8,0,0,1,248,208Z"></path>
+</svg></div>
+<span class="flex-grow font-semibold">Netbanking</span>
+<input class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="payment" type="radio"/>
+</label>
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="w-8 h-8 flex items-center justify-center mr-4 rounded-full bg-gray-100"><svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,72H56a8,8,0,0,1,0-16H192a8,8,0,0,0,0-16H56A24,24,0,0,0,32,64V192a24,24,0,0,0,24,24H216a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72Zm0,128H56a8,8,0,0,1-8-8V86.63A23.84,23.84,0,0,0,56,88H216Zm-48-60a12,12,0,1,1,12,12A12,12,0,0,1,168,140Z"></path>
+</svg></div>
+<span class="flex-grow font-semibold">Wallet</span>
+<input class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="payment" type="radio"/>
+</label>
+<label class="flex items-center p-4 bg-white rounded-lg border border-border has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/20">
+<div class="w-8 h-8 flex items-center justify-center mr-4 rounded-full bg-gray-100"><svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152ZM240,56H16a8,8,0,0,0-8,8V192a8,8,0,0,0,8,8H240a8,8,0,0,0,8-8V64A8,8,0,0,0,240,56ZM193.65,184H62.35A56.78,56.78,0,0,0,24,145.65v-35.3A56.78,56.78,0,0,0,62.35,72h131.3A56.78,56.78,0,0,0,232,110.35v35.3A56.78,56.78,0,0,0,193.65,184ZM232,93.37A40.81,40.81,0,0,1,210.63,72H232ZM45.37,72A40.81,40.81,0,0,1,24,93.37V72ZM24,162.63A40.81,40.81,0,0,1,45.37,184H24ZM210.63,184A40.81,40.81,0,0,1,232,162.63V184Z"></path>
+</svg></div>
+<span class="flex-grow font-semibold">Cash on Delivery</span>
+<input class="form-radio h-5 w-5 text-primary focus:ring-primary focus:ring-offset-2" name="payment" type="radio"/>
+</label>
+</div>
+</section>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-border">
+<div class="container mx-auto p-4">
+<div class="space-y-2 mb-4">
+<div class="flex justify-between text-sm text-subtle">
+<span>Subtotal</span>
+<span class="text-content">$120.00</span>
+</div>
+<div class="flex justify-between text-sm text-subtle">
+<span>Shipping</span>
+<span class="text-content">$5.00</span>
+</div>
+<div class="flex justify-between text-sm text-subtle">
+<span>Taxes</span>
+<span class="text-content">$10.20</span>
+</div>
+<div class="border-t border-border my-2"></div>
+<div class="flex justify-between font-bold text-lg">
+<span>Total</span>
+<span>$135.20</span>
+</div>
+</div>
+<button class="w-full bg-primary text-white font-bold h-12 rounded-lg text-lg flex items-center justify-center hover:opacity-90 transition-opacity">
+          Place Order
+        </button>
+</div>
+</footer>
+</div>
+
+</body></html>

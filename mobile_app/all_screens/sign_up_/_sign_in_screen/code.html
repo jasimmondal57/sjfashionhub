@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#000000",
+            "background-light": "#ffffff",
+            "background-dark": "#211111",
+            "content-light": "#111827",
+            "content-dark": "#f9fafb",
+            "subtle-light": "#6b7280",
+            "subtle-dark": "#9ca3af",
+            "border-light": "#e5e7eb",
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans"],
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex h-screen flex-col justify-between">
+<main class="flex-grow overflow-y-auto px-4 pt-4">
+<header class="flex items-center justify-between pb-6">
+<button class="text-content-light dark:text-content-dark">
+<span class="material-symbols-outlined text-2xl"> close </span>
+</button>
+<h1 class="text-lg font-bold text-content-light dark:text-content-dark">Sign in</h1>
+<div class="w-6"></div>
+</header>
+<div class="space-y-8">
+<h2 class="text-2xl font-bold text-content-light dark:text-content-dark">Welcome back</h2>
+<div class="space-y-4">
+<div>
+<label class="sr-only" for="email">Email or mobile number</label>
+<input class="form-input w-full rounded-lg border-border-light bg-white p-4 text-base text-content-light placeholder:text-subtle-light dark:border-gray-700 dark:bg-gray-800 dark:text-content-dark dark:placeholder:text-subtle-dark" id="email" placeholder="Email or mobile number" type="text"/>
+</div>
+<button class="w-full rounded-lg bg-primary py-3 text-base font-bold text-white">Continue</button>
+<a class="block text-center text-sm font-medium text-primary underline" href="#">Forgot password?</a>
+</div>
+<div class="relative flex items-center justify-center">
+<span class="absolute w-full border-t border-border-light dark:border-gray-700"></span>
+<span class="relative z-10 bg-background-light px-2 text-sm text-subtle-light dark:bg-background-dark dark:text-subtle-dark">Or continue with</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 rounded-lg border border-border-light bg-white py-3 text-sm font-bold text-content-light dark:border-gray-700 dark:bg-gray-800 dark:text-content-dark">
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21.35 11.1H12.18V13.83H18.69C18.36 17.64 15.19 19.27 12.19 19.27C8.36 19.27 5.03 16.25 5.03 12.55C5.03 8.85 8.36 5.83 12.19 5.83C14.04 5.83 15.63 6.42 16.89 7.61L19.31 5.18C17.25 3.16 14.86 2 12.19 2C6.98 2 2.93 6.44 2.93 12.55C2.93 18.66 6.98 23.1 12.19 23.1C17.65 23.1 21.54 18.99 21.54 12.81C21.54 12.23 21.48 11.66 21.35 11.1Z"></path>
+</svg> Google
+          </button>
+<button class="flex items-center justify-center gap-2 rounded-lg border border-border-light bg-white py-3 text-sm font-bold text-content-light dark:border-gray-700 dark:bg-gray-800 dark:text-content-dark">
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 16.84 5.44 20.87 10 21.8V14H7V12H10V9.5C10 7.57 11.57 6 13.5 6H15.5V8H14C13.45 8 13 8.45 13 9V12H15.5L15 14H13V21.8C18.56 20.87 22 16.84 22 12Z"></path>
+</svg> Facebook
+          </button>
+</div>
+<button class="w-full rounded-lg border border-border-light bg-transparent py-3 text-sm font-bold text-primary dark:border-gray-700"> Continue as guest </button>
+</div>
+</main>
+<footer class="sticky bottom-0 border-t border-border-light bg-background-light pt-2 pb-4 dark:border-gray-700 dark:bg-background-dark">
+<nav class="flex justify-around">
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined"> home </span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined"> category </span>
+<span class="text-xs font-medium">Categories</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined"> shopping_cart </span>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined"> receipt_long </span>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-content-light dark:text-content-dark" href="#">
+<span class="material-symbols-outlined text-primary"> person </span>
+<span class="text-xs font-bold text-primary">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

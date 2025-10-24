@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#141414",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#191919",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary dark:text-background-light">
+<div class="relative flex min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div class="flex-grow">
+<header class="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 p-4 pb-3 dark:bg-background-dark/80 backdrop-blur-sm">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-primary dark:text-background-light">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-primary dark:text-background-light">Dresses</h1>
+<div class="w-10"></div>
+</header>
+<div class="flex gap-3 p-4 overflow-x-auto">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-primary/20 dark:text-background-light">
+<span>Sort</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-primary/20 dark:text-background-light">
+<span>Filter</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-primary/20 dark:text-background-light">
+<span>Size</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+</div>
+<main class="grid grid-cols-2 gap-4 p-4">
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAb1EkrE9QtfDm8TtkzgWsPIIoYAyI9PnFxUU1Cy4RAzIPlWvogUKeqLtQCoeY2CtQGdTARGHX7cuDBGyxJ3waBH1amloRvhun42mSQ1TiTaJc7AgdvaJwmQZv9IjvtGFhVjawPkVLfoMz3II8DySyFZpA1ZhGpPsEeCcZ-3qOvxXGrlNITQsvkTJRZPLVuPeUaH2IQB5L3dYBSj_09iNaBDB7xatfn1FwK5jmhWRTLkovfAC00eFqHMltIIFBCR94qqf-l-M-rH99F");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Floral Print Maxi Dress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$120.00</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQYdTpGrOOc1pOhjkCEr6sCPrOrxv79ERw8jOteeb_Td93nXLTAzfn8OvhGjs4MwWiRa6_ovUbb-O8qzGcgcOr6XRT7cQm9euDeHDfxuv5tctV5l5PAzKyl7-yQxDDz-Mv8NEluy1-AKJcTygtFW71f0s1Zh5JBkoOWQYbZglLl-Yi2ONuSm_WnVGu6m7k9ADM-3sqYRwlh7yfVsvVVyNHza6SiYcROLIu9_CPQljJnND8ptZLcOyHp_0s046NNBCjmMn9cBXRdBB7");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Striped Midi Dress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$85.00</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCMfUfTziu516-ttnLjoTvCJOPBBND71SBYxbxqF70vr-ZAyzgm8lRyfCNzVuGwyozoI7RUoV0_T9fv7PrQ0TYS4pjge90vR2zxI4OWInRQz-VWYU0Obl2_aoguarVigAFkrTiojgGIXidZdBegcwmQuVGhpbzg-7Nrrd0wS6Rch6DcKnK4iMbnXnCRtvwxBmdbj3Z_2z5otpKefybBVmULehJRsWm4Jvfhfc25MjTAC7qQ_816UeFR22tR7YKYVuwV_1rTZmtrutgZ");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Solid Color Shift Dress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$65.00</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3jjjyJOwOXeRmYIH4T1L7Nbe6LQhzoXLxZ1tIINakJt0_19KC78Vlv731eNKDFjXRbiOzKsQw8HzA5oGMJB_a7GlKgu83pC1lZXwJ4aEohD2mPvG9HFmOWxuCf9mDu_-nntYqTA0YegTgcN5ZznbMuS87JoRNdqIWM9UtgKzW7CnC6I0bBxIhaHS7qbMO5jUphpXCp2K5R64cdMvGC3uM3Q5l7oyg4Rf3qAAcGARQQ0RGUivAf4TWfp7wRS1SKKGCS9BMH1NORjEa");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Boho Style Sundress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$75.00</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA73Zz5KemF1H3YxN3HD_kTjKNDQklNyB8PjI2iCn8Whmk-qseyMIrgHETEoUFaFv6h8i8Z0xIm6xz82wTRVap9haS6OTd-7bjH7B3J3yTM7tDZ0Ewmvn08b5MUn3KxhBf8rk9d48C1uanK3HsS4HnM0bFSJi-SPHD4QoBzRP7AoztaBphbg2pYu7iRsmgoPBxog69rHFMfYn8LJZU4nltoNjKvRnbOkW7jlSsPLk-GQRTiUg3qNp9ybBkm2W_iRDWMINvmukJY2eOi");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Lace Detail A-Line Dress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$95.00</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="relative w-full aspect-[3/4] bg-cover bg-center rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB0e02NH3EpxsTY5EmWbgSHw-KcoPOR_wo6OikCP0rlmDETFEcyXj7uJnAJ5AMJ2Zn-7EGbciHtJbvTSu-7AI8DwyVUihfrcSVk2yAAJ7ND3nuOQs-Uss5fTtzUmNegXZVZ3AIszxGzAiox3h8HEYltc721Lokkxb402cEMA8r0C4Auxwbj1Iep4s8fZ3ZyuA-0epdUTTKxPx-wztlyOgTtGGsmCNp4ogB8twad_DPBuDCsJNLHofy1W4sD8XXpb1rWkj-wAZ--8uLM");'></div>
+<div class="flex flex-col">
+<h3 class="text-sm font-semibold text-primary dark:text-background-light">Casual T-Shirt Dress</h3>
+<p class="text-sm text-primary/70 dark:text-background-light/70">$45.00</p>
+</div>
+</div>
+</main>
+</div>
+<nav class="sticky bottom-0 z-10 border-t border-primary/10 bg-background-light/80 px-2 pt-2 pb-4 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex justify-around">
+<a class="flex flex-col items-center justify-center gap-1 text-primary/70 dark:text-background-light/70" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary dark:text-background-light" href="#">
+<span class="material-symbols-outlined">view_list</span>
+<span class="text-xs font-bold">Categories</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary/70 dark:text-background-light/70" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary/70 dark:text-background-light/70" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary/70 dark:text-background-light/70" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

@@ -1,0 +1,362 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Banner;
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+class MobileApiController extends Controller
+{
+    /**
+     * Get all products with pagination
+     */
+    public function getProducts(Request $request)
+    {
+        $query = Product::with('category')->where('status', 'active');
+        
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Category filter
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        // Sort
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+        
+        $products = $query->paginate($request->get('per_page', 20));
+        
+        return response()->json([
+            'success' => true,
+            'data' => $products->items(),
+            'pagination' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+            ]
+        ]);
+    }
+    
+    /**
+     * Get single product
+     */
+    public function getProduct($id)
+    {
+        $product = Product::with('category')->find($id);
+        
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found'
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => $product
+        ]);
+    }
+    
+    /**
+     * Get all categories
+     */
+    public function getCategories()
+    {
+        $categories = Category::where('status', 'active')
+            ->withCount('products')
+            ->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
+    }
+    
+    /**
+     * Get all banners
+     */
+    public function getBanners()
+    {
+        $banners = Banner::where('status', 'active')
+            ->orderBy('order', 'asc')
+            ->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $banners
+        ]);
+    }
+    
+    /**
+     * User registration
+     */
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'role' => 'customer',
+        ]);
+        
+        $token = $user->createToken('mobile-app')->plainTextToken;
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Registration successful',
+            'user' => $user,
+            'token' => $token
+        ], 201);
+    }
+    
+    /**
+     * User login
+     */
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+        
+        $user = Auth::user();
+        $token = $user->createToken('mobile-app')->plainTextToken;
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'user' => $user,
+            'token' => $token
+        ]);
+    }
+    
+    /**
+     * User logout
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully'
+        ]);
+    }
+    
+    /**
+     * Get user profile
+     */
+    public function getProfile(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $request->user()
+        ]);
+    }
+    
+    /**
+     * Update user profile
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|max:255',
+            'phone' => 'sometimes|string|max:20',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        $user->update($request->only(['name', 'phone', 'email']));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully',
+            'data' => $user
+        ]);
+    }
+    
+    /**
+     * Get user orders
+     */
+    public function getOrders(Request $request)
+    {
+        $orders = Order::where('user_id', $request->user()->id)
+            ->with(['items.product'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $orders
+        ]);
+    }
+    
+    /**
+     * Get single order
+     */
+    public function getOrder(Request $request, $id)
+    {
+        $order = Order::where('user_id', $request->user()->id)
+            ->where('id', $id)
+            ->with(['items.product'])
+            ->first();
+        
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => $order
+        ]);
+    }
+    
+    /**
+     * Get cart (session-based for guests, DB for authenticated users)
+     */
+    public function getCart(Request $request)
+    {
+        // For now, return empty cart
+        // You can implement cart logic based on your requirements
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'items' => [],
+                'subtotal' => 0,
+                'total' => 0
+            ]
+        ]);
+    }
+    
+    /**
+     * Add to cart
+     */
+    public function addToCart(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        // Implement cart logic here
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to cart'
+        ]);
+    }
+    
+    /**
+     * Get wishlist
+     */
+    public function getWishlist(Request $request)
+    {
+        // Implement wishlist logic
+        return response()->json([
+            'success' => true,
+            'data' => []
+        ]);
+    }
+    
+    /**
+     * Add to wishlist
+     */
+    public function addToWishlist(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|exists:products,id',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        // Implement wishlist logic here
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to wishlist'
+        ]);
+    }
+    
+    /**
+     * Remove from wishlist
+     */
+    public function removeFromWishlist(Request $request, $productId)
+    {
+        // Implement wishlist removal logic
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product removed from wishlist'
+        ]);
+    }
+}

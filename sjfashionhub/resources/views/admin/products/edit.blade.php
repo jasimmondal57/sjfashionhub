@@ -610,6 +610,21 @@
                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Active (Visible on website)</span>
                             </label>
+
+                            <label class="flex items-center">
+                                <input type="checkbox" name="auto_share_social_media" value="1" {{ old('auto_share_social_media', $product->auto_share_social_media) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">📱 Auto-share to Social Media (Facebook, Instagram, etc.)</span>
+                            </label>
+
+                            @if($product->auto_shared_at)
+                                <div class="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                                    <p class="text-sm text-green-700">✅ Auto-shared on {{ $product->auto_shared_at->format('M d, Y H:i') }}</p>
+                                    @if($product->auto_share_platforms)
+                                        <p class="text-xs text-green-600 mt-1">Platforms: {{ implode(', ', array_map('ucfirst', $product->auto_share_platforms)) }}</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

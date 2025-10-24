@@ -195,6 +195,11 @@ class Product extends Model
         'is_eco_friendly',
         'is_handmade',
         'special_features',
+
+        // Social Media Auto-Share
+        'auto_share_social_media',
+        'auto_share_platforms',
+        'auto_shared_at',
     ];
 
     protected $casts = [
@@ -273,6 +278,9 @@ class Product extends Model
         'production_time_days' => 'integer',
         'is_eco_friendly' => 'boolean',
         'is_handmade' => 'boolean',
+        'auto_share_social_media' => 'boolean',
+        'auto_share_platforms' => 'array',
+        'auto_shared_at' => 'datetime',
     ];
 
     public function category(): BelongsTo

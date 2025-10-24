@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub Feedback</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#141414",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#191919",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-primary dark:text-background-light">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center justify-between p-4 border-b border-primary/10">
+<button class="p-2 -ml-2">
+<span class="material-symbols-outlined text-primary dark:text-background-light">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-center text-primary dark:text-background-light flex-1">Feedback</h1>
+<div class="w-8"></div> 
+</div>
+</header>
+<main class="flex-grow p-4">
+<section class="mb-8">
+<h2 class="text-2xl font-bold mb-2 text-primary dark:text-background-light">Rate your experience</h2>
+<p class="text-primary/70 dark:text-background-light/70 mb-4">How would you rate your experience with SJ Fashion Hub?</p>
+<fieldset class="flex flex-wrap gap-2">
+<legend class="sr-only">Experience rating</legend>
+<div>
+<input class="sr-only peer" id="rating-terrible" name="experience-rating" type="radio"/>
+<label class="flex items-center justify-center px-4 py-2 rounded-lg border border-primary/20 dark:border-background-light/20 cursor-pointer peer-checked:bg-primary peer-checked:text-white dark:peer-checked:text-background-light peer-checked:border-primary transition-colors" for="rating-terrible">Terrible</label>
+</div>
+<div>
+<input class="sr-only peer" id="rating-bad" name="experience-rating" type="radio"/>
+<label class="flex items-center justify-center px-4 py-2 rounded-lg border border-primary/20 dark:border-background-light/20 cursor-pointer peer-checked:bg-primary peer-checked:text-white dark:peer-checked:text-background-light peer-checked:border-primary transition-colors" for="rating-bad">Bad</label>
+</div>
+<div>
+<input class="sr-only peer" id="rating-okay" name="experience-rating" type="radio"/>
+<label class="flex items-center justify-center px-4 py-2 rounded-lg border border-primary/20 dark:border-background-light/20 cursor-pointer peer-checked:bg-primary peer-checked:text-white dark:peer-checked:text-background-light peer-checked:border-primary transition-colors" for="rating-okay">Okay</label>
+</div>
+<div>
+<input class="sr-only peer" id="rating-good" name="experience-rating" type="radio"/>
+<label class="flex items-center justify-center px-4 py-2 rounded-lg border border-primary/20 dark:border-background-light/20 cursor-pointer peer-checked:bg-primary peer-checked:text-white dark:peer-checked:text-background-light peer-checked:border-primary transition-colors" for="rating-good">Good</label>
+</div>
+<div>
+<input checked="" class="sr-only peer" id="rating-excellent" name="experience-rating" type="radio"/>
+<label class="flex items-center justify-center px-4 py-2 rounded-lg border border-primary/20 dark:border-background-light/20 cursor-pointer peer-checked:bg-primary peer-checked:text-white dark:peer-checked:text-background-light peer-checked:border-primary transition-colors" for="rating-excellent">Excellent</label>
+</div>
+</fieldset>
+</section>
+<section class="mb-8">
+<h2 class="text-2xl font-bold mb-2 text-primary dark:text-background-light">Tell us more</h2>
+<p class="text-primary/70 dark:text-background-light/70 mb-4">What could we do to improve your experience?</p>
+<textarea class="w-full p-3 rounded-lg border border-primary/20 dark:border-background-light/20 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none transition-shadow text-primary dark:text-background-light placeholder:text-primary/50 dark:placeholder:text-background-light/50" id="feedback-text" name="feedback-text" placeholder="Enter your feedback here..." rows="5"></textarea>
+</section>
+<button class="w-full bg-primary text-white dark:text-background-light font-bold py-3 px-5 rounded-lg hover:bg-primary/90 transition-colors">
+                Submit Feedback
+            </button>
+</main>
+<footer class="sticky bottom-0 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm border-t border-primary/10">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="text-xs font-medium">Categories</span>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-xs font-medium">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-primary/60 dark:text-background-light/60" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-xs font-medium">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-primary dark:text-background-light" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-xs font-bold">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+
+
+</body></html>

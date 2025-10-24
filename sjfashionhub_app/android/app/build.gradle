@@ -1,0 +1,60 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace "com.sjfashionhub.app"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.sjfashionhub.app"
+        minSdkVersion flutter.minSdkVersion
+        targetSdk 36
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+    }
+    
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Firebase BOM & KTX (only for messaging/notifications)
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    // Java8+ desugaring
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+}
+
+// Apply Google Services plugin
+apply plugin: 'com.google.gms.google-services'
+

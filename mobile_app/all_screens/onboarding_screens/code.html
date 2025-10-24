@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SJ Fashion Hub Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#141414",
+            "background-light": "#f7f7f7",
+            "background-dark": "#191919",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col min-h-screen">
+<div class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+<div class="w-full max-w-sm h-80 bg-cover bg-center rounded-xl mb-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuATy5tOOyPYBiAUeivVKcNhLz7COzrmbZ-M0gJkwUgZ8gW6wSGyTIC3obDtnM1OorNjTtf-qT8ltvpCBH-xwvd_5pwrlJnJkemvZxxxIXypUOPnQPjLOgLWJ_5OYOL6min9UKnfw5oxmI7fVU30BKBg2xRKRt26HnKa09NOGsKaorinCfVk1Tb-lwWg_z8JtEIPbVR-m4R0I7DOL1PoGo-nYC1_nJNSzGjFmTqfwHrHEKAU9CqsO0LMhH1-3OrMCSc_ShJejKzfeMS9");'></div>
+<h1 class="text-2xl font-bold text-primary dark:text-white mb-2">Welcome to SJ Fashion Hub</h1>
+<p class="text-primary/70 dark:text-white/70 mb-8">Discover the latest trends and exclusive offers. Your style journey starts here.</p>
+<div class="flex items-center justify-center space-x-2 mb-8">
+<div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary/20 dark:bg-white/20"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary/20 dark:bg-white/20"></div>
+</div>
+<button class="w-full max-w-sm bg-primary text-white py-3 rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors">
+            Get Started
+        </button>
+</div>
+</div>
+
+</body></html>
