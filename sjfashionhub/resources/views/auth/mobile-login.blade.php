@@ -118,26 +118,172 @@
         </p>
     </div>
 
+    <!-- Mobile Login Loading Popup -->
+    <div id="mobile-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
+            <!-- Animated Spinner -->
+            <div class="mb-6 flex justify-center">
+                <div class="relative w-20 h-20">
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 dark:border-gray-700 animate-spin-slow"></div>
+                    <div class="absolute inset-2 rounded-full border-2 border-indigo-600 dark:border-indigo-400 animate-pulse"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce-slow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 animate-fade-in" style="animation-delay: 0.2s;">Sending OTP...</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we send your verification code</p>
+
+            <!-- Animated Dots -->
+            <div class="mt-4 flex justify-center space-x-1">
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
+                <div class="bg-indigo-600 dark:bg-indigo-400 h-full animate-progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Verification Loading Popup -->
+    <div id="otp-verify-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
+            <!-- Animated Spinner -->
+            <div class="mb-6 flex justify-center">
+                <div class="relative w-20 h-20">
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 dark:border-gray-700 animate-spin-slow"></div>
+                    <div class="absolute inset-2 rounded-full border-2 border-green-600 dark:border-green-400 animate-pulse"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-green-600 dark:bg-green-400 rounded-full animate-bounce-slow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 animate-fade-in" style="animation-delay: 0.2s;">Verifying OTP...</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we verify your code and log you in</p>
+
+            <!-- Animated Dots -->
+            <div class="mt-4 flex justify-center space-x-1">
+                <span class="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+                <span class="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+                <span class="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
+                <div class="bg-green-600 dark:bg-green-400 h-full animate-progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Popup Styles -->
+    <style>
+        @keyframes popup-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes progress-bar {
+            0% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        .animate-popup-in {
+            animation: popup-in 0.4s ease-out;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 1.5s ease-in-out infinite;
+        }
+
+        .animate-progress-bar {
+            animation: progress-bar 1.5s ease-in-out infinite;
+        }
+
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+
     <script>
         let countdownTimer;
         let resendTimeout;
 
         document.getElementById('mobileLoginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const phone = document.getElementById('phone').value;
             const type = document.querySelector('input[name="type"]:checked').value;
             const sendBtn = document.getElementById('sendOtpBtn');
-            
+            const loadingPopup = document.getElementById('mobile-loading-popup');
+
             // Validate phone number
             if (!/^[0-9]{10}$/.test(phone)) {
                 showError('phoneError', 'Please enter a valid 10-digit mobile number');
                 return;
             }
-            
+
+            // Show loading popup
+            loadingPopup.classList.remove('hidden');
             sendBtn.disabled = true;
-            sendBtn.innerHTML = '⏳ Sending...';
-            
+
             try {
                 const response = await fetch('{{ route("mobile.send-otp") }}', {
                     method: 'POST',
@@ -147,38 +293,41 @@
                     },
                     body: JSON.stringify({ phone, type })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showOtpForm(phone, type);
                     startCountdown();
                 } else {
                     showError('phoneError', data.message);
+                    loadingPopup.classList.add('hidden');
                 }
             } catch (error) {
                 showError('phoneError', 'Network error. Please try again.');
+                loadingPopup.classList.add('hidden');
             } finally {
                 sendBtn.disabled = false;
-                sendBtn.innerHTML = '📱 Send OTP';
             }
         });
 
         document.getElementById('otpVerificationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const phone = document.getElementById('verifyPhone').value;
             const otp = document.getElementById('otp').value;
             const verifyBtn = document.getElementById('verifyOtpBtn');
-            
+            const loadingPopup = document.getElementById('otp-verify-loading-popup');
+
             if (!/^[0-9]{6}$/.test(otp)) {
                 showError('otpError', 'Please enter a valid 6-digit OTP');
                 return;
             }
-            
+
+            // Show loading popup
+            loadingPopup.classList.remove('hidden');
             verifyBtn.disabled = true;
-            verifyBtn.innerHTML = '⏳ Verifying...';
-            
+
             try {
                 const response = await fetch('{{ route("mobile.verify-otp") }}', {
                     method: 'POST',
@@ -188,19 +337,20 @@
                     },
                     body: JSON.stringify({ phone, otp })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     window.location.href = data.redirect || '/';
                 } else {
                     showError('otpError', data.message);
+                    loadingPopup.classList.add('hidden');
                 }
             } catch (error) {
                 showError('otpError', 'Network error. Please try again.');
+                loadingPopup.classList.add('hidden');
             } finally {
                 verifyBtn.disabled = false;
-                verifyBtn.innerHTML = '✅ Verify & Login';
             }
         });
 
