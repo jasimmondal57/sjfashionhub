@@ -118,38 +118,6 @@
         </p>
     </div>
 
-    <!-- Mobile Login Loading Popup -->
-    <div id="mobile-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
-            <!-- Animated Spinner -->
-            <div class="mb-6 flex justify-center">
-                <div class="relative w-20 h-20">
-                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 dark:border-gray-700 animate-spin-slow"></div>
-                    <div class="absolute inset-2 rounded-full border-2 border-indigo-600 dark:border-indigo-400 animate-pulse"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce-slow"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Loading Text -->
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 animate-fade-in" style="animation-delay: 0.2s;">Sending OTP...</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we send your verification code</p>
-
-            <!-- Animated Dots -->
-            <div class="mt-4 flex justify-center space-x-1">
-                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0s;"></span>
-                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
-                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
-                <div class="bg-indigo-600 dark:bg-indigo-400 h-full animate-progress-bar" style="width: 100%;"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- OTP Verification Loading Popup -->
     <div id="otp-verify-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
@@ -272,7 +240,6 @@
             const phone = document.getElementById('phone').value;
             const type = document.querySelector('input[name="type"]:checked').value;
             const sendBtn = document.getElementById('sendOtpBtn');
-            const loadingPopup = document.getElementById('mobile-loading-popup');
 
             // Validate phone number
             if (!/^[0-9]{10}$/.test(phone)) {
@@ -280,9 +247,8 @@
                 return;
             }
 
-            // Show loading popup
-            loadingPopup.classList.remove('hidden');
             sendBtn.disabled = true;
+            sendBtn.innerHTML = '⏳ Sending...';
 
             try {
                 const response = await fetch('{{ route("mobile.send-otp") }}', {
@@ -301,13 +267,12 @@
                     startCountdown();
                 } else {
                     showError('phoneError', data.message);
-                    loadingPopup.classList.add('hidden');
                 }
             } catch (error) {
                 showError('phoneError', 'Network error. Please try again.');
-                loadingPopup.classList.add('hidden');
             } finally {
                 sendBtn.disabled = false;
+                sendBtn.innerHTML = '📱 Send OTP';
             }
         });
 
