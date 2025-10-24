@@ -79,6 +79,32 @@
                 status: 'paid'
             })
         });
+
+        // Track purchase event with Meta Pixel
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof trackMetaPixelPurchase !== 'undefined') {
+                    const items = @json($order->items->map(function($item) {
+                        return [
+                            'id' => $item->product_id,
+                            'product_id' => $item->product_id,
+                            'quantity' => $item->quantity,
+                            'price' => $item->price
+                        ];
+                    })->toArray());
+
+                    trackMetaPixelPurchase(
+                        {{ $order->id }},
+                        {{ $order->total_amount ?? $order->total }},
+                        items
+                    );
+
+                    console.log('✅ Purchase event tracked for order #{{ $order->order_number }}');
+                } else {
+                    console.warn('trackMetaPixelPurchase function not available');
+                }
+            }, 500);
+        });
     </script>
     @endpush
 </x-layouts.main>

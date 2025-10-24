@@ -664,6 +664,30 @@
 
     <!-- JavaScript for Truck Button Animation -->
     <script>
+        // Track InitiateCheckout event with Meta Pixel
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof trackMetaPixelInitiateCheckout !== 'undefined') {
+                    const items = @json($cartItems->map(function($item) {
+                        return [
+                            'id' => $item->product_id,
+                            'product_id' => $item->product_id,
+                            'quantity' => $item->quantity,
+                            'price' => $item->product->sale_price ?? $item->product->price
+                        ];
+                    })->toArray());
+
+                    trackMetaPixelInitiateCheckout(
+                        {{ $total }},
+                        {{ $cartItems->count() }},
+                        items
+                    );
+
+                    console.log('✅ InitiateCheckout event tracked');
+                }
+            }, 300);
+        });
+
         document.getElementById('place-order-btn').addEventListener('click', function(e) {
             e.preventDefault();
 

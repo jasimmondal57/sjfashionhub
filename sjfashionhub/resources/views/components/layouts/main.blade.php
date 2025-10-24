@@ -913,20 +913,31 @@
                     // Update cart count if element exists
                     updateCartCount();
 
-                    // Track Facebook Pixel AddToCart event
-                    if (typeof fbq !== 'undefined' && productName && price) {
+                    // Track Facebook Pixel AddToCart event using global function
+                    if (typeof trackMetaPixelAddToCart !== 'undefined' && productName && price) {
+                        trackMetaPixelAddToCart(productId, productName, price, category, 1);
+                    } else if (typeof fbq !== 'undefined' && productName && price) {
+                        // Fallback if global function not available
+                        console.log('Using fallback AddToCart tracking');
                         fbq('track', 'AddToCart', {
                             content_name: productName,
                             content_category: category || 'Fashion',
-                            content_ids: [productId],
+                            content_ids: [String(productId)],
                             content_type: 'product',
-                            value: price,
+                            value: parseFloat(price),
                             currency: 'INR',
                             contents: [{
-                                id: productId,
+                                id: String(productId),
                                 quantity: 1,
-                                item_price: price
+                                item_price: parseFloat(price)
                             }]
+                        });
+                    } else {
+                        console.warn('AddToCart tracking failed - missing tracking function or product data', {
+                            trackingFunctionAvailable: typeof trackMetaPixelAddToCart !== 'undefined',
+                            fbqDefined: typeof fbq !== 'undefined',
+                            productName: productName,
+                            price: price
                         });
                     }
                 } else {
@@ -1056,6 +1067,101 @@
                 }, 300);
             }, 3000);
         }
+
+        // Global Meta Pixel tracking functions
+        window.trackMetaPixelAddToCart = function(productId, productName, price, category = 'Fashion', quantity = 1) {
+            if (typeof fbq === 'undefined') {
+                console.warn('Meta Pixel (fbq) not loaded yet');
+                return;
+            }
+
+            const eventData = {
+                content_name: productName,
+                content_category: category,
+                content_ids: [String(productId)],
+                content_type: 'product',
+                value: parseFloat(price) * quantity,
+                currency: 'INR',
+                contents: [{
+                    id: String(productId),
+                    quantity: quantity,
+                    item_price: parseFloat(price)
+                }]
+            };
+
+            console.log('📊 Meta Pixel - Tracking AddToCart:', eventData);
+            fbq('track', 'AddToCart', eventData);
+        };
+
+        window.trackMetaPixelPurchase = function(orderId, orderTotal, items = []) {
+            if (typeof fbq === 'undefined') {
+                console.warn('Meta Pixel (fbq) not loaded yet');
+                return;
+            }
+
+            const eventData = {
+                content_type: 'product',
+                value: parseFloat(orderTotal),
+                currency: 'INR',
+                content_ids: items.map(item => String(item.id || item.product_id)),
+                num_items: items.length,
+                contents: items.map(item => ({
+                    id: String(item.id || item.product_id),
+                    quantity: item.quantity || 1,
+                    item_price: parseFloat(item.price || item.item_price)
+                }))
+            };
+
+            console.log('📊 Meta Pixel - Tracking Purchase:', eventData);
+            fbq('track', 'Purchase', eventData);
+        };
+
+        window.trackMetaPixelViewContent = function(productId, productName, price, category = 'Fashion') {
+            if (typeof fbq === 'undefined') {
+                console.warn('Meta Pixel (fbq) not loaded yet');
+                return;
+            }
+
+            const eventData = {
+                content_name: productName,
+                content_category: category,
+                content_ids: [String(productId)],
+                content_type: 'product',
+                value: parseFloat(price),
+                currency: 'INR',
+                contents: [{
+                    id: String(productId),
+                    quantity: 1,
+                    item_price: parseFloat(price)
+                }]
+            };
+
+            console.log('📊 Meta Pixel - Tracking ViewContent:', eventData);
+            fbq('track', 'ViewContent', eventData);
+        };
+
+        window.trackMetaPixelInitiateCheckout = function(cartTotal, itemCount, items = []) {
+            if (typeof fbq === 'undefined') {
+                console.warn('Meta Pixel (fbq) not loaded yet');
+                return;
+            }
+
+            const eventData = {
+                content_type: 'product',
+                value: parseFloat(cartTotal),
+                currency: 'INR',
+                num_items: itemCount,
+                content_ids: items.map(item => String(item.id || item.product_id)),
+                contents: items.map(item => ({
+                    id: String(item.id || item.product_id),
+                    quantity: item.quantity || 1,
+                    item_price: parseFloat(item.price || item.item_price)
+                }))
+            };
+
+            console.log('📊 Meta Pixel - Tracking InitiateCheckout:', eventData);
+            fbq('track', 'InitiateCheckout', eventData);
+        };
     </script>
 
     <!-- GSAP Library for Animated Order Button -->

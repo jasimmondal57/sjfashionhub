@@ -89,4 +89,35 @@
             </div>
         </div>
     </div>
+
+    @if($order)
+    <script>
+        // Track purchase event with Meta Pixel
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a moment for fbq to be loaded
+            setTimeout(function() {
+                if (typeof trackMetaPixelPurchase !== 'undefined') {
+                    const items = @json($order->items->map(function($item) {
+                        return [
+                            'id' => $item->product_id,
+                            'product_id' => $item->product_id,
+                            'quantity' => $item->quantity,
+                            'price' => $item->price
+                        ];
+                    })->toArray());
+
+                    trackMetaPixelPurchase(
+                        {{ $order->id }},
+                        {{ $order->total }},
+                        items
+                    );
+
+                    console.log('✅ Purchase event tracked for order #{{ $order->order_number }}');
+                } else {
+                    console.warn('trackMetaPixelPurchase function not available');
+                }
+            }, 500);
+        });
+    </script>
+    @endif
 </x-layouts.main>

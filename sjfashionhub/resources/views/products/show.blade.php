@@ -703,6 +703,21 @@
 
     @push('scripts')
     <script>
+        // Track ViewContent event with Meta Pixel
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof trackMetaPixelViewContent !== 'undefined') {
+                    trackMetaPixelViewContent(
+                        {{ $product->id }},
+                        '{{ addslashes($product->name) }}',
+                        {{ $product->sale_price ?? $product->price }},
+                        '{{ $product->category->name ?? "Fashion" }}'
+                    );
+                    console.log('✅ ViewContent event tracked for product: {{ $product->name }}');
+                }
+            }, 300);
+        });
+
         function changeMainImage(imageSrc, button) {
             document.getElementById('main-image').src = imageSrc;
 
