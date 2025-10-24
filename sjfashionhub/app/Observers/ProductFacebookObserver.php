@@ -30,16 +30,25 @@ class ProductFacebookObserver
     public function updated(Product $product): void
     {
         $settings = FacebookSetting::getInstance();
-        
+
         if (!$settings->isCatalogConfigured()) {
             return;
         }
 
         // Check what was updated
-        if ($product->wasChanged('stock') && $settings->auto_sync_inventory) {
+        if ($product->wasChanged('stock_quantity') && $settings->auto_sync_inventory) {
             // Stock changed - update inventory
             try {
                 $this->catalogService->updateInventory($product);
+
+                // If product just became sold out, log it
+                if ($product->stock_quantity <= 0 && $product->getOriginal('stock_quantity') > 0) {
+                    Log::info('Product marked as sold out on Facebook', [
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'stock' => $product->stock_quantity,
+                    ]);
+                }
             } catch (\Exception $e) {
                 Log::error('Failed to auto-update Facebook inventory', [
                     'product_id' => $product->id,

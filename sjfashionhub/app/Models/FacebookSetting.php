@@ -15,6 +15,7 @@ class FacebookSetting extends Model
         'business_id',
         'app_id',
         'app_secret',
+        'auto_sync_enabled',
         'auto_sync_inventory',
         'auto_sync_prices',
         'sync_frequency_hours',
@@ -26,6 +27,7 @@ class FacebookSetting extends Model
     protected $casts = [
         'pixel_enabled' => 'boolean',
         'catalog_sync_enabled' => 'boolean',
+        'auto_sync_enabled' => 'boolean',
         'auto_sync_inventory' => 'boolean',
         'auto_sync_prices' => 'boolean',
         'sync_frequency_hours' => 'integer',
