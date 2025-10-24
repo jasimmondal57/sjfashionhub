@@ -39,29 +39,30 @@ class MobileLoginController extends Controller
      */
     public function sendOtp(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|string|regex:/^[0-9]{10,15}$/',
-            'type' => 'required|in:sms,whatsapp'
-        ]);
-
-        $phone = $request->phone;
-        $type = $request->type;
-
-        // Check rate limiting (max 3 OTPs per hour)
-        $recentOtps = OtpVerification::where('phone', $phone)
-            ->where('created_at', '>', now()->subHour())
-            ->count();
-
-        if ($recentOtps >= 3) {
-            throw ValidationException::withMessages([
-                'phone' => 'Too many OTP requests. Please try again later.'
-            ]);
-        }
-
-        // Generate OTP
-        $otpRecord = OtpVerification::generateOtp($phone, $type);
-
         try {
+            $request->validate([
+                'phone' => 'required|string|regex:/^[0-9]{10,15}$/',
+                'type' => 'required|in:sms,whatsapp'
+            ]);
+
+            $phone = $request->phone;
+            $type = $request->type;
+
+            // Check rate limiting (max 3 OTPs per hour)
+            $recentOtps = OtpVerification::where('phone', $phone)
+                ->where('created_at', '>', now()->subHour())
+                ->count();
+
+            if ($recentOtps >= 3) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Too many OTP requests. Please try again later.'
+                ], 429);
+            }
+
+            // Generate OTP
+            $otpRecord = OtpVerification::generateOtp($phone, $type);
+
             // Send OTP via SMS or WhatsApp
             if ($type === 'whatsapp') {
                 $this->whatsAppService->sendOtp($phone, $otpRecord->otp);
@@ -77,7 +78,13 @@ class MobileLoginController extends Controller
                 'expires_in' => 600 // 10 minutes
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()['phone'][0] ?? 'Validation failed'
+            ], 422);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Mobile OTP Send Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send OTP. Please try again.'
