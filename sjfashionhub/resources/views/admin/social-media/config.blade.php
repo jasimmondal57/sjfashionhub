@@ -386,7 +386,7 @@ function testConnection(platform) {
     button.innerHTML = '⏳ Testing...';
     button.disabled = true;
 
-    fetch(`{{ route('admin.social-media.test-connection', '') }}/${platform}`, {
+    fetch(`/admin/social-media/test-connection/${platform}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
