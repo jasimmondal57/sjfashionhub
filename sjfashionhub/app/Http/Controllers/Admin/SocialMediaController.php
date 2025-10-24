@@ -68,6 +68,10 @@ class SocialMediaController extends Controller
      */
     public function updateConfig(Request $request, $platform)
     {
+        \Log::info("=== Social Media Config Update Request ===");
+        \Log::info("Platform: {$platform}");
+        \Log::info("All Request Data: " . json_encode($request->all()));
+
         $request->validate([
             'is_active' => 'boolean',
             'credentials' => 'array',
@@ -97,9 +101,13 @@ class SocialMediaController extends Controller
 
         // Get credentials and filter out empty values
         $credentials = $request->input('credentials', []);
+        \Log::info("Raw credentials for {$platform}: " . json_encode($credentials));
+
         $credentials = array_filter($credentials, function($value) {
             return !empty($value);
         });
+
+        \Log::info("Filtered credentials for {$platform}: " . json_encode($credentials));
 
         // Only update credentials if there are non-empty values
         $updateData = [
@@ -110,9 +118,13 @@ class SocialMediaController extends Controller
         // Only update credentials if we have values, otherwise keep existing
         if (!empty($credentials)) {
             $updateData['credentials'] = $credentials;
+            \Log::info("Updating credentials for {$platform}");
+        } else {
+            \Log::info("No credentials to update for {$platform}");
         }
 
         $config->update($updateData);
+        \Log::info("Config updated. New credentials: " . json_encode($config->credentials));
 
         return redirect()->back()->with('success', ucfirst($platform) . ' configuration updated successfully!');
     }

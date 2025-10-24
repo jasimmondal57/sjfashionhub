@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Crypt;
 
 class SocialMediaConfig extends Model
@@ -44,7 +45,6 @@ class SocialMediaConfig extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-        'credentials' => 'array',
         'settings' => 'array',
         'rate_limits' => 'array',
         'last_connected_at' => 'datetime',
@@ -61,21 +61,24 @@ class SocialMediaConfig extends Model
         return $query->where('platform', $platform);
     }
 
-    // Accessors & Mutators
-    public function setCredentialsAttribute($value)
+    // Accessors & Mutators using Attribute class
+    protected function credentials(): Attribute
     {
-        $this->attributes['credentials'] = $value ? Crypt::encryptString(json_encode($value)) : null;
-    }
-
-    public function getCredentialsAttribute($value)
-    {
-        if (!$value) return null;
-
-        try {
-            return json_decode(Crypt::decryptString($value), true);
-        } catch (\Exception $e) {
-            return null;
-        }
+        return Attribute::make(
+            get: function ($value) {
+                if (!$value) return null;
+                try {
+                    return json_decode(Crypt::decryptString($value), true);
+                } catch (\Exception $e) {
+                    \Log::error("Failed to decrypt credentials: " . $e->getMessage());
+                    return null;
+                }
+            },
+            set: function ($value) {
+                if (!$value) return null;
+                return Crypt::encryptString(json_encode($value));
+            }
+        );
     }
 
     public function getStatusBadgeAttribute()
