@@ -371,6 +371,28 @@
         </div>
     </div>
 
+    <!-- Loading Popup Modal -->
+    <div id="checkout-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center">
+            <!-- Spinner -->
+            <div class="mb-6 flex justify-center">
+                <div class="relative w-16 h-16">
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-black border-r-black animate-spin"></div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Processing Your Order</h3>
+            <p class="text-gray-600 text-sm">Please wait while we confirm your order...</p>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 w-full bg-gray-200 rounded-full h-1 overflow-hidden">
+                <div class="bg-black h-full animate-pulse" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Truck Button Animation Styles -->
     <style>
         .truck-button {
@@ -742,10 +764,15 @@
                             gsap.timeline({
                                 onComplete() {
                                     button.classList.add('done');
-                                    // Submit the form after animation completes
+
+                                    // Show loading popup
+                                    const loadingPopup = document.getElementById('checkout-loading-popup');
+                                    loadingPopup.classList.remove('hidden');
+
+                                    // Submit the form after showing loading popup
                                     setTimeout(() => {
                                         document.getElementById('checkout-form').submit();
-                                    }, 300);
+                                    }, 500);
                                 }
                             }).to(truck, {
                                 x: 0,
