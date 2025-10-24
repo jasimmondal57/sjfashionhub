@@ -183,53 +183,69 @@ class ContactController extends Controller
     {
         $spamKeywords = [
             // Pharmaceutical
-            'viagra', 'cialis', 'weight loss', 'diet pills', 'pharmacy',
+            'viagra', 'cialis', 'weight loss', 'diet pills', 'pharmacy', 'levitra', 'tramadol',
             // Gambling & Lottery
-            'casino', 'lottery', 'jackpot', 'prize', 'win money', 'giveaway',
-            'конкурс', 'лотерея', 'выигра', 'приз', 'бесплатно',
+            'casino', 'lottery', 'jackpot', 'prize', 'win money', 'giveaway', 'slots', 'poker',
+            'конкурс', 'лотерея', 'выигра', 'приз', 'бесплатно', 'поздравляем', 'выбраны',
             // Crypto & Finance
-            'bitcoin', 'crypto', 'forex', 'trading', 'investment',
+            'bitcoin', 'crypto', 'forex', 'trading', 'investment', 'ethereum', 'blockchain',
             // Scams
-            'click here', 'buy now', 'limited offer', 'act now', 'urgent',
-            'xxx', 'adult', 'porn', 'sex', 'cheap', 'free money',
-            'work from home', 'make money fast', 'guaranteed', 'earn money',
+            'click here', 'buy now', 'limited offer', 'act now', 'urgent', 'hurry',
+            'xxx', 'adult', 'porn', 'sex', 'cheap', 'free money', 'nigerian prince',
+            'work from home', 'make money fast', 'guaranteed', 'earn money', 'passive income',
             // URLs (any URL is suspicious in contact form)
             'http://', 'https://', 'www.', '.com', '.net', '.org', '.ru',
-            '.io', '.co', '.info', '.biz', '.xyz', '.top', '.click',
+            '.io', '.co', '.info', '.biz', '.xyz', '.top', '.click', '.tk', '.ml',
             // Russian spam patterns
-            'поздравляем', 'выбраны', 'участие', 'акции', 'бесплатные',
-            'переходи', 'ссылке', 'wilberries', 'ozon', 'aliexpress',
+            'участие', 'акции', 'бесплатные', 'переходи', 'ссылке', 'wilberries', 'ozon', 'aliexpress',
+            // Additional spam patterns
+            'click link', 'verify account', 'confirm identity', 'update payment', 'suspended',
+            'congratulations', 'claim reward', 'collect prize', 'inheritance', 'refund',
         ];
 
         $content = strtolower($request->subject . ' ' . $request->message);
         $email = strtolower($request->email);
+        $firstName = strtolower($request->first_name);
+        $lastName = strtolower($request->last_name);
 
         // Check for spam keywords
         foreach ($spamKeywords as $keyword) {
             if (strpos($content, $keyword) !== false) {
+                Log::warning('Spam keyword detected', ['keyword' => $keyword, 'email' => $email]);
                 return true;
             }
         }
 
         // Check for ANY URL (very strict - contact forms shouldn't have URLs)
-        $urlCount = preg_match_all('/https?:\/\/|www\.|\.com|\.net|\.org|\.ru|\.io/', $content);
+        $urlCount = preg_match_all('/https?:\/\/|www\.|\.com|\.net|\.org|\.ru|\.io|\.tk|\.ml/', $content);
         if ($urlCount >= 1) {
+            Log::warning('URL detected in contact form', ['email' => $email]);
             return true;
         }
 
         // Check for excessive links in message
         $linkCount = preg_match_all('/\[.*?\]\(.*?\)/', $content);
         if ($linkCount >= 1) {
+            Log::warning('Markdown links detected', ['email' => $email]);
             return true;
         }
 
         // Check for suspicious email patterns
         if (preg_match('/\d{10,}/', $email)) {
+            Log::warning('Too many numbers in email', ['email' => $email]);
             return true; // Too many numbers in email
+        }
+
+        // Check for generic/suspicious names
+        $suspiciousNames = ['admin', 'test', 'user', 'guest', 'support', 'info', 'contact', 'hello', 'hi'];
+        if (in_array($firstName, $suspiciousNames) || in_array($lastName, $suspiciousNames)) {
+            Log::warning('Suspicious name detected', ['first_name' => $firstName, 'last_name' => $lastName]);
+            return true;
         }
 
         // Check for repeated characters (e.g., "aaaaaaa")
         if (preg_match('/(.)\1{4,}/', $content)) {
+            Log::warning('Repeated characters detected', ['email' => $email]);
             return true;
         }
 
@@ -240,23 +256,59 @@ class ContactController extends Controller
                 return strlen($word) > 2 && $word === strtoupper($word);
             });
             if (count($capsWords) / count($words) > 0.5) {
+                Log::warning('Excessive caps detected', ['email' => $email]);
                 return true; // More than 50% all caps
             }
         }
 
         // Check for emoji/special characters (common in spam)
         if (preg_match('/[\x{1F300}-\x{1F9FF}]/u', $content)) {
+            Log::warning('Emoji detected', ['email' => $email]);
             return true; // Contains emoji
         }
 
         // Check for excessive punctuation
         $punctCount = preg_match_all('/[!?*•★✓✗]/i', $content);
         if ($punctCount > 5) {
+            Log::warning('Excessive punctuation detected', ['email' => $email, 'count' => $punctCount]);
             return true;
         }
 
         // Check for suspicious patterns like "..." at start
         if (preg_match('/^\.{2,}/', trim($content))) {
+            Log::warning('Suspicious dots pattern detected', ['email' => $email]);
+            return true;
+        }
+
+        // Check for very short messages (likely spam)
+        if (strlen(trim($request->message)) < 10) {
+            Log::warning('Message too short', ['email' => $email, 'length' => strlen($request->message)]);
+            return true;
+        }
+
+        // Check for messages that are too long (likely spam/copy-paste)
+        if (strlen(trim($request->message)) > 5000) {
+            Log::warning('Message too long', ['email' => $email, 'length' => strlen($request->message)]);
+            return true;
+        }
+
+        // Check for suspicious email domains
+        $suspiciousDomains = ['tempmail', 'throwaway', '10minutemail', 'guerrillamail', 'mailinator', 'yopmail'];
+        foreach ($suspiciousDomains as $domain) {
+            if (strpos($email, $domain) !== false) {
+                Log::warning('Suspicious email domain detected', ['email' => $email, 'domain' => $domain]);
+                return true;
+            }
+        }
+
+        // Check for rate limiting - same email multiple times
+        $recentSubmissions = \DB::table('contacts')
+            ->where('email', $email)
+            ->where('created_at', '>=', now()->subHour())
+            ->count();
+
+        if ($recentSubmissions >= 3) {
+            Log::warning('Rate limit exceeded for email', ['email' => $email, 'count' => $recentSubmissions]);
             return true;
         }
 
