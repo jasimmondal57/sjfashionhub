@@ -62,19 +62,19 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.login') }}">
+            <form method="POST" action="{{ route('admin.login') }}" id="admin-login-form">
                 @csrf
 
                 <!-- Email Address -->
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input id="email" 
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-300 @enderror" 
-                           type="email" 
-                           name="email" 
-                           value="{{ old('email') }}" 
-                           required 
-                           autofocus 
+                    <input id="email"
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-300 @enderror"
+                           type="email"
+                           name="email"
+                           value="{{ old('email') }}"
+                           required
+                           autofocus
                            autocomplete="username"
                            placeholder="Enter your admin email">
                 </div>
@@ -82,11 +82,11 @@
                 <!-- Password -->
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input id="password" 
+                    <input id="password"
                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-300 @enderror"
                            type="password"
                            name="password"
-                           required 
+                           required
                            autocomplete="current-password"
                            placeholder="Enter your password">
                 </div>
@@ -94,9 +94,9 @@
                 <!-- Remember Me -->
                 <div class="flex items-center justify-between mb-6">
                     <label for="remember_me" class="flex items-center">
-                        <input id="remember_me" 
-                               type="checkbox" 
-                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" 
+                        <input id="remember_me"
+                               type="checkbox"
+                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
                                name="remember">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
@@ -110,7 +110,8 @@
 
                 <!-- Login Button -->
                 <div class="mb-6">
-                    <button type="submit" 
+                    <button type="submit"
+                            id="admin-login-btn"
                             class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -149,39 +150,172 @@
         </div>
     </div>
 
+    <!-- Admin Login Loading Popup -->
+    <div id="admin-login-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
+            <!-- Animated Spinner -->
+            <div class="mb-6 flex justify-center">
+                <div class="relative w-20 h-20">
+                    <!-- Outer rotating circle -->
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 animate-spin-slow"></div>
+
+                    <!-- Inner pulsing circle -->
+                    <div class="absolute inset-2 rounded-full border-2 border-blue-600 animate-pulse"></div>
+
+                    <!-- Center dot -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-blue-600 rounded-full animate-bounce-slow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 mb-2 animate-fade-in" style="animation-delay: 0.2s;">Logging you in...</h3>
+            <p class="text-gray-600 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we verify your admin credentials and load the admin panel</p>
+
+            <!-- Animated Dots -->
+            <div class="mt-4 flex justify-center space-x-1">
+                <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+                <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+                <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 w-full bg-gray-200 rounded-full h-1 overflow-hidden">
+                <div class="bg-blue-600 h-full animate-progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Login Specific Styles -->
     <style>
         body {
-            background-image: 
+            background-image:
                 radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
         }
-        
+
         .shadow-2xl {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        
+
         input:focus {
             transform: translateY(-1px);
             transition: all 0.2s ease-in-out;
         }
-        
+
         button:hover {
             transform: translateY(-1px);
             transition: all 0.2s ease-in-out;
         }
+
+        /* Loading Popup Animations */
+        @keyframes popup-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes progress-bar {
+            0% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        .animate-popup-in {
+            animation: popup-in 0.4s ease-out;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 1.5s ease-in-out infinite;
+        }
+
+        .animate-progress-bar {
+            animation: progress-bar 1.5s ease-in-out infinite;
+        }
+
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
     </style>
 
-    <!-- Security Notice -->
+    <!-- Admin Login Script -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const adminLoginBtn = document.getElementById('admin-login-btn');
+            const adminLoadingPopup = document.getElementById('admin-login-loading-popup');
+
+            if (adminLoginForm) {
+                adminLoginForm.addEventListener('submit', function(e) {
+                    // Show loading popup
+                    adminLoadingPopup.classList.remove('hidden');
+
+                    // Disable button to prevent multiple submissions
+                    if (adminLoginBtn) {
+                        adminLoginBtn.disabled = true;
+                    }
+                });
+            }
+        });
+
         // Disable right-click context menu for security
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
-        
+
         // Disable F12 and other developer tools shortcuts
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
+            if (e.key === 'F12' ||
                 (e.ctrlKey && e.shiftKey && e.key === 'I') ||
                 (e.ctrlKey && e.shiftKey && e.key === 'C') ||
                 (e.ctrlKey && e.shiftKey && e.key === 'J') ||

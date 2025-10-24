@@ -17,7 +17,7 @@
     @endphp
 
     @if($emailEnabled)
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" id="login-form">
         @csrf
 
         <!-- Email Address -->
@@ -54,7 +54,7 @@
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="ms-3" id="login-btn">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
@@ -137,4 +137,143 @@
             </a>
         </p>
     </div>
+
+    <!-- Login Loading Popup -->
+    <div id="login-loading-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-popup-in">
+            <!-- Animated Spinner -->
+            <div class="mb-6 flex justify-center">
+                <div class="relative w-20 h-20">
+                    <!-- Outer rotating circle -->
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-100 dark:border-gray-700 animate-spin-slow"></div>
+
+                    <!-- Inner pulsing circle -->
+                    <div class="absolute inset-2 rounded-full border-2 border-indigo-600 dark:border-indigo-400 animate-pulse"></div>
+
+                    <!-- Center dot -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce-slow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 animate-fade-in" style="animation-delay: 0.2s;">Logging you in...</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm animate-fade-in" style="animation-delay: 0.4s;">Please wait while we verify your credentials and load your dashboard</p>
+
+            <!-- Animated Dots -->
+            <div class="mt-4 flex justify-center space-x-1">
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+                <span class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
+                <div class="bg-indigo-600 dark:bg-indigo-400 h-full animate-progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Loading Styles -->
+    <style>
+        /* Loading Popup Animations */
+        @keyframes popup-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes progress-bar {
+            0% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        .animate-popup-in {
+            animation: popup-in 0.4s ease-out;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 1.5s ease-in-out infinite;
+        }
+
+        .animate-progress-bar {
+            animation: progress-bar 1.5s ease-in-out infinite;
+        }
+
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+
+    <!-- Login Loading Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const loginBtn = document.getElementById('login-btn');
+            const loadingPopup = document.getElementById('login-loading-popup');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    // Show loading popup
+                    loadingPopup.classList.remove('hidden');
+
+                    // Disable button to prevent multiple submissions
+                    if (loginBtn) {
+                        loginBtn.disabled = true;
+                    }
+                });
+            }
+        });
+    </script>
 </x-guest-layout>
